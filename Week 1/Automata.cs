@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Week_1
 {
@@ -14,7 +12,7 @@ namespace Week_1
         private SortedSet<Transition> states;
         private SortedSet<Transition> startStates;
         private SortedSet<Transition> finalStates;
-        private SortedSet<char> symbols;
+        private SortedSet<char> _symbols;
 
         public Automata() : this(new SortedSet<char>())
         {
@@ -30,46 +28,46 @@ namespace Week_1
             states = new SortedSet<Transition>();
             startStates = new SortedSet<Transition>();
             finalStates = new SortedSet<Transition>();
-            this.setAlphabet(symbols);
+            SetAlphabet(symbols);
         }
 
-        public void setAlphabet(char[] s)
+        public void SetAlphabet(char[] s)
         {
-            this.setAlphabet(new SortedSet<char>(s.ToList()));
+            SetAlphabet(new SortedSet<char>(s.ToList()));
         }
 
-        public void setAlphabet(SortedSet<char> symbols)
+        public void SetAlphabet(SortedSet<char> symbols)
         {
-            this.symbols = symbols;
+            _symbols = symbols;
         }
 
-        public SortedSet<char> getAlphabet()
+        public SortedSet<char> GetAlphabet()
         {
-            return symbols;
+            return _symbols;
         }
 
-        public void addTransition(Transition t)
+        public void AddTransition(Transition t)
         {
             transitions.Add(t);
-            states.Add(t.getFromState());
-            states.Add(t.getToState());
+            states.Add(t.GetFromState());
+            states.Add(t.GetToState());
         }
 
-        public void defineAsStartState(Transition t)
+        public void DefineAsStartState(Transition t)
         {
             // if already in states no problem because a Set will remove duplicates.
             states.Add(t);
             startStates.Add(t);
         }
 
-        public void defineAsFinalState(Transition t)
+        public void DefineAsFinalState(Transition t)
         {
             // if already in states no problem because a Set will remove duplicates.
             states.Add(t);
             finalStates.Add(t);
         }
 
-        public void printTransitions()
+        public void PrintTransitions()
         {
             foreach (Transition transition in transitions)
             {
