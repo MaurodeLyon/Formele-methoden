@@ -1,79 +1,86 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Week_1
 {
     class Transition : IComparable<Transition>
     {
-        public const char EPSILON = '$';
+        public const char Epsilon = '$';
 
-        private Transition fromState;
-        private char symbol;
-        private Transition toState;
+        private readonly Transition _fromState;
+        private readonly char _symbol;
+        private readonly Transition _toState;
 
         // this constructor can be used to define loops:
         public Transition(Transition fromOrTo, char s) : this(fromOrTo, s, fromOrTo)
         {
         }
 
-        public Transition(Transition from, Transition to) : this(from, EPSILON, to)
+        public Transition(Transition from, Transition to) : this(from, Epsilon, to)
         {
         }
 
         public Transition(Transition from, char s, Transition to)
         {
-            this.fromState = from;
-            this.symbol = s;
-            this.toState = to;
+            _fromState = from;
+            _symbol = s;
+            _toState = to;
         }
 
         public int CompareTo(Transition transition)
         {
-            int fromCmp = fromState.CompareTo(transition.fromState);
-            int symbolCmp = symbol.CompareTo(transition.symbol);
-            int toCmp = toState.CompareTo(transition.toState);
+            int fromCmp = _fromState.CompareTo(transition._fromState);
+            int symbolCmp = _symbol.CompareTo(transition._symbol);
+            int toCmp = _toState.CompareTo(transition._toState);
 
             return (fromCmp != 0 ? fromCmp : (symbolCmp != 0 ? symbolCmp : toCmp));
         }
 
         public override bool Equals(object other)
         {
-            if (other == null)
+            Transition transition = other as Transition;
+            if (transition != null)
             {
-                return false;
+                return _fromState.Equals(transition._fromState)
+                       && _toState.Equals(transition._toState)
+                       && _symbol == (transition._symbol);
             }
-            else if (other is Transition)
+            return false;
+        }
+
+        protected bool Equals(Transition other)
+        {
+            return Equals(_fromState, other._fromState) && _symbol == other._symbol && Equals(_toState, other._toState);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
             {
-                return this.fromState.Equals(((Transition) other).fromState)
-                       && this.toState.Equals(((Transition) other).toState)
-                       && this.symbol == (((Transition) other).symbol);
+                var hashCode = (_fromState != null ? _fromState.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ _symbol.GetHashCode();
+                hashCode = (hashCode * 397) ^ (_toState != null ? _toState.GetHashCode() : 0);
+                return hashCode;
             }
-            else return false;
         }
 
-
-        public Transition getFromState()
+        public Transition GetFromState()
         {
-            return fromState;
+            return _fromState;
         }
 
-        public Transition getToState()
+        public Transition GetToState()
         {
-            return toState;
+            return _toState;
         }
 
-        public char getSymbol()
+        public char GetSymbol()
         {
-            return symbol;
+            return _symbol;
         }
 
-        public String toString()
+        public override string ToString()
         {
-            return "(" + this.getFromState() + ", " + this.getSymbol() + ")" + "-->" + this.getToState();
+            return "(" + GetFromState() + ", " + GetSymbol() + ")" + "-->" + GetToState();
         }
     }
 }
