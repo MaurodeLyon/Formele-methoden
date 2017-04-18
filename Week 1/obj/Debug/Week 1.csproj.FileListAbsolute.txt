@@ -4,3 +4,9 @@ C:\GitHub\Formele-methoden\Week 1\bin\Debug\Week 1.pdb
 C:\GitHub\Formele-methoden\Week 1\obj\Debug\Week 1.csprojResolveAssemblyReference.cache
 C:\GitHub\Formele-methoden\Week 1\obj\Debug\Week 1.exe
 C:\GitHub\Formele-methoden\Week 1\obj\Debug\Week 1.pdb
+E:\GitHub\Formele-methoden\Week 1\bin\Debug\Week 1.exe.config
+E:\GitHub\Formele-methoden\Week 1\bin\Debug\Week 1.exe
+E:\GitHub\Formele-methoden\Week 1\bin\Debug\Week 1.pdb
+E:\GitHub\Formele-methoden\Week 1\obj\Debug\Week 1.exe
+E:\GitHub\Formele-methoden\Week 1\obj\Debug\Week 1.pdb
+E:\GitHub\Formele-methoden\Week 1\obj\Debug\Week 1.csprojResolveAssemblyReference.cache

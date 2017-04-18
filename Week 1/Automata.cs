@@ -81,22 +81,13 @@ namespace Week_1
 
             foreach (Transition from in states)
             {
-                foreach (char symbol in symbols)
+                foreach (char symbol in _symbols)
                 {
                     isDFA = isDFA && GetToStates(from, symbol);
                 }
             }
 
             return isDFA;
-        }
-
-        private bool GetToStates(Transition from, char symbol)
-        {
-            if (states.Select(e => e.getFromState().Equals(from.getFromState())).Select(e => e.getSymbol() == symbol).Count() == 1)
-            {
-                return true;
-            }
-            return false;
         }*/
     }
 }
