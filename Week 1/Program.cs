@@ -10,6 +10,8 @@ namespace Week_1
     {
         static void Main(string[] args)
         {
+            TestAutomata.ExampleSlide14Lesson2().printTransitions();
+            Console.WriteLine(TestAutomata.ExampleSlide14Lesson2().IsDfa());
             TestAutomata.Dfa().printTransitions();
             Console.WriteLine(TestAutomata.Dfa().IsDfa());
             Console.ReadKey();

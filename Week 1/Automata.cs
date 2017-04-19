@@ -93,27 +93,35 @@ namespace Week_1
             {
                 foreach (char symbol in symbols)
                 {
-                    isDfa = isDfa && getToStates(from, symbol).Count == 1;
+                    isDfa = isDfa && GetToStates(from, symbol);
                 }
             }
             return isDfa;
         }
 
-        public List<Transition<T>> getToStates(T from, char symbol)
+        public bool GetToStates(T from, char symbol)
         {
-            List<Transition<T>> result = new List<Transition<T>>();
+            List<Transition<T>> transitionsList = new List<Transition<T>>();
             foreach (Transition<T> transition in transitions)
             {
                 if (from.Equals(transition.FromState))
                 {
-                    Transition<T> fromTransition = from as Transition<T>;
-                    if (fromTransition.Symbol == transition.Symbol)
+                    transitionsList.Add(transition);
+                }
+            }
+
+            List<char> results = transitionsList.Select(e => e.Symbol).ToList();
+            for (int i = 0; i < results.Count; i++)
+            {
+                for (int j = i + 1; j < results.Count; j++)
+                {
+                    if (results[i] == results[j])
                     {
-                        result.Add(transition);
+                        return false;
                     }
                 }
             }
-            return result;
+            return true;
         }
     }
 }
