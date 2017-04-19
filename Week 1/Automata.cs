@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 
 namespace Week_1
@@ -23,6 +24,16 @@ namespace Week_1
         private SortedSet<T> startStates;
         private SortedSet<T> finalStates;
         private SortedSet<char?> symbols;
+
+        public ISet<Transition<T>> getTransitions()
+        {
+            return transitions;
+        }
+        
+        public SortedSet<T> getFinalStates()
+        {
+            return finalStates;
+        }
 
         public Automata() : this(new SortedSet<char?>())
         {
@@ -122,6 +133,46 @@ namespace Week_1
                 }
             }
             return true;
+        }
+
+        public bool Accept(string text)
+        {
+            foreach (T startState in startStates)
+            {
+                if (IsPossible(0, text, startState))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public bool IsPossible(int index, string text, T state)
+        {
+            if (index == text.Length)
+            {
+                if (finalStates.Contains(state))
+                {
+                    return true;
+                }
+                return false;
+            }
+            foreach (Transition<T> possibleTransition in GetTransition(state))
+            {
+                if (possibleTransition.Symbol == text[index])
+                {
+                    if (IsPossible(index + 1, text, possibleTransition.ToState))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        public List<Transition<T>> GetTransition(T state)
+        {
+            return transitions.Where(e => e.FromState.Equals(state)).ToList();
         }
     }
 }
