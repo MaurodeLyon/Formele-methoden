@@ -78,10 +78,61 @@
             m.addTransition(new Transition<string>("A", 'a', "B"));
 
             m.addTransition(new Transition<string>("B", 'b', "C"));
-            
+
+            m.defineAsStartState("A");
+
+            m.defineAsFinalState("C");
+
+            return m;
+        }
+        public static Automata<string> Example1Week1()
+        {
+            char?[] alphabet = { 'a', 'b' };
+            Automata<string> m = new Automata<string>(alphabet);
+
+            m.addTransition(new Transition<string>("A", 'a', "B"));
+            m.addTransition(new Transition<string>("B", 'b', "C"));
+
+            m.addTransition(new Transition<string>("C", 'b', "D"));
+
+            m.addTransition(new Transition<string>("E", 'b', "F"));
+            m.addTransition(new Transition<string>("F", 'a', "G"));
+            m.addTransition(new Transition<string>("G", 'a', "C"));
+
+            m.defineAsStartState("A");
+            m.defineAsStartState("E");
+
+            m.defineAsFinalState("D");
+
+            return m;
+        }
+        public static Automata<string> Example2Week1()
+        {
+            char?[] alphabet = { 'a', 'b' };
+            Automata<string> m = new Automata<string>(alphabet);
+
+            m.addTransition(new Transition<string>("A", 'b', "B"));
+            m.addTransition(new Transition<string>("B", 'a', "A"));
+
             m.defineAsStartState("A");
             
-            m.defineAsFinalState("C");
+            m.defineAsFinalState("A");
+
+            return m;
+        }
+        public static Automata<string> Example3Week1()
+        {
+            char?[] alphabet = { 'a', 'b' };
+            Automata<string> m = new Automata<string>(alphabet);
+
+            m.addTransition(new Transition<string>("A", 'b', "B"));
+            m.addTransition(new Transition<string>("B", 'a', "C"));
+            m.addTransition(new Transition<string>("C", 'a', "D"));
+            m.addTransition(new Transition<string>("D", 'b', "E"));
+
+            m.defineAsStartState("A");
+            
+            m.defineAsFinalState("E");
 
             return m;
         }
