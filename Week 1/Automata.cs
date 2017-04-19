@@ -4,90 +4,116 @@ using System.Linq;
 
 namespace Week_1
 {
-    class Automata
+    /// <summary>
+    /// The class Automata represents both DFA and NDFA: some NDFA's are also DFA
+    /// Using the method isDFA we can check this
+    /// 
+    /// We use '$' to denote the empty symbol epsilon
+    /// 
+    /// @author Paul de Mast
+    /// @version 1.0
+    /// 
+    /// </summary>
+    public class Automata<T> where T : IComparable
     {
         // Or use a Map structure
-        private HashSet<Transition> transitions;
+        private ISet<Transition<T>> transitions;
 
-        private SortedSet<Transition> states;
-        private SortedSet<Transition> startStates;
-        private SortedSet<Transition> finalStates;
-        private SortedSet<char> _symbols;
+        private SortedSet<T> states;
+        private SortedSet<T> startStates;
+        private SortedSet<T> finalStates;
+        private SortedSet<char?> symbols;
 
-        public Automata() : this(new SortedSet<char>())
+        public Automata() : this(new SortedSet<char?>())
         {
         }
 
-        public Automata(char[] s) : this(new SortedSet<char>(s.ToList()))
+        public Automata(char?[] s) : this(new SortedSet<char?>(s))
         {
         }
 
-        public Automata(SortedSet<char> symbols)
+        public Automata(SortedSet<char?> symbols)
         {
-            transitions = new HashSet<Transition>();
-            states = new SortedSet<Transition>();
-            startStates = new SortedSet<Transition>();
-            finalStates = new SortedSet<Transition>();
-            SetAlphabet(symbols);
+            transitions = new SortedSet<Transition<T>>();
+            states = new SortedSet<T>();
+            startStates = new SortedSet<T>();
+            finalStates = new SortedSet<T>();
+            this.setAlphabet(symbols);
         }
 
-        public void SetAlphabet(char[] s)
+        public virtual void setAlphabet(char?[] s)
         {
-            SetAlphabet(new SortedSet<char>(s.ToList()));
+            this.setAlphabet(new SortedSet<char?>(s));
         }
 
-        public void SetAlphabet(SortedSet<char> symbols)
+        public virtual void setAlphabet(SortedSet<char?> symbols)
         {
-            _symbols = symbols;
+            this.symbols = symbols;
         }
 
-        public SortedSet<char> GetAlphabet()
+        public virtual SortedSet<char?> getAlphabet()
         {
-            return _symbols;
+            return symbols;
         }
 
-        public void AddTransition(Transition t)
+        public virtual void addTransition(Transition<T> t)
         {
             transitions.Add(t);
-            states.Add(t.GetFromState());
-            states.Add(t.GetToState());
+            states.Add(t.FromState);
+            states.Add(t.ToState);
         }
 
-        public void DefineAsStartState(Transition t)
+        public virtual void defineAsStartState(T t)
         {
             // if already in states no problem because a Set will remove duplicates.
             states.Add(t);
             startStates.Add(t);
         }
 
-        public void DefineAsFinalState(Transition t)
+        public virtual void defineAsFinalState(T t)
         {
             // if already in states no problem because a Set will remove duplicates.
             states.Add(t);
             finalStates.Add(t);
         }
 
-        public void PrintTransitions()
+        public virtual void printTransitions()
         {
-            foreach (Transition transition in transitions)
+            foreach (Transition<T> t in transitions)
             {
-                Console.WriteLine(transition);
+                Console.WriteLine(t);
             }
         }
 
-        /*public bool isDFA()
+        public bool IsDfa()
         {
-            bool isDFA = true;
+            bool isDfa = true;
 
-            foreach (Transition from in states)
+            foreach (T from in states)
             {
-                foreach (char symbol in _symbols)
+                foreach (char symbol in symbols)
                 {
-                    isDFA = isDFA && GetToStates(from, symbol);
+                    isDfa = isDfa && getToStates(from, symbol).Count == 1;
                 }
             }
+            return isDfa;
+        }
 
-            return isDFA;
-        }*/
+        public List<Transition<T>> getToStates(T from, char symbol)
+        {
+            List<Transition<T>> result = new List<Transition<T>>();
+            foreach (Transition<T> transition in transitions)
+            {
+                if (from.Equals(transition.FromState))
+                {
+                    Transition<T> fromTransition = from as Transition<T>;
+                    if (fromTransition.Symbol == transition.Symbol)
+                    {
+                        result.Add(transition);
+                    }
+                }
+            }
+            return result;
+        }
     }
 }

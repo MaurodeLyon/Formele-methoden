@@ -10,6 +10,9 @@ namespace Week_1
     {
         static void Main(string[] args)
         {
+            TestAutomata.Dfa().printTransitions();
+            Console.WriteLine(TestAutomata.Dfa().IsDfa());
+            Console.ReadKey();
         }
     }
 }
