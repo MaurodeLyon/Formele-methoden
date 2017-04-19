@@ -136,5 +136,23 @@
 
             return m;
         }
+        public static Automata<string> Example4Week1()
+        {
+            char?[] alphabet = { 'a', 'b' };
+            Automata<string> m = new Automata<string>(alphabet);
+
+            m.addTransition(new Transition<string>("A", 'a', "B"));
+            m.addTransition(new Transition<string>("B", 'b', "C"));
+            m.addTransition(new Transition<string>("C", 'b', "D"));
+            m.addTransition(new Transition<string>("D", 'a', "E"));
+            m.addTransition(new Transition<string>("E", 'a', "F"));
+            m.addTransition(new Transition<string>("F", 'b', "G"));
+            
+            m.defineAsStartState("A");
+            
+            m.defineAsFinalState("G");
+
+            return m;
+        }
     }
 }
