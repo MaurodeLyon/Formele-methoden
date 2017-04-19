@@ -21,6 +21,10 @@ namespace Week_1
         private char symbol;
         private T toState;
 
+        public T    getFromState() { return fromState; }
+        public char getSymbol() { return symbol; }
+        public T    getToState() { return toState; }
+
         // this constructor can be used to define loops:
         public Transition(T fromOrTo, char s) : this(fromOrTo, s, fromOrTo)
         {

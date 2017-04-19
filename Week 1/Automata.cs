@@ -25,6 +25,16 @@ namespace Week_1
         private SortedSet<T> finalStates;
         private SortedSet<char?> symbols;
 
+        public ISet<Transition<T>> getTransitions()
+        {
+            return transitions;
+        }
+        
+        public SortedSet<T> getFinalStates()
+        {
+            return finalStates;
+        }
+
         public Automata() : this(new SortedSet<char?>())
         {
         }
