@@ -154,5 +154,81 @@
 
             return m;
         }
+
+        public static Automata<string> DfaTEST1()
+        {
+            char?[] alphabet = { 'a', 'b' };
+            Automata<string> m = new Automata<string>(alphabet);
+
+            m.AddTransition(new Transition<string>("A", 'a', "B"));
+            m.AddTransition(new Transition<string>("A", 'b', "C"));
+
+            m.AddTransition(new Transition<string>("B", 'b', "C"));
+            m.AddTransition(new Transition<string>("B", 'a', "A"));
+
+            m.AddTransition(new Transition<string>("C", 'a', "C"));
+            m.AddTransition(new Transition<string>("C", 'b', "C"));
+
+            m.DefineAsStartState("A");
+            //Toggle test
+           // m.DefineAsStartState("B");
+
+
+            m.DefineAsFinalState("C");
+
+            return m;
+        }
+
+        public static Automata<string> DfaTEST2()
+        {
+            char?[] alphabet = { 'a', 'b' };
+            Automata<string> m = new Automata<string>(alphabet);
+
+            m.AddTransition(new Transition<string>("A", 'a', "B"));
+            m.AddTransition(new Transition<string>("A", 'b', "C"));
+            //Toggle test
+            //m.AddTransition(new Transition<string>("A", '$', "C"));
+
+            m.AddTransition(new Transition<string>("B", 'b', "C"));
+            m.AddTransition(new Transition<string>("B", 'a', "A"));
+
+            m.AddTransition(new Transition<string>("C", 'a', "C"));
+            m.AddTransition(new Transition<string>("C", 'b', "C"));
+
+            m.DefineAsStartState("A");
+            
+
+
+            m.DefineAsFinalState("C");
+
+            return m;
+        }
+
+        public static Automata<string> DfaTEST3()
+        {
+            char?[] alphabet = { 'a', 'b' };
+            Automata<string> m = new Automata<string>(alphabet);
+
+            m.AddTransition(new Transition<string>("A", 'a', "B"));
+            //Toggle test for missing symbol
+            m.AddTransition(new Transition<string>("A", 'b', "C"));
+            //Toggle test for multiple of the same symbol
+            //m.AddTransition(new Transition<string>("A", 'b', "A"));
+            
+
+            m.AddTransition(new Transition<string>("B", 'b', "C"));
+            m.AddTransition(new Transition<string>("B", 'a', "A"));
+
+            m.AddTransition(new Transition<string>("C", 'a', "C"));
+            m.AddTransition(new Transition<string>("C", 'b', "C"));
+
+            m.DefineAsStartState("A");
+
+
+
+            m.DefineAsFinalState("C");
+
+            return m;
+        }
     }
 }
