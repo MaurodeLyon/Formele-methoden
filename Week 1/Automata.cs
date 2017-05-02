@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.Design;
 using System.Linq;
 
 namespace Week_1
@@ -15,7 +14,7 @@ namespace Week_1
     /// @version 1.0
     /// 
     /// </summary>
-    public class Automata<T> where T : IComparable
+    public sealed class Automata<T> where T : IComparable
     {
         // Or use a Map structure
         private ISet<Transition<T>> transitions;
@@ -23,14 +22,14 @@ namespace Week_1
         private SortedSet<T> states;
         private SortedSet<T> startStates;
         private SortedSet<T> finalStates;
-        private SortedSet<char?> symbols;
+        private SortedSet<char?> _symbols;
 
-        public ISet<Transition<T>> getTransitions()
+        public ISet<Transition<T>> GetTransitions()
         {
             return transitions;
         }
-        
-        public SortedSet<T> getFinalStates()
+
+        public SortedSet<T> GetFinalStates()
         {
             return finalStates;
         }
@@ -49,46 +48,46 @@ namespace Week_1
             states = new SortedSet<T>();
             startStates = new SortedSet<T>();
             finalStates = new SortedSet<T>();
-            this.setAlphabet(symbols);
+            SetAlphabet(symbols);
         }
 
-        public virtual void setAlphabet(char?[] s)
+        public void SetAlphabet(char?[] s)
         {
-            this.setAlphabet(new SortedSet<char?>(s));
+            SetAlphabet(new SortedSet<char?>(s));
         }
 
-        public virtual void setAlphabet(SortedSet<char?> symbols)
+        public void SetAlphabet(SortedSet<char?> symbols)
         {
-            this.symbols = symbols;
+            _symbols = symbols;
         }
 
-        public virtual SortedSet<char?> getAlphabet()
+        public SortedSet<char?> GetAlphabet()
         {
-            return symbols;
+            return _symbols;
         }
 
-        public virtual void addTransition(Transition<T> t)
+        public void AddTransition(Transition<T> t)
         {
             transitions.Add(t);
             states.Add(t.FromState);
             states.Add(t.ToState);
         }
 
-        public virtual void defineAsStartState(T t)
+        public void DefineAsStartState(T t)
         {
             // if already in states no problem because a Set will remove duplicates.
             states.Add(t);
             startStates.Add(t);
         }
 
-        public virtual void defineAsFinalState(T t)
+        public void DefineAsFinalState(T t)
         {
             // if already in states no problem because a Set will remove duplicates.
             states.Add(t);
             finalStates.Add(t);
         }
 
-        public virtual void printTransitions()
+        public void PrintTransitions()
         {
             foreach (Transition<T> t in transitions)
             {
@@ -102,9 +101,13 @@ namespace Week_1
 
             foreach (T from in states)
             {
-                foreach (char symbol in symbols)
+                foreach (char? c in _symbols)
                 {
-                    isDfa = isDfa && GetToStates(from, symbol);
+                    if (c != null)
+                    {
+                        char symbol = (char) c;
+                        isDfa = isDfa && GetToStates(from, symbol);
+                    }
                 }
             }
             return isDfa;

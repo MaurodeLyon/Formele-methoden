@@ -1,7 +1,4 @@
 ﻿using System;
-using GraphVizWrapper;
-using GraphVizWrapper.Commands;
-using GraphVizWrapper.Queries;
 
 
 namespace Week_1
@@ -15,7 +12,8 @@ namespace Week_1
             bool looping = true;
             while (looping)
             {
-                switch (Console.ReadLine())
+                string word = Console.ReadLine();
+                switch (word)
                 {
                     case "quit":
                         looping = false;
@@ -25,7 +23,7 @@ namespace Week_1
                         break;
                     default:
                         Console.WriteLine("Correct grammar: " +
-                                          TestAutomata.ExampleSlide14Lesson2().Accept(Console.ReadLine()));
+                                          TestAutomata.ExampleSlide14Lesson2().Accept(word));
                         break;
                 }
             }

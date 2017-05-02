@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Week_1
 {
@@ -11,92 +12,94 @@ namespace Week_1
     /// @author Paul de Mast
     /// @version 1.0
     /// </summary>
-
     public class Transition<T> : IComparable<Transition<T>> where T : IComparable
     {
+        public const char Epsilon = '$';
 
-        public const char EPSILON = '$';
+        private readonly T _fromState;
+        private readonly char _symbol;
+        private readonly T _toState;
 
-        private T fromState;
-        private char symbol;
-        private T toState;
+        public T GetFromState()
+        {
+            return _fromState;
+        }
 
-        public T    getFromState() { return fromState; }
-        public char getSymbol() { return symbol; }
-        public T    getToState() { return toState; }
+        public char GetSymbol()
+        {
+            return _symbol;
+        }
+
+        public T GetToState()
+        {
+            return _toState;
+        }
 
         // this constructor can be used to define loops:
         public Transition(T fromOrTo, char s) : this(fromOrTo, s, fromOrTo)
         {
         }
 
-        public Transition(T from, T to) : this(from, EPSILON, to)
+        public Transition(T from, T to) : this(from, Epsilon, to)
         {
         }
 
 
         public Transition(T from, char s, T to)
         {
-            this.fromState = from;
-            this.symbol = s;
-            this.toState = to;
+            _fromState = from;
+            _symbol = s;
+            _toState = to;
         }
 
-
-        // overriding equals
         public override bool Equals(object other)
         {
-            if (other == null)
+            var transition = other as Transition<T>;
+            if (transition != null)
             {
-                return false;
+                return _fromState.Equals(transition._fromState) &&
+                       _toState.Equals(transition._toState) &&
+                       _symbol == (transition._symbol);
             }
-            else if (other is Transition<T>)
+            return false;
+        }
+
+        protected bool Equals(Transition<T> other)
+        {
+            return EqualityComparer<T>.Default.Equals(_fromState, other._fromState)
+                   && _symbol == other._symbol
+                   && EqualityComparer<T>.Default.Equals(_toState, other._toState);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
             {
-                return this.fromState.Equals(((Transition<T>)other).fromState) && this.toState.Equals(((Transition<T>)other).toState) && this.symbol == (((Transition<T>)other).symbol);
-            }
-            else
-            {
-                return false;
+                var hashCode = EqualityComparer<T>.Default.GetHashCode(_fromState);
+                hashCode = (hashCode * 397) ^ _symbol.GetHashCode();
+                hashCode = (hashCode * 397) ^ EqualityComparer<T>.Default.GetHashCode(_toState);
+                return hashCode;
             }
         }
-    
+
         public virtual int CompareTo(Transition<T> t)
         {
-            int fromCmp = fromState.CompareTo(t.fromState);
-            int symbolCmp = symbol.CompareTo(t.symbol);
-            int toCmp = toState.CompareTo(t.toState);
+            int fromCmp = _fromState.CompareTo(t._fromState);
+            int symbolCmp = _symbol.CompareTo(t._symbol);
+            int toCmp = _toState.CompareTo(t._toState);
 
             return (fromCmp != 0 ? fromCmp : (symbolCmp != 0 ? symbolCmp : toCmp));
         }
 
-        public virtual T FromState
-        {
-            get
-            {
-                return fromState;
-            }
-        }
+        public virtual T FromState => _fromState;
 
-        public virtual T ToState
-        {
-            get
-            {
-                return toState;
-            }
-        }
+        public virtual T ToState => _toState;
 
-        public virtual char Symbol
-        {
-            get
-            {
-                return symbol;
-            }
-        }
+        public virtual char Symbol => _symbol;
 
         public override string ToString()
         {
-            return "(" + this.FromState + ", " + this.Symbol + ")" + "-->" + this.ToState;
+            return "(" + FromState + ", " + Symbol + ")" + "-->" + ToState;
         }
-
     }
 }
