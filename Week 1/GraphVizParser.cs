@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using GraphVizWrapper;
 using GraphVizWrapper.Commands;
 using GraphVizWrapper.Queries;
@@ -12,7 +9,7 @@ namespace Week_1
     class GraphVizParser 
     {
 
-        public static void printGraph(Automata<string> data, string filename)
+        public static void PrintGraph(Automata<string> data, string filename)
         {
             string toPrint="";
             toPrint += "digraph{";
@@ -20,9 +17,9 @@ namespace Week_1
             toPrint += "node [shape = doublecircle];";
            
 
-            ISet<Transition<string>> transitions = data.getTransitions();
+            ISet<Transition<string>> transitions = data.GetTransitions();
 
-            SortedSet<string> finalStates = data.getFinalStates();
+            SortedSet<string> finalStates = data.GetFinalStates();
 
             foreach (string t in finalStates)
             {
@@ -34,17 +31,17 @@ namespace Week_1
 
             foreach (Transition<string> t in transitions)
             {
-                toPrint += " " + t.getFromState() + " -> " + t.getToState() + " " +
-                     "[ label = " + "\"" + t.getSymbol() + "\"" + " ];";
+                toPrint += " " + t.GetFromState() + " -> " + t.GetToState() + " " +
+                     "[ label = " + "\"" + t.GetSymbol() + "\"" + " ];";
             }
             toPrint += " }";
 
             Console.WriteLine(toPrint);
 
-            generateGraphFile(toPrint, filename);
+            GenerateGraphFile(toPrint, filename);
         }
 
-        static void generateGraphFile(string data, string filename)
+        static void GenerateGraphFile(string data, string filename)
         {
             var getStartProcessQuery = new GetStartProcessQuery();
             var getProcessStartInfoQuery = new GetProcessStartInfoQuery();

@@ -7,7 +7,7 @@ namespace Week_1
     {
         static void Main(string[] args)
         {
-            TestAutomata.ExampleSlide14Lesson2().printTransitions();
+            TestAutomata.ExampleSlide14Lesson2().PrintTransitions();
             Console.WriteLine("Is DFA: " + TestAutomata.ExampleSlide14Lesson2().IsDfa());
             bool looping = true;
             while (looping)
@@ -19,7 +19,7 @@ namespace Week_1
                         looping = false;
                         break;
                     case "print":
-                        GraphVizParser.printGraph(TestAutomata.ExampleSlide14Lesson2(), "ExampleSlide14Lesson2");
+                        GraphVizParser.PrintGraph(TestAutomata.ExampleSlide14Lesson2(), "ExampleSlide14Lesson2");
                         break;
                     default:
                         Console.WriteLine("Correct grammar: " +
