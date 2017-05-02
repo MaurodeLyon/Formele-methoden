@@ -95,9 +95,13 @@ namespace Week_1
 
         public bool IsDfa()
         {
-            var isDfa = true;
+            bool isDfa = true;
+            if (startStates.Count > 1)
+            {
+                return false;
+            }
 
-            foreach (var from in states)
+            foreach (T from in states)
             foreach (char? c in _symbols)
                 if (c != null)
                 {
@@ -109,17 +113,35 @@ namespace Week_1
 
         public bool GetToStates(T from, char symbol)
         {
-            var transitionsList = new List<Transition<T>>();
-            foreach (var transition in transitions)
-                if (@from.Equals(transition.FromState))
+            List<Transition<T>> transitionsList = new List<Transition<T>>();
+            foreach (Transition<T> transition in transitions)
+            {
+                if (from.Equals(transition.FromState))
+                {
                     transitionsList.Add(transition);
+                }
+            }
 
-            var results = transitionsList.Select(e => e.Symbol).ToList();
-            for (var i = 0; i < results.Count; i++)
-            for (var j = i + 1; j < results.Count; j++)
-                if (results[i] == results[j])
+            List<char> results = transitionsList.Select(e => e.Symbol).ToList();
+            int count = 0;
+            for (int i = 0; i < results.Count; i++)
+            {
+                if (results[i] == symbol)
+                {
+                    count++;
+                }
+                if (results[i] == '$')
+                {
+                    Console.WriteLine("$ found");
                     return false;
-            return true;
+                }
+            }
+            if (count == 1)
+            {
+                return true;
+            }
+            Console.WriteLine("Count wrong: " + count);
+            return false;
         }
 
         public bool Accept(string text)
