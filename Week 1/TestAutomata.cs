@@ -10,7 +10,7 @@
     {
         public static Automata<string> ExampleSlide8Lesson2()
         {
-            char?[] alphabet = {'a', 'b'};
+            char[] alphabet = {'a', 'b'};
             Automata<string> m = new Automata<string>(alphabet);
 
             m.AddTransition(new Transition<string>("q0", 'a', "q1"));
@@ -41,7 +41,7 @@
 
         public static Automata<string> ExampleSlide14Lesson2()
         {
-            char?[] alphabet = { 'a', 'b' };
+            char[] alphabet = { 'a', 'b' };
             Automata<string> m = new Automata<string>(alphabet);
 
             m.AddTransition(new Transition<string>("A", 'a', "C"));
@@ -72,7 +72,7 @@
         }
         public static Automata<string> Dfa()
         {
-            char?[] alphabet = { 'a', 'b' };
+            char[] alphabet = { 'a', 'b' };
             Automata<string> m = new Automata<string>(alphabet);
 
             m.AddTransition(new Transition<string>("A", 'a', "B"));
@@ -87,7 +87,7 @@
         }
         public static Automata<string> Example1Week1()
         {
-            char?[] alphabet = { 'a', 'b' };
+            char[] alphabet = { 'a', 'b' };
             Automata<string> m = new Automata<string>(alphabet);
 
             m.AddTransition(new Transition<string>("A", 'a', "B"));
@@ -108,7 +108,7 @@
         }
         public static Automata<string> Example2Week1()
         {
-            char?[] alphabet = { 'a', 'b' };
+            char[] alphabet = { 'a', 'b' };
             Automata<string> m = new Automata<string>(alphabet);
 
             m.AddTransition(new Transition<string>("A", 'b', "B"));
@@ -122,7 +122,7 @@
         }
         public static Automata<string> Example3Week1()
         {
-            char?[] alphabet = { 'a', 'b' };
+            char[] alphabet = { 'a', 'b' };
             Automata<string> m = new Automata<string>(alphabet);
 
             m.AddTransition(new Transition<string>("A", 'b', "B"));
@@ -138,7 +138,7 @@
         }
         public static Automata<string> Example4Week1()
         {
-            char?[] alphabet = { 'a', 'b' };
+            char[] alphabet = { 'a', 'b' };
             Automata<string> m = new Automata<string>(alphabet);
 
             m.AddTransition(new Transition<string>("A", 'a', "B"));
@@ -151,6 +151,82 @@
             m.DefineAsStartState("A");
             
             m.DefineAsFinalState("G");
+
+            return m;
+        }
+
+        public static Automata<string> DfaTEST1()
+        {
+            char[] alphabet = { 'a', 'b' };
+            Automata<string> m = new Automata<string>(alphabet);
+
+            m.AddTransition(new Transition<string>("A", 'a', "B"));
+            m.AddTransition(new Transition<string>("A", 'b', "C"));
+
+            m.AddTransition(new Transition<string>("B", 'b', "C"));
+            m.AddTransition(new Transition<string>("B", 'a', "A"));
+
+            m.AddTransition(new Transition<string>("C", 'a', "C"));
+            m.AddTransition(new Transition<string>("C", 'b', "C"));
+
+            m.DefineAsStartState("A");
+            //Toggle test
+           // m.DefineAsStartState("B");
+
+
+            m.DefineAsFinalState("C");
+
+            return m;
+        }
+
+        public static Automata<string> DfaTEST2()
+        {
+            char[] alphabet = { 'a', 'b' };
+            Automata<string> m = new Automata<string>(alphabet);
+
+            m.AddTransition(new Transition<string>("A", 'a', "B"));
+            m.AddTransition(new Transition<string>("A", 'b', "C"));
+            //Toggle test
+            //m.AddTransition(new Transition<string>("A", '$', "C"));
+
+            m.AddTransition(new Transition<string>("B", 'b', "C"));
+            m.AddTransition(new Transition<string>("B", 'a', "A"));
+
+            m.AddTransition(new Transition<string>("C", 'a', "C"));
+            m.AddTransition(new Transition<string>("C", 'b', "C"));
+
+            m.DefineAsStartState("A");
+            
+
+
+            m.DefineAsFinalState("C");
+
+            return m;
+        }
+
+        public static Automata<string> DfaTEST3()
+        {
+            char[] alphabet = { 'a', 'b' };
+            Automata<string> m = new Automata<string>(alphabet);
+
+            m.AddTransition(new Transition<string>("A", 'a', "B"));
+            //Toggle test for missing symbol
+            m.AddTransition(new Transition<string>("A", 'b', "C"));
+            //Toggle test for multiple of the same symbol
+            //m.AddTransition(new Transition<string>("A", 'b', "A"));
+            
+
+            m.AddTransition(new Transition<string>("B", 'b', "C"));
+            m.AddTransition(new Transition<string>("B", 'a', "A"));
+
+            m.AddTransition(new Transition<string>("C", 'a', "C"));
+            m.AddTransition(new Transition<string>("C", 'b', "C"));
+
+            m.DefineAsStartState("A");
+
+
+
+            m.DefineAsFinalState("C");
 
             return m;
         }

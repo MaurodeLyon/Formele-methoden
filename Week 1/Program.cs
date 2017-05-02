@@ -7,8 +7,11 @@ namespace Week_1
     {
         static void Main(string[] args)
         {
-            TestAutomata.ExampleSlide14Lesson2().PrintTransitions();
-            Console.WriteLine("Is DFA: " + TestAutomata.ExampleSlide14Lesson2().IsDfa());
+            TestRegExp regExp = new TestRegExp();
+            regExp.testLanguage();
+
+            TestAutomata.DfaTEST3().PrintTransitions();
+            Console.WriteLine("Is DFA: " + TestAutomata.DfaTEST3().IsDfa());
             bool looping = true;
             while (looping)
             {
