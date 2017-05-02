@@ -8,6 +8,7 @@ namespace Week_1
         static void Main(string[] args)
         {
             TestAutomata.ExampleSlide14Lesson2().PrintTransitions();
+            TestAutomata.ExampleSlide14Lesson2().GeefTaalTotLengte(25);
             Console.WriteLine("Is DFA: " + TestAutomata.ExampleSlide14Lesson2().IsDfa());
             bool looping = true;
             while (looping)

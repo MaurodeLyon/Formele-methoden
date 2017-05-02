@@ -22,7 +22,7 @@ namespace Week_1
         private SortedSet<T> states;
         private SortedSet<T> startStates;
         private SortedSet<T> finalStates;
-        private SortedSet<char?> _symbols;
+        private SortedSet<char> _symbols;
 
         public ISet<Transition<T>> GetTransitions()
         {
@@ -34,15 +34,15 @@ namespace Week_1
             return finalStates;
         }
 
-        public Automata() : this(new SortedSet<char?>())
+        public Automata() : this(new SortedSet<char>())
         {
         }
 
-        public Automata(char?[] s) : this(new SortedSet<char?>(s))
+        public Automata(char[] s) : this(new SortedSet<char>(s))
         {
         }
 
-        public Automata(SortedSet<char?> symbols)
+        public Automata(SortedSet<char> symbols)
         {
             transitions = new SortedSet<Transition<T>>();
             states = new SortedSet<T>();
@@ -51,17 +51,17 @@ namespace Week_1
             SetAlphabet(symbols);
         }
 
-        public void SetAlphabet(char?[] s)
+        public void SetAlphabet(char[] s)
         {
-            SetAlphabet(new SortedSet<char?>(s));
+            SetAlphabet(new SortedSet<char>(s));
         }
 
-        public void SetAlphabet(SortedSet<char?> symbols)
+        public void SetAlphabet(SortedSet<char> symbols)
         {
             _symbols = symbols;
         }
 
-        public SortedSet<char?> GetAlphabet()
+        public SortedSet<char> GetAlphabet()
         {
             return _symbols;
         }
@@ -89,64 +89,44 @@ namespace Week_1
 
         public void PrintTransitions()
         {
-            foreach (Transition<T> t in transitions)
-            {
+            foreach (var t in transitions)
                 Console.WriteLine(t);
-            }
         }
 
         public bool IsDfa()
         {
-            bool isDfa = true;
+            var isDfa = true;
 
-            foreach (T from in states)
-            {
-                foreach (char? c in _symbols)
+            foreach (var from in states)
+            foreach (char? c in _symbols)
+                if (c != null)
                 {
-                    if (c != null)
-                    {
-                        char symbol = (char) c;
-                        isDfa = isDfa && GetToStates(from, symbol);
-                    }
+                    var symbol = (char) c;
+                    isDfa = isDfa && GetToStates(@from, symbol);
                 }
-            }
             return isDfa;
         }
 
         public bool GetToStates(T from, char symbol)
         {
-            List<Transition<T>> transitionsList = new List<Transition<T>>();
-            foreach (Transition<T> transition in transitions)
-            {
-                if (from.Equals(transition.FromState))
-                {
+            var transitionsList = new List<Transition<T>>();
+            foreach (var transition in transitions)
+                if (@from.Equals(transition.FromState))
                     transitionsList.Add(transition);
-                }
-            }
 
-            List<char> results = transitionsList.Select(e => e.Symbol).ToList();
-            for (int i = 0; i < results.Count; i++)
-            {
-                for (int j = i + 1; j < results.Count; j++)
-                {
-                    if (results[i] == results[j])
-                    {
-                        return false;
-                    }
-                }
-            }
+            var results = transitionsList.Select(e => e.Symbol).ToList();
+            for (var i = 0; i < results.Count; i++)
+            for (var j = i + 1; j < results.Count; j++)
+                if (results[i] == results[j])
+                    return false;
             return true;
         }
 
         public bool Accept(string text)
         {
-            foreach (T startState in startStates)
-            {
+            foreach (var startState in startStates)
                 if (IsPossible(0, text, startState))
-                {
                     return true;
-                }
-            }
             return false;
         }
 
@@ -155,27 +135,45 @@ namespace Week_1
             if (index == text.Length)
             {
                 if (finalStates.Contains(state))
-                {
                     return true;
-                }
                 return false;
             }
-            foreach (Transition<T> possibleTransition in GetTransition(state))
-            {
+            foreach (var possibleTransition in GetTransition(state))
                 if (possibleTransition.Symbol == text[index])
-                {
                     if (IsPossible(index + 1, text, possibleTransition.ToState))
-                    {
                         return true;
-                    }
-                }
-            }
             return false;
         }
 
         public List<Transition<T>> GetTransition(T state)
         {
             return transitions.Where(e => e.FromState.Equals(state)).ToList();
+        }
+
+        public void GeefTaalTotLengte(int numberOfLetters)
+        {
+            var words = new List<string>();
+            var currentWord = new char[numberOfLetters];
+            var letterIndex = 0;
+
+            NextChar(letterIndex, currentWord, words, numberOfLetters);
+        }
+
+        public void NextChar(int letterIndex, char[] currentWord, List<string> words, int amountOfLetters)
+        {
+            for (int i = 0; i < _symbols.Count; i++)
+            {
+                currentWord[letterIndex] = _symbols.ToList()[i];
+
+                if (letterIndex == amountOfLetters - 1)
+                {
+                    words.Add(new string(currentWord));
+                }
+                else
+                {
+                    NextChar(letterIndex + 1, currentWord, words, amountOfLetters);
+                }
+            }
         }
     }
 }
