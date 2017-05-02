@@ -152,11 +152,7 @@ namespace Week_1
 
         public void GeefTaalTotLengte(int numberOfLetters)
         {
-            var words = new List<string>();
-            var currentWord = new char[numberOfLetters];
-            var letterIndex = 0;
-
-            NextChar(letterIndex, currentWord, words, numberOfLetters);
+            NextChar(0, new char[numberOfLetters], new List<string>(), numberOfLetters);
         }
 
         public void NextChar(int letterIndex, char[] currentWord, List<string> words, int amountOfLetters)
