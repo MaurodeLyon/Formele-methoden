@@ -24,6 +24,11 @@ namespace Week_1
         private SortedSet<T> finalStates;
         private SortedSet<char> _symbols;
 
+        public SortedSet<T> GetStates()
+        {
+            return states;
+        }
+
         public ISet<Transition<T>> GetTransitions()
         {
             return transitions;
