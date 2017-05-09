@@ -30,6 +30,7 @@ namespace Week_1
             expr4 = expr3.plus();
             // expr5: "(baa | baa)+ (a|b)*"
             expr5 = expr4.dot(all);
+            Console.WriteLine(expr5.getTerminals());
         }
         private void printLanguage(SortedSet<String> set)
         {
