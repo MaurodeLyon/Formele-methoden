@@ -1,133 +1,125 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Week_1
 {
     class RegExp
     {
-        private Operator _operator;
-        public Operator getOperator() { return _operator; }
-        public void setOperator(Operator op) { _operator = op; }
+        public OperatorEnum Operator { get; set; }
 
-        private String _terminals;
-        public String getTerminals() { return _terminals; }
-        public void setTerminals(String term) { _terminals = term; }
+        public string Terminals { get; set; }
 
-        public enum Operator { PLUS, STAR, OR, DOT, ONE }
+        public enum OperatorEnum
+        {
+            Plus,
+            Star,
+            Or,
+            Dot,
+            One
+        }
 
-        private RegExp _left;
-        public RegExp getLeftRegExp() { return _left; }
-        public void setLeftRegExp(RegExp exp) { _left = exp; }
+        public RegExp Left { get; set; }
 
-        private RegExp _right;
-        public RegExp getRightRegExp() { return _right; }
-        public void setRightRegExp(RegExp exp) { _right = exp; }
+        public RegExp Right { get; set; }
 
-        private static readonly IComparer<string> compareByLength = new RegExpComparator();
+        private static readonly IComparer<string> CompareByLength = new RegExpComparator();
 
         private class RegExpComparator : IComparer<string>
         {
-            public RegExpComparator()
-            {}
             public int Compare(string s1, string s2)
             {
                 if (s1.Length == s2.Length)
                 {
                     return s1.CompareTo(s2);
                 }
-                else
-                {
-                    return s1.Length - s2.Length;
-                }
+                return s1.Length - s2.Length;
             }
-           
         }
-        
 
         public RegExp()
         {
-            _operator = Operator.ONE;
-            _terminals = "";
-            _left = null;
-            _right = null;
+            Operator = OperatorEnum.One;
+            Terminals = "";
+            Left = null;
+            Right = null;
         }
 
-        public RegExp(String p)
+        public RegExp(string p)
         {
-            _operator = Operator.ONE;
-            _terminals = p;
-            _left = null;
-            _right = null;
+            Operator = OperatorEnum.One;
+            Terminals = p;
+            Left = null;
+            Right = null;
         }
 
-        public RegExp plus()
+        public RegExp Plus()
         {
             RegExp result = new RegExp();
-            result.setOperator(Operator.PLUS);
-            result.setLeftRegExp(this);
+            result.Operator = OperatorEnum.Plus;
+            result.Left = this;
             return result;
         }
 
-        public RegExp star()
+        public RegExp Star()
         {
             RegExp result = new RegExp();
-            result.setOperator(Operator.STAR);
-            result.setLeftRegExp(this);
+            result.Operator = OperatorEnum.Star;
+            result.Left = this;
             return result;
         }
 
-        public RegExp or(RegExp e2)
+        public RegExp Or(RegExp e2)
         {
             RegExp result = new RegExp();
-            result.setOperator(Operator.OR);
-            result.setLeftRegExp(this);
-            result.setRightRegExp(e2);
+            result.Operator = OperatorEnum.Or;
+            result.Left = this;
+            result.Right = e2;
             return result;
         }
 
-        public RegExp dot(RegExp e2)
+        public RegExp Dot(RegExp e2)
         {
             RegExp result = new RegExp();
-            result.setOperator(Operator.DOT);
-            result.setLeftRegExp(this);
-            result.setRightRegExp(e2);
+            result.Operator = OperatorEnum.Dot;
+            result.Left = this;
+            result.Right = e2;
             return result;
         }
 
-        public SortedSet<String> getLanguage(int maxSteps)
+        public SortedSet<string> GetLanguage(int maxSteps)
         {
-            SortedSet<string> emptyLanguage = new SortedSet<string>(compareByLength);
-            SortedSet<string> languageResult = new SortedSet<string>(compareByLength);
+            SortedSet<string> emptyLanguage = new SortedSet<string>(CompareByLength);
+            SortedSet<string> languageResult = new SortedSet<string>(CompareByLength);
 
             SortedSet<string> languageLeft, languageRight;
 
             if (maxSteps < 1) return emptyLanguage;
 
-            switch (this._operator)
+            switch (Operator)
             {
-                case RegExp.Operator.ONE:
-                    { languageResult.Add(_terminals); goto case RegExp.Operator.OR; }
+                case OperatorEnum.One:
+                {
+                    languageResult.Add(Terminals);
+                    goto case OperatorEnum.Or;
+                }
 
-                case RegExp.Operator.OR:
-                    languageLeft = _left == null ? emptyLanguage : _left.getLanguage(maxSteps - 1);
-                    languageRight = _right == null ? emptyLanguage : _right.getLanguage(maxSteps - 1);
-                    foreach (String s in languageLeft)
+                case OperatorEnum.Or:
+                    languageLeft = Left == null ? emptyLanguage : Left.GetLanguage(maxSteps - 1);
+                    languageRight = Right == null ? emptyLanguage : Right.GetLanguage(maxSteps - 1);
+                    foreach (string s in languageLeft)
                     {
                         languageResult.Add(s);
                     }
-                    foreach (String s in languageRight)
+                    foreach (string s in languageRight)
                     {
                         languageResult.Add(s);
                     }
 
                     break;
 
-                case RegExp.Operator.DOT:
-                    languageLeft = _left == null ? emptyLanguage : _left.getLanguage(maxSteps - 1);
-                    languageRight = _right == null ? emptyLanguage : _right.getLanguage(maxSteps - 1);
+                case OperatorEnum.Dot:
+                    languageLeft = Left == null ? emptyLanguage : Left.GetLanguage(maxSteps - 1);
+                    languageRight = Right == null ? emptyLanguage : Right.GetLanguage(maxSteps - 1);
                     foreach (string s1 in languageLeft)
                     {
                         foreach (string s2 in languageRight)
@@ -136,10 +128,10 @@ namespace Week_1
                         }
                     }
                     break;
-                case RegExp.Operator.STAR:
-                case RegExp.Operator.PLUS:
-                    languageLeft = _left == null ? emptyLanguage : _left.getLanguage(maxSteps - 1);
-                    foreach (String s in languageLeft)
+                case OperatorEnum.Star:
+                case OperatorEnum.Plus:
+                    languageLeft = Left == null ? emptyLanguage : Left.GetLanguage(maxSteps - 1);
+                    foreach (string s in languageLeft)
                     {
                         languageResult.Add(s);
                     }
@@ -155,20 +147,54 @@ namespace Week_1
                             }
                         }
                     }
-                    if (this._operator == Operator.STAR)
+                    if (Operator == OperatorEnum.Star)
                     {
                         languageResult.Add("");
                     }
                     break;
                 default:
-                    Console.WriteLine("getLanguage does not support operator " + this._operator);
+                    Console.WriteLine("getLanguage does not support operator " + Operator);
                     break;
-
             }
             return languageResult;
         }
 
-
-
+        public override string ToString()
+        {
+            string text = "";
+            if (Terminals != "")
+            {
+                text = Terminals;
             }
+            else
+            {
+                if (Right != null)
+                {
+                    text += "(";
+                }
+                text += Left.ToString();
+                switch (Operator)
+                {
+                    case OperatorEnum.Plus:
+                        text += "+";
+                        break;
+                    case OperatorEnum.Star:
+                        text += "*";
+                        break;
+                    case OperatorEnum.Or:
+                        text += "|";
+                        break;
+                    case OperatorEnum.Dot:
+                        text += ".";
+                        break;
+                }
+                if (Right != null)
+                {
+                    text += Right.ToString();
+                    text += ")";
+                }
+            }
+            return text;
+        }
+    }
 }
