@@ -8,6 +8,7 @@ namespace Week_1
         static void Main(string[] args)
         {
             TestRegExp regExp = new TestRegExp();
+
            // regExp.testLanguage();
 
             TestAutomata.DfaTEST3().PrintTransitions();
