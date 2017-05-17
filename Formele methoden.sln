@@ -1,10 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26403.7
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Formele methoden", "Formele methoden\Formele methoden.csproj", "{1FE8DC35-DC96-4574-BFD4-6F51E7D6E29D}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Formele methoden tests", "Formele methoden tests\Formele methoden tests.csproj", "{2DBCE5E8-039A-4511-AF22-035BDFA285B7}"
 EndProject
 Global

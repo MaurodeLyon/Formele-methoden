@@ -4,40 +4,14 @@ using System.Linq;
 
 namespace Week_1
 {
-    /// <summary>
-    /// The class Automata represents both DFA and NDFA: some NDFA's are also DFA
-    /// Using the method isDFA we can check this
-    /// 
-    /// We use '$' to denote the empty symbol epsilon
-    /// 
-    /// @author Paul de Mast
-    /// @version 1.0
-    /// 
-    /// </summary>
     public sealed class Automata<T> where T : IComparable
     {
-        // Or use a Map structure
-        private ISet<Transition<T>> transitions;
+        public ISet<Transition<T>> Transitions { get; }
 
-        private SortedSet<T> states;
-        private SortedSet<T> startStates;
-        private SortedSet<T> finalStates;
-        private SortedSet<char> _symbols;
-
-        public SortedSet<T> GetStates()
-        {
-            return states;
-        }
-
-        public ISet<Transition<T>> GetTransitions()
-        {
-            return transitions;
-        }
-
-        public SortedSet<T> GetFinalStates()
-        {
-            return finalStates;
-        }
+        public SortedSet<T> States { get; }
+        public SortedSet<T> StartStates { get; }
+        public SortedSet<T> FinalStates { get; }
+        public SortedSet<char> Symbols { get; }
 
         public Automata() : this(new SortedSet<char>())
         {
@@ -49,65 +23,48 @@ namespace Week_1
 
         public Automata(SortedSet<char> symbols)
         {
-            transitions = new SortedSet<Transition<T>>();
-            states = new SortedSet<T>();
-            startStates = new SortedSet<T>();
-            finalStates = new SortedSet<T>();
-            SetAlphabet(symbols);
-        }
-
-        public void SetAlphabet(char[] s)
-        {
-            SetAlphabet(new SortedSet<char>(s));
-        }
-
-        public void SetAlphabet(SortedSet<char> symbols)
-        {
-            _symbols = symbols;
-        }
-
-        public SortedSet<char> GetAlphabet()
-        {
-            return _symbols;
+            Transitions = new SortedSet<Transition<T>>();
+            States = new SortedSet<T>();
+            StartStates = new SortedSet<T>();
+            FinalStates = new SortedSet<T>();
+            Symbols = symbols;
         }
 
         public void AddTransition(Transition<T> t)
         {
-            transitions.Add(t);
-            states.Add(t.FromState);
-            states.Add(t.ToState);
+            Transitions.Add(t);
+            States.Add(t.FromState);
+            States.Add(t.ToState);
         }
 
         public void DefineAsStartState(T t)
         {
-            // if already in states no problem because a Set will remove duplicates.
-            states.Add(t);
-            startStates.Add(t);
+            States.Add(t);
+            StartStates.Add(t);
         }
 
         public void DefineAsFinalState(T t)
         {
-            // if already in states no problem because a Set will remove duplicates.
-            states.Add(t);
-            finalStates.Add(t);
+            States.Add(t);
+            FinalStates.Add(t);
         }
 
         public void PrintTransitions()
         {
-            foreach (var t in transitions)
+            foreach (var t in Transitions)
                 Console.WriteLine(t);
         }
 
         public bool IsDfa()
         {
             bool isDfa = true;
-            if (startStates.Count > 1)
+            if (StartStates.Count > 1)
             {
                 return false;
             }
 
-            foreach (T from in states)
-            foreach (char? c in _symbols)
+            foreach (T from in States)
+            foreach (char? c in Symbols)
                 if (c != null)
                 {
                     var symbol = (char) c;
@@ -119,7 +76,7 @@ namespace Week_1
         public bool GetToStates(T from, char symbol)
         {
             List<Transition<T>> transitionsList = new List<Transition<T>>();
-            foreach (Transition<T> transition in transitions)
+            foreach (Transition<T> transition in Transitions)
             {
                 if (from.Equals(transition.FromState))
                 {
@@ -151,7 +108,7 @@ namespace Week_1
 
         public bool Accept(string text)
         {
-            foreach (var startState in startStates)
+            foreach (var startState in StartStates)
                 if (IsPossible(0, text, startState))
                     return true;
             return false;
@@ -161,7 +118,7 @@ namespace Week_1
         {
             if (index == text.Length)
             {
-                if (finalStates.Contains(state))
+                if (FinalStates.Contains(state))
                     return true;
                 return false;
             }
@@ -174,7 +131,7 @@ namespace Week_1
 
         public List<Transition<T>> GetTransition(T state)
         {
-            return transitions.Where(e => e.FromState.Equals(state)).ToList();
+            return Transitions.Where(e => e.FromState.Equals(state)).ToList();
         }
 
         public void GeefTaalTotLengte(int numberOfLetters)
@@ -184,9 +141,9 @@ namespace Week_1
 
         public void NextChar(int letterIndex, char[] currentWord, List<string> words, int amountOfLetters)
         {
-            for (int i = 0; i < _symbols.Count; i++)
+            for (int i = 0; i < Symbols.Count; i++)
             {
-                currentWord[letterIndex] = _symbols.ToList()[i];
+                currentWord[letterIndex] = Symbols.ToList()[i];
 
                 if (letterIndex == amountOfLetters - 1)
                 {
