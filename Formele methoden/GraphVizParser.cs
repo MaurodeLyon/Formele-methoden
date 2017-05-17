@@ -17,9 +17,9 @@ namespace Week_1
             toPrint += "node [shape = doublecircle];";
            
 
-            ISet<Transition<string>> transitions = data.GetTransitions();
+            ISet<Transition<string>> transitions = data.Transitions;
 
-            SortedSet<string> finalStates = data.GetFinalStates();
+            SortedSet<string> finalStates = data.FinalStates;
 
             foreach (string t in finalStates)
             {
