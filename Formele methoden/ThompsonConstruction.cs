@@ -2,12 +2,20 @@
 
 namespace Week_1
 {
-    class ThompsonConstruction
+    public class ThompsonConstruction
     {
         public static Automata<string> ConvertRegExpToAutomata(RegExp regExp)
         {
             Automata<string> automata = new Automata<string>();
+            automata.DefineAsStartState("0");
             Convert(regExp, automata);
+            foreach (char symbol in automata.Transitions.Select(e => e.Symbol))
+            {
+                if (!automata.Symbols.Contains(symbol) && symbol != '$')
+                {
+                    automata.Symbols.Add(symbol);
+                }
+            }
             return automata;
         }
 
@@ -32,17 +40,18 @@ namespace Week_1
             {
                 lastEndState = automata.FinalStates.ToList()[0];
             }
+            else
+            {
+                lastEndState = (automata.States.Count - 1).ToString();
+            }
 
             if (regExp.Operator == RegExp.OperatorEnum.Plus)
             {
-                int prevCount = automata.States.Count + 1;
-                automata.AddTransition(
-                    new Transition<string>(automata.States.Count.ToString(), '$', prevCount.ToString()));
+                int prevCount = int.Parse(lastEndState) + 1;
+                automata.AddTransition(new Transition<string>(lastEndState, '$', prevCount.ToString()));
                 Convert(regExp.Left, automata);
-                automata.AddTransition(new Transition<string>((automata.States.Count - 1).ToString(), '$',
-                    prevCount.ToString()));
-                automata.AddTransition(new Transition<string>((automata.States.Count - 1).ToString(), '$',
-                    automata.States.Count.ToString()));
+                automata.AddTransition(new Transition<string>((automata.States.Count - 1).ToString(), '$', prevCount.ToString()));
+                automata.AddTransition(new Transition<string>((automata.States.Count - 1).ToString(), '$', automata.States.Count.ToString()));
 
                 automata.FinalStates.Clear();
                 automata.DefineAsFinalState((automata.States.Count - 1).ToString());
@@ -57,19 +66,18 @@ namespace Week_1
                 }
                 else
                 {
-                    startState = automata.States.Count;
+                    startState = automata.States.Count - 1;
                 }
 
-                int prevCount = automata.States.Count + 1;
-                automata.AddTransition(
-                    new Transition<string>(automata.States.Count.ToString(), '$', prevCount.ToString()));
+                int prevCount = automata.States.Count;
+                automata.AddTransition(new Transition<string>((automata.States.Count -1).ToString(), '$', prevCount.ToString()));
+                automata.FinalStates.Clear();
+                automata.DefineAsFinalState((automata.States.Count - 1).ToString());
                 Convert(regExp.Left, automata);
-                automata.AddTransition(new Transition<string>((automata.States.Count - 1).ToString(), '$',
-                    prevCount.ToString()));
-                automata.AddTransition(new Transition<string>((automata.States.Count - 1).ToString(), '$',
-                    automata.States.Count.ToString()));
-                automata.AddTransition(new Transition<string>(startState.ToString(), '$',
-                    (automata.States.Count - 1).ToString()));
+                lastEndState = automata.FinalStates.ToList()[0];
+                automata.AddTransition(new Transition<string>(lastEndState, '$', prevCount.ToString()));
+                automata.AddTransition(new Transition<string>(lastEndState, '$', automata.States.Count.ToString()));
+                automata.AddTransition(new Transition<string>(startState.ToString(), '$', (automata.States.Count - 1).ToString()));
 
                 automata.FinalStates.Clear();
                 automata.DefineAsFinalState((automata.States.Count - 1).ToString());
@@ -84,29 +92,24 @@ namespace Week_1
                 }
                 else
                 {
-                    startState = automata.States.Count;
+                    startState = automata.States.Count - 1;
                 }
 
                 int newestState = GetNewestState(automata);
-                automata.AddTransition(
-                    new Transition<string>(startState.ToString(), '$', (newestState + 1).ToString()));
+                automata.AddTransition(new Transition<string>(startState.ToString(), '$', (newestState + 1).ToString()));
 
                 Convert(regExp.Left, automata);
-                automata.AddTransition(new Transition<string>((automata.States.Count - 1).ToString(), '$',
-                    automata.States.Count.ToString()));
+                automata.AddTransition(new Transition<string>((automata.States.Count - 1).ToString(), '$', automata.States.Count.ToString()));
                 int endState = automata.States.Count - 1;
-
                 automata.FinalStates.Clear();
                 automata.DefineAsFinalState(endState.ToString());
 
                 // See getNewestState check at earlier convert. works in with current expression due to having a simple blackbox. If blackbox itself
                 // contains more operators this could fail aswell.
 
-                automata.AddTransition(
-                    new Transition<string>(startState.ToString(), '$', automata.States.Count.ToString()));
+                automata.AddTransition(new Transition<string>(startState.ToString(), '$', automata.States.Count.ToString()));
                 Convert(regExp.Right, automata);
-                automata.AddTransition(new Transition<string>((automata.States.Count - 1).ToString(), '$',
-                    endState.ToString()));
+                automata.AddTransition(new Transition<string>((automata.States.Count - 1).ToString(), '$', endState.ToString()));
             }
 
             if (regExp.Operator == RegExp.OperatorEnum.Dot)
@@ -120,8 +123,7 @@ namespace Week_1
             {
                 foreach (char character in regExp.Terminals)
                 {
-                    automata.AddTransition(new Transition<string>((automata.States.Count - 1).ToString(), character,
-                        automata.States.Count.ToString()));
+                    automata.AddTransition(new Transition<string>((automata.States.Count - 1).ToString(), character, automata.States.Count.ToString()));
                 }
             }
         }
