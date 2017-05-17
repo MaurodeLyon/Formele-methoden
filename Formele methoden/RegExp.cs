@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Week_1
 {
-    class RegExp
+    public class RegExp
     {
         public OperatorEnum Operator { get; set; }
 
