@@ -1,11 +1,5 @@
 ﻿namespace Week_1
 {
-    /// <summary>
-    /// This file shows how to build up some example automata
-    /// 
-    /// @author (your name) 
-    /// @version (a version number or a date)
-    /// </summary>
     public class TestAutomata
     {
         public static Automata<string> ExampleSlide8Lesson2()

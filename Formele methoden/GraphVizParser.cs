@@ -6,16 +6,14 @@ using GraphVizWrapper.Queries;
 
 namespace Week_1
 {
-    class GraphVizParser 
+    class GraphVizParser
     {
-
         public static void PrintGraph(Automata<string> data, string filename)
         {
-            string toPrint="";
+            string toPrint = "";
             toPrint += "digraph{";
             toPrint += " ";
             toPrint += "node [shape = doublecircle];";
-           
 
             ISet<Transition<string>> transitions = data.Transitions;
 
@@ -31,8 +29,7 @@ namespace Week_1
 
             foreach (Transition<string> t in transitions)
             {
-                toPrint += " " + t.GetFromState() + " -> " + t.GetToState() + " " +
-                     "[ label = " + "\"" + t.GetSymbol() + "\"" + " ];";
+                toPrint += " " + t.FromState + " -> " + t.ToState + " " + "[ label = " + "\"" + t.Symbol + "\"" + " ];";
             }
             toPrint += " }";
 
@@ -45,17 +42,15 @@ namespace Week_1
         {
             var getStartProcessQuery = new GetStartProcessQuery();
             var getProcessStartInfoQuery = new GetProcessStartInfoQuery();
-            var registerLayoutPluginCommand = new RegisterLayoutPluginCommand(getProcessStartInfoQuery, getStartProcessQuery);
+            var registerLayoutPluginCommand =
+                new RegisterLayoutPluginCommand(getProcessStartInfoQuery, getStartProcessQuery);
 
             var wrapper = new GraphGeneration(getStartProcessQuery,
-                                  getProcessStartInfoQuery,
-                                  registerLayoutPluginCommand);
+                getProcessStartInfoQuery,
+                registerLayoutPluginCommand);
 
             byte[] output = wrapper.GenerateGraph(data, Enums.GraphReturnType.Jpg);
-            System.IO.File.WriteAllBytes(filename+".jpg", output);
-
+            System.IO.File.WriteAllBytes(filename + ".jpg", output);
         }
-
-
     }
 }

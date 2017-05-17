@@ -4,25 +4,14 @@ using System.Linq;
 
 namespace Week_1
 {
-    /// <summary>
-    /// The class Automata represents both DFA and NDFA: some NDFA's are also DFA
-    /// Using the method isDFA we can check this
-    /// 
-    /// We use '$' to denote the empty symbol epsilon
-    /// 
-    /// @author Paul de Mast
-    /// @version 1.0
-    /// 
-    /// </summary>
     public sealed class Automata<T> where T : IComparable
     {
-        // Or use a Map structure
         public ISet<Transition<T>> Transitions { get; }
 
         public SortedSet<T> States { get; }
-        public SortedSet<T> startStates;
+        public SortedSet<T> StartStates { get; }
         public SortedSet<T> FinalStates { get; }
-        public SortedSet<char> Symbols { get; set; }
+        public SortedSet<char> Symbols { get; }
 
         public Automata() : this(new SortedSet<char>())
         {
@@ -36,7 +25,7 @@ namespace Week_1
         {
             Transitions = new SortedSet<Transition<T>>();
             States = new SortedSet<T>();
-            startStates = new SortedSet<T>();
+            StartStates = new SortedSet<T>();
             FinalStates = new SortedSet<T>();
             Symbols = symbols;
         }
@@ -51,7 +40,7 @@ namespace Week_1
         public void DefineAsStartState(T t)
         {
             States.Add(t);
-            startStates.Add(t);
+            StartStates.Add(t);
         }
 
         public void DefineAsFinalState(T t)
@@ -69,7 +58,7 @@ namespace Week_1
         public bool IsDfa()
         {
             bool isDfa = true;
-            if (startStates.Count > 1)
+            if (StartStates.Count > 1)
             {
                 return false;
             }
@@ -119,7 +108,7 @@ namespace Week_1
 
         public bool Accept(string text)
         {
-            foreach (var startState in startStates)
+            foreach (var startState in StartStates)
                 if (IsPossible(0, text, startState))
                     return true;
             return false;
