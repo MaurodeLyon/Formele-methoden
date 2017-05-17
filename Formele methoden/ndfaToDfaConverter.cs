@@ -11,7 +11,52 @@ namespace Week_1
 
         private static void convertState(string state, Automata<string> dest, Automata<string> source)
         {
-            Console.WriteLine("");
+            ///Recursief
+            ///
+
+            if (state.Contains(','))
+            {
+               //connect each split state
+               // foreach(string )
+            }
+            else
+            {
+
+            }
+            List<Transition<string>> transitions = source.GetTransition(state);
+
+            foreach (char c in source.Symbols)
+            {
+                int count = checkAmountOfRoutesForChar(c, transitions);
+                string toState = "";
+                ///Faulty state implement TODO
+
+                if (count >= 1)
+                {
+                    //List<Transition<string>> state transitions.Where(e => e.FromState.Equals(state)).ToList();
+                    foreach (Transition<string> t in transitions)
+                    {
+                        if (t.Symbol == c)
+                        {
+                            toState += t.ToState;
+                            toState += ",";
+                        }
+                    }
+                    dest.AddTransition(new Transition<string>(state, c, toState));
+                    convertState(toState, dest, source);
+                    //foreach (string orState in toState.Split(','))
+                    //{
+                    //    convertState(orState, dest, source);
+                    //}
+
+                }
+                else if (count == 0)
+                {
+                    dest.AddTransition(new Transition<string>(state, c, "FFFF"));
+                }
+
+            }
+
         }
 
         public static void convert(Automata<string> automata)
