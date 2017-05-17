@@ -2,6 +2,31 @@
 {
     public class TestAutomata
     {
+        public static Automata<string> NDFAToConvert()
+        {
+            char[] alphabet = { 'a', 'b' };
+            Automata<string> m = new Automata<string>(alphabet);
+
+            m.AddTransition(new Transition<string>("1", 'a', "2"));
+            m.AddTransition(new Transition<string>("1", 'b', "2"));
+            m.AddTransition(new Transition<string>("1", 'b', "3"));
+
+            m.AddTransition(new Transition<string>("2", 'a', "2"));
+            m.AddTransition(new Transition<string>("2", 'a', "4"));
+
+            // m.AddTransition(new Transition<string>("3", '$', "3"));
+
+            m.AddTransition(new Transition<string>("4", 'b', "3"));
+            m.AddTransition(new Transition<string>("4", 'b', "4"));
+
+            m.DefineAsStartState("1");
+            m.DefineAsFinalState("1");
+
+            m.DefineAsFinalState("4");
+
+            return m;
+
+        }
         public static Automata<string> ExampleSlide8Lesson2()
         {
             char[] alphabet = {'a', 'b'};

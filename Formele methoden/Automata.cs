@@ -6,6 +6,9 @@ namespace Week_1
 {
     public sealed class Automata<T> where T : IComparable
     {
+        
+
+
         public ISet<Transition<T>> Transitions { get; }
 
         public SortedSet<T> States { get; }

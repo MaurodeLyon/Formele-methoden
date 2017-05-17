@@ -16,6 +16,8 @@ namespace Week_1
             Automata<string> regExpex = ThompsonConstruction.ConvertRegExpToAutomata(reg3);
             GraphVizParser.PrintGraph(regExpex, "TEST");
 
+            ndfaToDfaConverter.convert(TestAutomata.NDFAToConvert());
+
             //TestRegExp regExp = new TestRegExp();
             // regExp.testLanguage();
             TestAutomata.DfaTEST3().PrintTransitions();
