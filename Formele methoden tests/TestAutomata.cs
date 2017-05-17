@@ -119,6 +119,32 @@ namespace Formele_methoden_tests
 
             Assert.AreEqual("q0",ndfa.StartStates.ToList()[0]);
             Assert.AreEqual("q1",ndfa.FinalStates.ToList()[0]);
+            Assert.IsFalse(ndfa.IsDfa());
+        }
+
+        [TestMethod]
+        public void SimpleDfa()
+        {
+            char[] alphabet = {'a', 'b'};
+            Automata<string> ndfa = new Automata<string>(alphabet);
+            ndfa.AddTransition(new Transition<string>("q0", 'a', "q1"));
+            ndfa.AddTransition(new Transition<string>("q0", 'b', "q1"));
+            ndfa.AddTransition(new Transition<string>("q1", 'a', "q1"));
+            ndfa.AddTransition(new Transition<string>("q1", 'b', "q1"));
+
+            ndfa.DefineAsStartState("q0");
+            ndfa.DefineAsFinalState("q1");
+
+            Assert.AreEqual(1, ndfa.FinalStates.Count);
+            Assert.AreEqual(1, ndfa.StartStates.Count);
+            Assert.AreEqual(2, ndfa.States.Count);
+            Assert.AreEqual(2, ndfa.Symbols.Count);
+            Assert.AreEqual(4, ndfa.Transitions.Count);
+
+            Assert.AreEqual("q0",ndfa.StartStates.ToList()[0]);
+            Assert.AreEqual("q1",ndfa.FinalStates.ToList()[0]);
+
+            Assert.IsTrue(ndfa.IsDfa());
         }
     }
 }
