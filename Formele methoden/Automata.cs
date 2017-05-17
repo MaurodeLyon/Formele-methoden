@@ -19,15 +19,18 @@ namespace Week_1
         // Or use a Map structure
         private ISet<Transition<T>> transitions;
 
-        private SortedSet<T> states;
+        private SortedSet<T> states; public SortedSet<T> getStates() { return states; }
         private SortedSet<T> startStates;
         private SortedSet<T> finalStates;
+        
         private SortedSet<char> _symbols;
 
         public SortedSet<T> GetStates()
         {
             return states;
         }
+
+       
 
         public ISet<Transition<T>> GetTransitions()
         {
