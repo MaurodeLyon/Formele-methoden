@@ -1,130 +1,117 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 
 namespace Week_1
 {
     public class ThompsonConstruction
     {
-        public static Automata<string> ConvertRegExpToAutomata(RegExp regExp)
+        public static Automata<string> ConvertRegExp(RegExp regExp)
         {
-            Automata<string> automata = new Automata<string>();
-            automata.DefineAsStartState("0");
-            Convert(regExp, automata);
-            foreach (char symbol in automata.Transitions.Select(e => e.Symbol))
-            {
-                if (!automata.Symbols.Contains(symbol) && symbol != '$')
-                {
-                    automata.Symbols.Add(symbol);
-                }
-            }
-            return automata;
+            Automata<string> automaat = new Automata<string>();
+
+            automaat.DefineAsStartState("0");
+            automaat.DefineAsFinalState("1");
+            int stateCounter = 2;
+
+            Convert(regExp, ref automaat, ref stateCounter, 0, 1);
+            return automaat;
         }
 
-
-        private static int GetNewestState(Automata<string> automata)
+        public static void Convert(RegExp regExp, ref Automata<string> automaat, ref int stateCounter, int leftState,
+            int rightState)
         {
-            int highestState = 0;
-            foreach (string s in automata.States)
+            switch (regExp.Operator)
             {
-                if (highestState < int.Parse(s))
-                {
-                    highestState = int.Parse(s);
-                }
+                case RegExp.OperatorEnum.Plus:
+                    Plus(regExp, ref automaat, ref stateCounter, leftState, rightState);
+                    break;
+                case RegExp.OperatorEnum.Star:
+                    Star(regExp, ref automaat, ref stateCounter, leftState, rightState);
+                    break;
+                case RegExp.OperatorEnum.Or:
+                    Or(regExp, ref automaat, ref stateCounter, leftState, rightState);
+                    break;
+                case RegExp.OperatorEnum.Dot:
+                    Dot(regExp, ref automaat, ref stateCounter, leftState, rightState);
+                    break;
+                case RegExp.OperatorEnum.One:
+                    One(regExp, ref automaat, ref stateCounter, leftState, rightState);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
-            return highestState;
         }
 
-        private static void Convert(RegExp regExp, Automata<string> automata)
+        public static void Plus(RegExp regExp, ref Automata<string> automaat, ref int stateCounter, int leftState,
+            int rightState)
         {
-            string lastEndState = "";
-            if (automata.FinalStates.Count > 0)
+            int stateTwo = stateCounter;
+            int stateThree = stateCounter + 1;
+            stateCounter = stateCounter + 1;
+            automaat.AddTransition(new Transition<string>(leftState.ToString(), '$', stateTwo.ToString()));
+            automaat.AddTransition(new Transition<string>(stateThree.ToString(), '$', stateTwo.ToString()));
+            automaat.AddTransition(new Transition<string>(stateThree.ToString(), '$', rightState.ToString()));
+            Convert(regExp.Left, ref automaat, ref stateCounter, stateTwo, stateThree);
+        }
+
+        public static void Star(RegExp regExp, ref Automata<string> automaat, ref int stateCounter, int leftState,
+            int rightState)
+        {
+            int stateTwo = stateCounter;
+            int stateThree = stateCounter + 1;
+            stateCounter = stateCounter + 1;
+            automaat.AddTransition(new Transition<string>(leftState.ToString(), '$', stateTwo.ToString()));
+            automaat.AddTransition(new Transition<string>(stateThree.ToString(), '$', stateTwo.ToString()));
+            automaat.AddTransition(new Transition<string>(stateThree.ToString(), '$', rightState.ToString()));
+            automaat.AddTransition(new Transition<string>(leftState.ToString(), '$', rightState.ToString()));
+            Convert(regExp.Left, ref automaat, ref stateCounter, stateTwo, stateThree);
+        }
+
+        public static void Or(RegExp regExp, ref Automata<string> automaat, ref int stateCounter, int leftState,
+            int rightState)
+        {
+            int state2 = stateCounter;
+            int state3 = stateCounter + 1;
+            int state4 = stateCounter + 2;
+            int state5 = stateCounter + 3;
+            stateCounter = stateCounter + 3;
+            automaat.AddTransition(new Transition<string>(leftState.ToString(), '$', state2.ToString()));
+            automaat.AddTransition(new Transition<string>(leftState.ToString(), '$', state4.ToString()));
+            automaat.AddTransition(new Transition<string>(state3.ToString(), '$', rightState.ToString()));
+            automaat.AddTransition(new Transition<string>(state5.ToString(), '$', rightState.ToString()));
+            Convert(regExp.Left, ref automaat, ref stateCounter, state2, state3);
+            Convert(regExp.Right, ref automaat, ref stateCounter, state4, state5);
+        }
+
+        public static void Dot(RegExp regExp, ref Automata<string> automaat, ref int stateCounter, int leftState, int rightState)
+        {
+            Convert(regExp.Left, ref automaat, ref stateCounter, leftState, stateCounter);
+            Convert(regExp.Right, ref automaat, ref stateCounter, stateCounter, rightState);
+        }
+
+        public static void One(RegExp regExp, ref Automata<string> automaat, ref int stateCounter, int leftState,
+            int rightState)
+        {
+            char[] characters = regExp.Terminals.ToCharArray();
+            if (characters.Length == 1)
             {
-                lastEndState = automata.FinalStates.ToList()[0];
+                automaat.AddTransition(
+                    new Transition<string>(leftState.ToString(), characters[0], rightState.ToString()));
             }
             else
             {
-                lastEndState = (automata.States.Count - 1).ToString();
-            }
-
-            if (regExp.Operator == RegExp.OperatorEnum.Plus)
-            {
-                int prevCount = int.Parse(lastEndState) + 1;
-                automata.AddTransition(new Transition<string>(lastEndState, '$', prevCount.ToString()));
-                Convert(regExp.Left, automata);
-                automata.AddTransition(new Transition<string>((automata.States.Count - 1).ToString(), '$', prevCount.ToString()));
-                automata.AddTransition(new Transition<string>((automata.States.Count - 1).ToString(), '$', automata.States.Count.ToString()));
-
-                automata.FinalStates.Clear();
-                automata.DefineAsFinalState((automata.States.Count - 1).ToString());
-            }
-
-            if (regExp.Operator == RegExp.OperatorEnum.Star)
-            {
-                int startState;
-                if (lastEndState != "")
+                automaat.AddTransition(
+                    new Transition<string>(leftState.ToString(), characters[0], stateCounter.ToString()));
+                int i = 1;
+                while (i < characters.Length - 1)
                 {
-                    startState = int.Parse(lastEndState);
+                    automaat.AddTransition(new Transition<string>(stateCounter.ToString(), characters[i],
+                        (stateCounter + 1).ToString()));
+                    stateCounter++;
+                    i++;
                 }
-                else
-                {
-                    startState = automata.States.Count - 1;
-                }
-
-                int prevCount = automata.States.Count;
-                automata.AddTransition(new Transition<string>((automata.States.Count -1).ToString(), '$', prevCount.ToString()));
-                automata.FinalStates.Clear();
-                automata.DefineAsFinalState((automata.States.Count - 1).ToString());
-                Convert(regExp.Left, automata);
-                lastEndState = automata.FinalStates.ToList()[0];
-                automata.AddTransition(new Transition<string>(lastEndState, '$', prevCount.ToString()));
-                automata.AddTransition(new Transition<string>(lastEndState, '$', automata.States.Count.ToString()));
-                automata.AddTransition(new Transition<string>(startState.ToString(), '$', (automata.States.Count - 1).ToString()));
-
-                automata.FinalStates.Clear();
-                automata.DefineAsFinalState((automata.States.Count - 1).ToString());
-            }
-
-            if (regExp.Operator == RegExp.OperatorEnum.Or)
-            {
-                int startState;
-                if (lastEndState != "")
-                {
-                    startState = int.Parse(lastEndState);
-                }
-                else
-                {
-                    startState = automata.States.Count - 1;
-                }
-
-                int newestState = GetNewestState(automata);
-                automata.AddTransition(new Transition<string>(startState.ToString(), '$', (newestState + 1).ToString()));
-
-                Convert(regExp.Left, automata);
-                automata.AddTransition(new Transition<string>((automata.States.Count - 1).ToString(), '$', automata.States.Count.ToString()));
-                int endState = automata.States.Count - 1;
-                automata.FinalStates.Clear();
-                automata.DefineAsFinalState(endState.ToString());
-
-                // See getNewestState check at earlier convert. works in with current expression due to having a simple blackbox. If blackbox itself
-                // contains more operators this could fail aswell.
-
-                automata.AddTransition(new Transition<string>(startState.ToString(), '$', automata.States.Count.ToString()));
-                Convert(regExp.Right, automata);
-                automata.AddTransition(new Transition<string>((automata.States.Count - 1).ToString(), '$', endState.ToString()));
-            }
-
-            if (regExp.Operator == RegExp.OperatorEnum.Dot)
-            {
-                Convert(regExp.Left, automata);
-
-                Convert(regExp.Right, automata);
-            }
-
-            if (regExp.Terminals != null)
-            {
-                foreach (char character in regExp.Terminals)
-                {
-                    automata.AddTransition(new Transition<string>((automata.States.Count - 1).ToString(), character, automata.States.Count.ToString()));
-                }
+                automaat.AddTransition(
+                    new Transition<string>(stateCounter.ToString(), characters[i], rightState.ToString()));
             }
         }
     }
