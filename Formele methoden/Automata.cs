@@ -14,7 +14,7 @@ namespace Week_1
         public SortedSet<T> States { get; }
         public SortedSet<T> StartStates { get; }
         public SortedSet<T> FinalStates { get; }
-        public SortedSet<char> Symbols { get; }
+        public SortedSet<char> Symbols { get; set; }
 
         public Automata() : this(new SortedSet<char>())
         {
@@ -52,66 +52,27 @@ namespace Week_1
             FinalStates.Add(t);
         }
 
-        public void PrintTransitions()
-        {
-            foreach (var t in Transitions)
-                Console.WriteLine(t);
-        }
-
         public bool IsDfa()
         {
-            bool isDfa = true;
-            if (StartStates.Count > 1)
+            bool isDfa = !(Transitions.Where(e => e.Symbol.Equals('$')).ToList().Count > 0);
+            foreach (T state in States)
             {
-                return false;
-            }
-
-            foreach (T from in States)
-            foreach (char? c in Symbols)
-                if (c != null)
+                foreach (char symbol in Symbols)
                 {
-                    var symbol = (char) c;
-                    isDfa = isDfa && GetToStates(@from, symbol);
+                    isDfa = isDfa && GetToStates(state, symbol).Count <= 1;
                 }
+            }
             return isDfa;
         }
 
-        public bool GetToStates(T from, char symbol)
+        public List<Transition<T>> GetToStates(T state, char symbol)
         {
-            List<Transition<T>> transitionsList = new List<Transition<T>>();
-            foreach (Transition<T> transition in Transitions)
-            {
-                if (from.Equals(transition.FromState))
-                {
-                    transitionsList.Add(transition);
-                }
-            }
-
-            List<char> results = transitionsList.Select(e => e.Symbol).ToList();
-            int count = 0;
-            for (int i = 0; i < results.Count; i++)
-            {
-                if (results[i] == symbol)
-                {
-                    count++;
-                }
-                if (results[i] == '$')
-                {
-                    Console.WriteLine("$ found");
-                    return false;
-                }
-            }
-            if (count == 1)
-            {
-                return true;
-            }
-            Console.WriteLine("Count wrong: " + count);
-            return false;
+            return Transitions.Where(e => e.Symbol == symbol).Where(e => e.FromState.Equals(state)).ToList();
         }
 
         public bool Accept(string text)
         {
-            foreach (var startState in StartStates)
+            foreach (T startState in StartStates)
                 if (IsPossible(0, text, startState))
                     return true;
             return false;
@@ -125,7 +86,7 @@ namespace Week_1
                     return true;
                 return false;
             }
-            foreach (var possibleTransition in GetTransition(state))
+            foreach (Transition<T> possibleTransition in GetTransition(state))
                 if (possibleTransition.Symbol == text[index])
                     if (IsPossible(index + 1, text, possibleTransition.ToState))
                         return true;
@@ -134,15 +95,21 @@ namespace Week_1
 
         public List<Transition<T>> GetTransition(T state)
         {
-            return Transitions.Where(e => e.FromState.Equals(state)).ToList();
+            List<Transition<T>> transitions = Transitions.Where(e => e.FromState.Equals(state)).ToList();
+            List<T> epsilonStates = transitions.Where(e => e.Symbol == '$').Select(e => e.ToState).ToList();
+            foreach (T epsilonState in epsilonStates)
+            {
+                transitions.AddRange(GetTransition(epsilonState));
+            }
+            return transitions;
         }
 
-        public void GeefTaalTotLengte(int numberOfLetters)
+        public List<string> GeefTaalTotLengte(int numberOfLetters)
         {
-            NextChar(0, new char[numberOfLetters], new List<string>(), numberOfLetters);
+           return NextChar(0, new char[numberOfLetters], new List<string>(), numberOfLetters);
         }
 
-        public void NextChar(int letterIndex, char[] currentWord, List<string> words, int amountOfLetters)
+        public List<string> NextChar(int letterIndex, char[] currentWord, List<string> words, int amountOfLetters)
         {
             for (int i = 0; i < Symbols.Count; i++)
             {
@@ -157,6 +124,7 @@ namespace Week_1
                     NextChar(letterIndex + 1, currentWord, words, amountOfLetters);
                 }
             }
+            return words;
         }
     }
 }

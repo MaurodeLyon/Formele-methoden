@@ -7,118 +7,171 @@ namespace Formele_methoden_tests
     [TestClass]
     public class TestAutomata
     {
-        public static Automata<string> ExampleSlide8Lesson2()
+        [TestMethod]
+        public void DfaTest()
         {
             char[] alphabet = {'a', 'b'};
-            Automata<string> m = new Automata<string>(alphabet);
+            Automata<string> dfa = new Automata<string>(alphabet);
+            dfa.AddTransition(new Transition<string>("0", 'a', "1"));
+            dfa.AddTransition(new Transition<string>("0", 'b', "4"));
 
-            m.AddTransition(new Transition<string>("q0", 'a', "q1"));
-            m.AddTransition(new Transition<string>("q0", 'b', "q4"));
+            dfa.AddTransition(new Transition<string>("1", 'b', "2"));
+            dfa.AddTransition(new Transition<string>("1", 'a', "4"));
 
-            m.AddTransition(new Transition<string>("q1", 'a', "q4"));
-            m.AddTransition(new Transition<string>("q1", 'b', "q2"));
+            dfa.AddTransition(new Transition<string>("2", 'a', "3"));
+            dfa.AddTransition(new Transition<string>("2", 'b', "4"));
 
-            m.AddTransition(new Transition<string>("q2", 'a', "q3"));
-            m.AddTransition(new Transition<string>("q2", 'b', "q4"));
+            dfa.AddTransition(new Transition<string>("3", 'a', "1"));
+            dfa.AddTransition(new Transition<string>("3", 'b', "2"));
 
-            m.AddTransition(new Transition<string>("q3", 'a', "q1"));
-            m.AddTransition(new Transition<string>("q3", 'b', "q2"));
+            dfa.AddTransition(new Transition<string>("4", 'a', "4"));
+            dfa.AddTransition(new Transition<string>("4", 'b', "4"));
 
-            // the error state, loops for a and b:
-            m.AddTransition(new Transition<string>("q4", 'a'));
-            m.AddTransition(new Transition<string>("q4", 'b'));
+            dfa.DefineAsStartState("0");
+            dfa.DefineAsFinalState("0");
+            dfa.DefineAsFinalState("2");
 
-            // only on start state in a dfa:
-            m.DefineAsStartState("q0");
-
-            // two final states:
-            m.DefineAsFinalState("q2");
-            m.DefineAsFinalState("q3");
-
-            return m;
-        }
-
-        public static Automata<string> ExampleSlide14Lesson2()
-        {
-            char[] alphabet = {'a', 'b'};
-            Automata<string> m = new Automata<string>(alphabet);
-
-            m.AddTransition(new Transition<string>("A", 'a', "C"));
-            m.AddTransition(new Transition<string>("A", 'b', "B"));
-            m.AddTransition(new Transition<string>("A", 'b', "C"));
-
-            m.AddTransition(new Transition<string>("B", 'b', "C"));
-            m.AddTransition(new Transition<string>("B", "C"));
-
-            m.AddTransition(new Transition<string>("C", 'a', "D"));
-            m.AddTransition(new Transition<string>("C", 'a', "E"));
-            m.AddTransition(new Transition<string>("C", 'b', "D"));
-
-            m.AddTransition(new Transition<string>("D", 'a', "B"));
-            m.AddTransition(new Transition<string>("D", 'a', "C"));
-
-            m.AddTransition(new Transition<string>("E", 'a'));
-            m.AddTransition(new Transition<string>("E", "D"));
-
-            // only on start state in a dfa:
-            m.DefineAsStartState("A");
-
-            // two final states:
-            m.DefineAsFinalState("C");
-            m.DefineAsFinalState("E");
-
-            return m;
+            Assert.IsTrue(dfa.IsDfa());
         }
 
         [TestMethod]
-        public void Test()
+        public void NdfaTest()
         {
             char[] alphabet = {'a', 'b'};
-            Automata<string> m = new Automata<string>(alphabet);
+            Automata<string> dfa = new Automata<string>(alphabet);
+            dfa.AddTransition(new Transition<string>("0", 'a', "1"));
+            dfa.AddTransition(new Transition<string>("0", 'a', "0"));
+            dfa.AddTransition(new Transition<string>("0", 'b', "0"));
+            dfa.AddTransition(new Transition<string>("0", 'b', "3"));
 
-            m.AddTransition(new Transition<string>("q0", 'a', "q1"));
-            m.AddTransition(new Transition<string>("q0", 'b', "q4"));
+            dfa.AddTransition(new Transition<string>("1", 'b', "2"));
 
-            m.AddTransition(new Transition<string>("q1", 'a', "q4"));
-            m.AddTransition(new Transition<string>("q1", 'b', "q2"));
+            dfa.AddTransition(new Transition<string>("2", 'b', "3"));
 
-            m.AddTransition(new Transition<string>("q2", 'a', "q3"));
-            m.AddTransition(new Transition<string>("q2", 'b', "q4"));
+            dfa.AddTransition(new Transition<string>("3", 'a', "4"));
 
-            m.AddTransition(new Transition<string>("q3", 'a', "q1"));
-            m.AddTransition(new Transition<string>("q3", 'b', "q2"));
+            dfa.AddTransition(new Transition<string>("4", 'a', "4"));
+            dfa.AddTransition(new Transition<string>("4", 'b', "4"));
 
-            // the error state, loops for a and b:
-            m.AddTransition(new Transition<string>("q4", 'a'));
-            m.AddTransition(new Transition<string>("q4", 'b'));
+            dfa.DefineAsStartState("0");
+            dfa.DefineAsFinalState("4");
 
-            // only on start state in a dfa:
-            m.DefineAsStartState("q0");
-
-            // two final states:
-            m.DefineAsFinalState("q2");
-            m.DefineAsFinalState("q3");
-
-            Assert.IsTrue(true);
+            Assert.IsFalse(dfa.IsDfa());
         }
 
         [TestMethod]
-        public void SimpleNdfa()
+        public void AcceptTestCorrectString()
         {
             char[] alphabet = {'a', 'b'};
-            Automata<string> ndfa = new Automata<string>(alphabet);
-            ndfa.AddTransition(new Transition<string>("q0", 'a', "q1"));
-            ndfa.DefineAsStartState("q0");
-            ndfa.DefineAsFinalState("q1");
+            Automata<string> dfa = new Automata<string>(alphabet);
+            dfa.AddTransition(new Transition<string>("0", 'a', "1"));
+            dfa.AddTransition(new Transition<string>("0", 'b', "4"));
 
-            Assert.AreEqual(1, ndfa.FinalStates.Count);
-            Assert.AreEqual(1, ndfa.StartStates.Count);
-            Assert.AreEqual(2, ndfa.States.Count);
-            Assert.AreEqual(2, ndfa.Symbols.Count);
-            Assert.AreEqual(1, ndfa.Transitions.Count);
+            dfa.AddTransition(new Transition<string>("1", 'b', "2"));
+            dfa.AddTransition(new Transition<string>("1", 'a', "4"));
 
-            Assert.AreEqual("q0",ndfa.StartStates.ToList()[0]);
-            Assert.AreEqual("q1",ndfa.FinalStates.ToList()[0]);
+            dfa.AddTransition(new Transition<string>("2", 'a', "3"));
+            dfa.AddTransition(new Transition<string>("2", 'b', "4"));
+
+            dfa.AddTransition(new Transition<string>("3", 'a', "1"));
+            dfa.AddTransition(new Transition<string>("3", 'b', "2"));
+
+            dfa.AddTransition(new Transition<string>("4", 'a', "4"));
+            dfa.AddTransition(new Transition<string>("4", 'b', "4"));
+
+            dfa.DefineAsStartState("0");
+            dfa.DefineAsFinalState("0");
+            dfa.DefineAsFinalState("2");
+
+            Assert.IsTrue(dfa.Accept("ab"));
+        }
+
+        [TestMethod]
+        public void AcceptTestInCorrectString()
+        {
+            char[] alphabet = {'a', 'b'};
+            Automata<string> dfa = new Automata<string>(alphabet);
+            dfa.AddTransition(new Transition<string>("0", 'a', "1"));
+            dfa.AddTransition(new Transition<string>("0", 'b', "4"));
+
+            dfa.AddTransition(new Transition<string>("1", 'b', "2"));
+            dfa.AddTransition(new Transition<string>("1", 'a', "4"));
+
+            dfa.AddTransition(new Transition<string>("2", 'a', "3"));
+            dfa.AddTransition(new Transition<string>("2", 'b', "4"));
+
+            dfa.AddTransition(new Transition<string>("3", 'a', "1"));
+            dfa.AddTransition(new Transition<string>("3", 'b', "2"));
+
+            dfa.AddTransition(new Transition<string>("4", 'a', "4"));
+            dfa.AddTransition(new Transition<string>("4", 'b', "4"));
+
+            dfa.DefineAsStartState("0");
+            dfa.DefineAsFinalState("0");
+            dfa.DefineAsFinalState("2");
+
+            Assert.IsFalse(dfa.Accept("cdfe"));
+        }
+
+        [TestMethod]
+        public void AcceptTestInCorrectFinalState()
+        {
+            char[] alphabet = {'a', 'b'};
+            Automata<string> dfa = new Automata<string>(alphabet);
+            dfa.AddTransition(new Transition<string>("0", 'a', "1"));
+            dfa.AddTransition(new Transition<string>("0", 'b', "4"));
+
+            dfa.AddTransition(new Transition<string>("1", 'b', "2"));
+            dfa.AddTransition(new Transition<string>("1", 'a', "4"));
+
+            dfa.AddTransition(new Transition<string>("2", 'a', "3"));
+            dfa.AddTransition(new Transition<string>("2", 'b', "4"));
+
+            dfa.AddTransition(new Transition<string>("3", 'a', "1"));
+            dfa.AddTransition(new Transition<string>("3", 'b', "2"));
+
+            dfa.AddTransition(new Transition<string>("4", 'a', "4"));
+            dfa.AddTransition(new Transition<string>("4", 'b', "4"));
+
+            dfa.DefineAsStartState("0");
+            dfa.DefineAsFinalState("0");
+            dfa.DefineAsFinalState("2");
+
+            Assert.IsFalse(dfa.Accept("aba"));
+        }
+
+        [TestMethod]
+        public void AcceptEpsilonTest()
+        {
+            char[] alphabet = {'a', 'b'};
+            Automata<string> epsilonNdfa = new Automata<string>(alphabet);
+            epsilonNdfa.AddTransition(new Transition<string>("0", 'a', "1"));
+            epsilonNdfa.AddTransition(new Transition<string>("1", '$', "2"));
+            epsilonNdfa.AddTransition(new Transition<string>("2", 'b', "3"));
+            epsilonNdfa.AddTransition(new Transition<string>("3", '$', "4"));
+            epsilonNdfa.AddTransition(new Transition<string>("4", '$', "5"));
+            epsilonNdfa.AddTransition(new Transition<string>("5", 'c', "6"));
+
+            epsilonNdfa.DefineAsStartState("0");
+            epsilonNdfa.DefineAsFinalState("6");
+
+            Assert.IsTrue(epsilonNdfa.Accept("abc"));
+        }
+
+        [TestMethod]
+        public void GeefTaalTotLengte()
+        {
+            Automata<string> automaat = new Automata<string>(new[] {'a', 'b'});
+            automaat.AddTransition(new Transition<string>("0", 'a', "1"));
+            automaat.AddTransition(new Transition<string>("0", 'b', "0"));
+
+            automaat.AddTransition(new Transition<string>("1", 'a', "1"));
+            automaat.AddTransition(new Transition<string>("1", 'b', "0"));
+
+            automaat.DefineAsStartState("0");
+            automaat.DefineAsFinalState("1");
+
+            Assert.AreEqual(4, automaat.GeefTaalTotLengte(2).Count);
         }
     }
 }
