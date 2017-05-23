@@ -45,6 +45,8 @@ namespace Week_1
                 if(amountOfRoutes==0)
                 {
                     dest.AddTransition(new Transition<string>(state, c, "FFFF"));
+
+                   
                 }
                 string toState = "";
                 bool isFinalState = false;
@@ -85,7 +87,10 @@ namespace Week_1
 
 
                     dest.AddTransition(new Transition<string>(state, c, toState));
-
+                    if(source.FinalStates.Contains(state))
+                    {
+                        dest.DefineAsFinalState(state);
+                    }
                     if (isFinalState)
                     dest.DefineAsFinalState(toState);
                     
@@ -107,7 +112,20 @@ namespace Week_1
 
             Automata<string> m= new Automata<string>(automata.Symbols);
             SortedSet<string> states = automata.States;
+            //Use if "first state in recursion is also final state" case does not work
+            //if(automata.FinalStates.Contains(states.ToList<string>()[0]))
+            //{
+            //    m.DefineAsFinalState(states.ToList<string>()[0]);
+            //}
             convertState(states.ToList<string>()[0], ref m, ref automata);
+
+            if (m.States.Contains("FFFF"))
+            {
+                foreach(char route in m.Symbols)
+                {
+                    m.AddTransition(new Transition<string>("FFFF", route, "FFFF"));
+                }
+            }
 
             return m;
 
