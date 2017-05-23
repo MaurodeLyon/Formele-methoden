@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 
 namespace Week_1
 {
@@ -17,8 +16,7 @@ namespace Week_1
             return automaat;
         }
 
-        public static void Convert(RegExp regExp, ref Automata<string> automaat, ref int stateCounter, int leftState,
-            int rightState)
+        public static void Convert(RegExp regExp, ref Automata<string> automaat, ref int stateCounter, int leftState, int rightState)
         {
             switch (regExp.Operator)
             {
@@ -42,24 +40,22 @@ namespace Week_1
             }
         }
 
-        public static void Plus(RegExp regExp, ref Automata<string> automaat, ref int stateCounter, int leftState,
-            int rightState)
+        public static void Plus(RegExp regExp, ref Automata<string> automaat, ref int stateCounter, int leftState, int rightState)
         {
             int stateTwo = stateCounter;
             int stateThree = stateCounter + 1;
-            stateCounter = stateCounter + 1;
+            stateCounter = stateCounter + 2;
             automaat.AddTransition(new Transition<string>(leftState.ToString(), '$', stateTwo.ToString()));
             automaat.AddTransition(new Transition<string>(stateThree.ToString(), '$', stateTwo.ToString()));
             automaat.AddTransition(new Transition<string>(stateThree.ToString(), '$', rightState.ToString()));
             Convert(regExp.Left, ref automaat, ref stateCounter, stateTwo, stateThree);
         }
 
-        public static void Star(RegExp regExp, ref Automata<string> automaat, ref int stateCounter, int leftState,
-            int rightState)
+        public static void Star(RegExp regExp, ref Automata<string> automaat, ref int stateCounter, int leftState, int rightState)
         {
             int stateTwo = stateCounter;
             int stateThree = stateCounter + 1;
-            stateCounter = stateCounter + 1;
+            stateCounter = stateCounter + 2;
             automaat.AddTransition(new Transition<string>(leftState.ToString(), '$', stateTwo.ToString()));
             automaat.AddTransition(new Transition<string>(stateThree.ToString(), '$', stateTwo.ToString()));
             automaat.AddTransition(new Transition<string>(stateThree.ToString(), '$', rightState.ToString()));
@@ -67,14 +63,13 @@ namespace Week_1
             Convert(regExp.Left, ref automaat, ref stateCounter, stateTwo, stateThree);
         }
 
-        public static void Or(RegExp regExp, ref Automata<string> automaat, ref int stateCounter, int leftState,
-            int rightState)
+        public static void Or(RegExp regExp, ref Automata<string> automaat, ref int stateCounter, int leftState, int rightState)
         {
             int state2 = stateCounter;
             int state3 = stateCounter + 1;
             int state4 = stateCounter + 2;
             int state5 = stateCounter + 3;
-            stateCounter = stateCounter + 3;
+            stateCounter = stateCounter + 4;
             automaat.AddTransition(new Transition<string>(leftState.ToString(), '$', state2.ToString()));
             automaat.AddTransition(new Transition<string>(leftState.ToString(), '$', state4.ToString()));
             automaat.AddTransition(new Transition<string>(state3.ToString(), '$', rightState.ToString()));
@@ -85,33 +80,31 @@ namespace Week_1
 
         public static void Dot(RegExp regExp, ref Automata<string> automaat, ref int stateCounter, int leftState, int rightState)
         {
-            Convert(regExp.Left, ref automaat, ref stateCounter, leftState, stateCounter);
-            Convert(regExp.Right, ref automaat, ref stateCounter, stateCounter, rightState);
+            int midState = stateCounter;
+            stateCounter++;
+            Convert(regExp.Left, ref automaat, ref stateCounter, leftState, midState);
+            Convert(regExp.Right, ref automaat, ref stateCounter, midState, rightState);
         }
 
-        public static void One(RegExp regExp, ref Automata<string> automaat, ref int stateCounter, int leftState,
-            int rightState)
+        public static void One(RegExp regExp, ref Automata<string> automaat, ref int stateCounter, int leftState, int rightState)
         {
             char[] characters = regExp.Terminals.ToCharArray();
             if (characters.Length == 1)
             {
-                automaat.AddTransition(
-                    new Transition<string>(leftState.ToString(), characters[0], rightState.ToString()));
+                automaat.AddTransition(new Transition<string>(leftState.ToString(), characters[0], rightState.ToString()));
             }
             else
             {
-                automaat.AddTransition(
-                    new Transition<string>(leftState.ToString(), characters[0], stateCounter.ToString()));
+                automaat.AddTransition(new Transition<string>(leftState.ToString(), characters[0], stateCounter.ToString()));
                 int i = 1;
                 while (i < characters.Length - 1)
                 {
-                    automaat.AddTransition(new Transition<string>(stateCounter.ToString(), characters[i],
-                        (stateCounter + 1).ToString()));
+                    automaat.AddTransition(new Transition<string>(stateCounter.ToString(), characters[i], (stateCounter + 1).ToString()));
                     stateCounter++;
                     i++;
                 }
-                automaat.AddTransition(
-                    new Transition<string>(stateCounter.ToString(), characters[i], rightState.ToString()));
+                automaat.AddTransition(new Transition<string>(stateCounter.ToString(), characters[i], rightState.ToString()));
+                stateCounter++;
             }
         }
     }
