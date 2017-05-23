@@ -6,7 +6,7 @@ using GraphVizWrapper.Queries;
 
 namespace Week_1
 {
-    class GraphVizParser
+    public class GraphVizParser
     {
         public static void PrintGraph(Automata<string> data, string filename)
         {

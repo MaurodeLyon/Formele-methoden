@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Week_1
 {
@@ -13,6 +15,7 @@ namespace Week_1
             int stateCounter = 2;
 
             Convert(regExp, ref automaat, ref stateCounter, 0, 1);
+            automaat.Symbols =new SortedSet<char>(automaat.Transitions.Distinct().Select(e => e.Symbol).ToList());
             return automaat;
         }
 
@@ -51,7 +54,8 @@ namespace Week_1
             Convert(regExp.Left, ref automaat, ref stateCounter, stateTwo, stateThree);
         }
 
-        public static void Star(RegExp regExp, ref Automata<string> automaat, ref int stateCounter, int leftState, int rightState)
+        public static void Star(RegExp regExp, ref Automata<string> automaat, ref int stateCounter, int leftState,
+            int rightState)
         {
             int stateTwo = stateCounter;
             int stateThree = stateCounter + 1;
@@ -91,19 +95,23 @@ namespace Week_1
             char[] characters = regExp.Terminals.ToCharArray();
             if (characters.Length == 1)
             {
-                automaat.AddTransition(new Transition<string>(leftState.ToString(), characters[0], rightState.ToString()));
+                automaat.AddTransition(
+                    new Transition<string>(leftState.ToString(), characters[0], rightState.ToString()));
             }
             else
             {
-                automaat.AddTransition(new Transition<string>(leftState.ToString(), characters[0], stateCounter.ToString()));
+                automaat.AddTransition(
+                    new Transition<string>(leftState.ToString(), characters[0], stateCounter.ToString()));
                 int i = 1;
                 while (i < characters.Length - 1)
                 {
-                    automaat.AddTransition(new Transition<string>(stateCounter.ToString(), characters[i], (stateCounter + 1).ToString()));
+                    automaat.AddTransition(new Transition<string>(stateCounter.ToString(), characters[i],
+                        (stateCounter + 1).ToString()));
                     stateCounter++;
                     i++;
                 }
-                automaat.AddTransition(new Transition<string>(stateCounter.ToString(), characters[i], rightState.ToString()));
+                automaat.AddTransition(
+                    new Transition<string>(stateCounter.ToString(), characters[i], rightState.ToString()));
                 stateCounter++;
             }
         }
