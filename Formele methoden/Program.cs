@@ -27,7 +27,7 @@ namespace Week_1
             dfa.DefineAsFinalState("1");
             dfa.DefineAsFinalState("4");
 
-            Automata<string> answer = ndfaToDfaConverter.convert(dfa);
+            Automata<string> answer = NdfaToDfaConverter.Convert(dfa);
             GraphVizParser.PrintGraph(answer, "ndfa2dfa");
 
             bool looping = true;
@@ -40,8 +40,6 @@ namespace Week_1
                         looping = false;
                         break;
                     case "print":
-                        break;
-                    default:
                         break;
                 }
             }
