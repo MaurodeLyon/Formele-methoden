@@ -98,10 +98,8 @@ namespace Week_1
             switch (Operator)
             {
                 case OperatorEnum.One:
-                {
                     languageResult.Add(Terminals);
                     goto case OperatorEnum.Or;
-                }
 
                 case OperatorEnum.Or:
                     languageLeft = Left == null ? emptyLanguage : Left.GetLanguage(maxSteps - 1);
@@ -114,7 +112,6 @@ namespace Week_1
                     {
                         languageResult.Add(s);
                     }
-
                     break;
 
                 case OperatorEnum.Dot:
@@ -128,6 +125,7 @@ namespace Week_1
                         }
                     }
                     break;
+
                 case OperatorEnum.Star:
                 case OperatorEnum.Plus:
                     languageLeft = Left == null ? emptyLanguage : Left.GetLanguage(maxSteps - 1);
@@ -152,6 +150,7 @@ namespace Week_1
                         languageResult.Add("");
                     }
                     break;
+
                 default:
                     Console.WriteLine("getLanguage does not support operator " + Operator);
                     break;

@@ -5,7 +5,7 @@ namespace Week_1
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             bool looping = true;
             while (looping)
@@ -17,11 +17,8 @@ namespace Week_1
                         looping = false;
                         break;
                     case "print":
-                        GraphVizParser.PrintGraph(TestAutomata.ExampleSlide14Lesson2(), "ExampleSlide14Lesson2");
                         break;
                     default:
-                        Console.WriteLine("Correct grammar: " +
-                                          TestAutomata.ExampleSlide14Lesson2().Accept(word));
                         break;
                 }
             }
