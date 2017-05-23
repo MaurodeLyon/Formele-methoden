@@ -7,23 +7,29 @@ namespace Week_1
     {
         static void Main()
         {
-            RegExp reg = new RegExp("a");
-            reg = reg.Or(new RegExp("b"));
-            RegExp reg2 = new RegExp("c");
-            reg2 = reg2.Or(new RegExp("d"));
-            RegExp reg3 = reg.Dot(reg2);
+            RegExp reg = new RegExp("a").Or(new RegExp("b")).Dot(new RegExp("c").Or(new RegExp("d")));
+            Automata<string> regExp = ThompsonConstruction.ConvertRegExp(reg);
+            GraphVizParser.PrintGraph(regExp, "ThompsonNdfa");
 
-            Automata<string> regExpex = ThompsonConstruction.ConvertRegExpToAutomata(reg3);
-            GraphVizParser.PrintGraph(regExpex, "TEST");
+            char[] alphabet = { 'a', 'b' };
+            Automata<string> dfa = new Automata<string>(alphabet);
+            dfa.AddTransition(new Transition<string>("1", 'a', "2"));
+            dfa.AddTransition(new Transition<string>("1", 'b', "2"));
+            dfa.AddTransition(new Transition<string>("1", 'b', "3"));
 
-            Automata<string> answer = ndfaToDfaConverter.convert(TestAutomata.NDFAToConvert());
+            dfa.AddTransition(new Transition<string>("2", 'a', "4"));
+            dfa.AddTransition(new Transition<string>("2", 'a', "2"));
+            
+            dfa.AddTransition(new Transition<string>("4", 'b', "3"));
+            dfa.AddTransition(new Transition<string>("4", 'b', "1"));
 
+            dfa.DefineAsStartState("1");
+            dfa.DefineAsFinalState("1");
+            dfa.DefineAsFinalState("4");
 
-            //TestRegExp regExp = new TestRegExp();
-            // regExp.testLanguage();
-            GraphVizParser.PrintGraph(answer, "NDFATODFACONV");
-            TestAutomata.DfaTEST3().PrintTransitions();
-            Console.WriteLine("Is DFA: " + TestAutomata.DfaTEST3().IsDfa());
+            Automata<string> answer = ndfaToDfaConverter.convert(dfa);
+            GraphVizParser.PrintGraph(answer, "ndfa2dfa");
+
             bool looping = true;
             while (looping)
             {
