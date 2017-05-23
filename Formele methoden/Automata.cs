@@ -101,12 +101,12 @@ namespace Week_1
             return transitions;
         }
 
-        public void GeefTaalTotLengte(int numberOfLetters)
+        public List<string> GeefTaalTotLengte(int numberOfLetters)
         {
-            NextChar(0, new char[numberOfLetters], new List<string>(), numberOfLetters);
+           return NextChar(0, new char[numberOfLetters], new List<string>(), numberOfLetters);
         }
 
-        public void NextChar(int letterIndex, char[] currentWord, List<string> words, int amountOfLetters)
+        public List<string> NextChar(int letterIndex, char[] currentWord, List<string> words, int amountOfLetters)
         {
             for (int i = 0; i < Symbols.Count; i++)
             {
@@ -121,6 +121,7 @@ namespace Week_1
                     NextChar(letterIndex + 1, currentWord, words, amountOfLetters);
                 }
             }
+            return words;
         }
     }
 }

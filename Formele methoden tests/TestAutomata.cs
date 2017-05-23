@@ -62,7 +62,7 @@ namespace Formele_methoden_tests
         [TestMethod]
         public void AcceptTestCorrectString()
         {
-            char[] alphabet = { 'a', 'b' };
+            char[] alphabet = {'a', 'b'};
             Automata<string> dfa = new Automata<string>(alphabet);
             dfa.AddTransition(new Transition<string>("0", 'a', "1"));
             dfa.AddTransition(new Transition<string>("0", 'b', "4"));
@@ -85,10 +85,11 @@ namespace Formele_methoden_tests
 
             Assert.IsTrue(dfa.Accept("ab"));
         }
+
         [TestMethod]
         public void AcceptTestInCorrectString()
         {
-            char[] alphabet = { 'a', 'b' };
+            char[] alphabet = {'a', 'b'};
             Automata<string> dfa = new Automata<string>(alphabet);
             dfa.AddTransition(new Transition<string>("0", 'a', "1"));
             dfa.AddTransition(new Transition<string>("0", 'b', "4"));
@@ -111,10 +112,11 @@ namespace Formele_methoden_tests
 
             Assert.IsFalse(dfa.Accept("cdfe"));
         }
+
         [TestMethod]
-        public void AcceptTestInCorrectIncorrectFinalState()
+        public void AcceptTestInCorrectFinalState()
         {
-            char[] alphabet = { 'a', 'b' };
+            char[] alphabet = {'a', 'b'};
             Automata<string> dfa = new Automata<string>(alphabet);
             dfa.AddTransition(new Transition<string>("0", 'a', "1"));
             dfa.AddTransition(new Transition<string>("0", 'b', "4"));
@@ -141,7 +143,7 @@ namespace Formele_methoden_tests
         [TestMethod]
         public void AcceptEpsilonTest()
         {
-            char[] alphabet = { 'a', 'b' };
+            char[] alphabet = {'a', 'b'};
             Automata<string> epsilonNdfa = new Automata<string>(alphabet);
             epsilonNdfa.AddTransition(new Transition<string>("0", 'a', "1"));
             epsilonNdfa.AddTransition(new Transition<string>("1", '$', "2"));
@@ -154,6 +156,22 @@ namespace Formele_methoden_tests
             epsilonNdfa.DefineAsFinalState("6");
 
             Assert.IsTrue(epsilonNdfa.Accept("abc"));
+        }
+
+        [TestMethod]
+        public void GeefTaalTotLengte()
+        {
+            Automata<string> automaat = new Automata<string>(new[] {'a', 'b'});
+            automaat.AddTransition(new Transition<string>("0",'a',"1"));
+            automaat.AddTransition(new Transition<string>("0",'b',"0"));
+
+            automaat.AddTransition(new Transition<string>("1",'a',"1"));
+            automaat.AddTransition(new Transition<string>("1",'b',"0"));
+            
+            automaat.DefineAsStartState("0");
+            automaat.DefineAsFinalState("1");
+
+            Assert.AreEqual(4,automaat.GeefTaalTotLengte(2).Count);
         }
     }
 }
