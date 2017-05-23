@@ -8,7 +8,7 @@ namespace Week_1
 {
     public class GraphVizParser
     {
-        public static void PrintGraph(Automata<string> data, string filename)
+        public static void PrintGraph(Automaat<string> data, string filename)
         {
             string toPrint = "";
             toPrint += "digraph{";

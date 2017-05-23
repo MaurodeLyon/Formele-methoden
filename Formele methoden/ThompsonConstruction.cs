@@ -5,9 +5,9 @@ namespace Week_1
 {
     public class ThompsonConstruction
     {
-        public static Automata<string> ConvertRegExp(RegExp regExp)
+        public static Automaat<string> ConvertRegExp(RegExp regExp)
         {
-            Automata<string> automaat = new Automata<string>();
+            Automaat<string> automaat = new Automaat<string>();
 
             automaat.DefineAsStartState("0");
             automaat.DefineAsFinalState("1");
@@ -18,7 +18,7 @@ namespace Week_1
             return automaat;
         }
 
-        public static void Convert(RegExp regExp, ref Automata<string> automaat, ref int stateCounter, int leftState, int rightState)
+        public static void Convert(RegExp regExp, ref Automaat<string> automaat, ref int stateCounter, int leftState, int rightState)
         {
             switch (regExp.Operator)
             {
@@ -40,7 +40,7 @@ namespace Week_1
             }
         }
 
-        public static void Plus(RegExp regExp, ref Automata<string> automaat, ref int stateCounter, int leftState, int rightState)
+        public static void Plus(RegExp regExp, ref Automaat<string> automaat, ref int stateCounter, int leftState, int rightState)
         {
             int stateTwo = stateCounter;
             int stateThree = stateCounter + 1;
@@ -51,7 +51,7 @@ namespace Week_1
             Convert(regExp.Left, ref automaat, ref stateCounter, stateTwo, stateThree);
         }
 
-        public static void Star(RegExp regExp, ref Automata<string> automaat, ref int stateCounter, int leftState,
+        public static void Star(RegExp regExp, ref Automaat<string> automaat, ref int stateCounter, int leftState,
             int rightState)
         {
             int stateTwo = stateCounter;
@@ -64,7 +64,7 @@ namespace Week_1
             Convert(regExp.Left, ref automaat, ref stateCounter, stateTwo, stateThree);
         }
 
-        public static void Or(RegExp regExp, ref Automata<string> automaat, ref int stateCounter, int leftState, int rightState)
+        public static void Or(RegExp regExp, ref Automaat<string> automaat, ref int stateCounter, int leftState, int rightState)
         {
             int state2 = stateCounter;
             int state3 = stateCounter + 1;
@@ -79,7 +79,7 @@ namespace Week_1
             Convert(regExp.Right, ref automaat, ref stateCounter, state4, state5);
         }
 
-        public static void Dot(RegExp regExp, ref Automata<string> automaat, ref int stateCounter, int leftState, int rightState)
+        public static void Dot(RegExp regExp, ref Automaat<string> automaat, ref int stateCounter, int leftState, int rightState)
         {
             int midState = stateCounter;
             stateCounter++;
@@ -87,7 +87,7 @@ namespace Week_1
             Convert(regExp.Right, ref automaat, ref stateCounter, midState, rightState);
         }
 
-        public static void One(RegExp regExp, ref Automata<string> automaat, ref int stateCounter, int leftState, int rightState)
+        public static void One(RegExp regExp, ref Automaat<string> automaat, ref int stateCounter, int leftState, int rightState)
         {
             char[] characters = regExp.Terminals.ToCharArray();
             if (characters.Length == 1)

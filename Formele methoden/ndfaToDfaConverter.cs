@@ -6,40 +6,35 @@ namespace Week_1
 {
     public class NdfaToDfaConverter
     {
-        public static Automata<string> Convert(Automata<string> automata)
+        public static Automaat<string> Convert(Automaat<string> ndfa)
         {
-            Automata<string> m = new Automata<string>(automata.Symbols);
-            SortedSet<string> states = automata.States;
-            ConvertState(states.ToList()[0], ref m, ref automata);
-
-            if (m.States.Contains("FFFF"))
+            Automaat<string> dfa = new Automaat<string>(ndfa.Symbols);
+            ConvertState(ndfa.States.ToList()[0], ref dfa, ref ndfa);
+            if (dfa.States.Contains("FFFF"))
             {
-                foreach (char route in m.Symbols)
+                foreach (char route in dfa.Symbols)
                 {
-                    m.AddTransition(new Transition<string>("FFFF", route, "FFFF"));
+                    dfa.AddTransition(new Transition<string>("FFFF", route, "FFFF"));
                 }
             }
-
-            return m;
+            return dfa;
         }
 
-        private static void ConvertState(string state, ref Automata<string> dest, ref Automata<string> source)
+        private static void ConvertState(string currentState, ref Automaat<string> dfa, ref Automaat<string> ndfa)
         {
-            if (dest.GetTransition(state).Count == 2)
+            if (dfa.GetTransition(currentState).Count == ndfa.Symbols.Count)
             {
                 return;
             }
-            string[] states = state.Split('_');
+            string[] states = currentState.Split('_');
 
-            foreach (char c in source.Symbols)
+            foreach (char symbol in ndfa.Symbols)
             {
                 int[] counts = new int[states.Length];
 
                 for (int i = 0; i < states.Length; i++)
                 {
-                    List<Transition<string>> transitions = source.GetTransition(states[i]);
-                    int count = CheckAmountOfRoutesForChar(c, transitions);
-                    counts[i] = count;
+                    counts[i] = ndfa.GetTransition(states[i]).Count(transition => transition.Symbol == symbol);
                 }
 
                 int amountOfRoutes = 0;
@@ -53,22 +48,23 @@ namespace Week_1
 
                 if (amountOfRoutes == 0)
                 {
-                    dest.AddTransition(new Transition<string>(state, c, "FFFF"));
+                    dfa.AddTransition(new Transition<string>(currentState, symbol, "FFFF"));
                 }
+
                 string toState = "";
                 bool isFinalState = false;
                 SortedSet<String> newState = new SortedSet<string>();
                 if (amountOfRoutes >= 1)
                 {
-                    foreach (string s in states)
+                    foreach (string state in states)
                     {
-                        List<Transition<string>> trans = source.GetTransition(s);
+                        List<Transition<string>> trans = ndfa.GetTransition(state);
                         foreach (Transition<string> t in trans)
                         {
-                            if (t.Symbol == c)
+                            if (t.Symbol == symbol)
                             {
                                 newState.Add(t.ToState);
-                                if (source.FinalStates.Contains(t.ToState))
+                                if (ndfa.FinalStates.Contains(t.ToState))
                                 {
                                     isFinalState = true;
                                 }
@@ -86,33 +82,18 @@ namespace Week_1
                         toState = toState.TrimEnd('_');
                     }
 
-                    dest.AddTransition(new Transition<string>(state, c, toState));
-                    if (source.FinalStates.Contains(state))
+                    dfa.AddTransition(new Transition<string>(currentState, symbol, toState));
+                    if (ndfa.FinalStates.Contains(currentState))
                     {
-                        dest.DefineAsFinalState(state);
+                        dfa.DefineAsFinalState(currentState);
                     }
                     if (isFinalState)
-                        dest.DefineAsFinalState(toState);
+                        dfa.DefineAsFinalState(toState);
 
-                    if (state != toState)
-                        ConvertState(toState, ref dest, ref source);
+                    if (currentState != toState)
+                        ConvertState(toState, ref dfa, ref ndfa);
                 }
             }
-        }
-
-        private static int CheckAmountOfRoutesForChar(char c, List<Transition<string>> transitions)
-        {
-            int count = 0;
-
-            foreach (Transition<string> t in transitions)
-            {
-                if (t.Symbol == c)
-                {
-                    count++;
-                }
-            }
-
-            return count;
         }
     }
 }

@@ -46,7 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Automata.cs" />
+    <Compile Include="Automaat.cs" />
     <Compile Include="GraphVizParser.cs" />
     <Compile Include="ndfaToDfaConverter.cs" />
     <Compile Include="Program.cs" />

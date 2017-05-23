@@ -4,11 +4,8 @@ using System.Linq;
 
 namespace Week_1
 {
-    public sealed class Automata<T> where T : IComparable
+    public sealed class Automaat<T> where T : IComparable
     {
-        
-
-
         public ISet<Transition<T>> Transitions { get; }
 
         public SortedSet<T> States { get; }
@@ -16,15 +13,15 @@ namespace Week_1
         public SortedSet<T> FinalStates { get; }
         public SortedSet<char> Symbols { get; set; }
 
-        public Automata() : this(new SortedSet<char>())
+        public Automaat() : this(new SortedSet<char>())
         {
         }
 
-        public Automata(char[] s) : this(new SortedSet<char>(s))
+        public Automaat(char[] s) : this(new SortedSet<char>(s))
         {
         }
 
-        public Automata(SortedSet<char> symbols)
+        public Automaat(SortedSet<char> symbols)
         {
             Transitions = new SortedSet<Transition<T>>();
             States = new SortedSet<T>();

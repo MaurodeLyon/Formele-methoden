@@ -11,7 +11,7 @@ namespace Formele_methoden_tests
         public void RegExpAllOperatorsToAutomata()
         {
             RegExp regExp = new RegExp("d").Or(new RegExp("e")).Star().Dot(new RegExp("a").Plus().Dot(new RegExp("b").Or(new RegExp("c")).Plus()));
-            Automata<string> automaat = ThompsonConstruction.ConvertRegExp(regExp);
+            Automaat<string> automaat = ThompsonConstruction.ConvertRegExp(regExp);
 
             Assert.AreEqual("(0, $)-->2", automaat.Transitions.ToList()[0].ToString());
             Assert.AreEqual("(0, $)-->3", automaat.Transitions.ToList()[1].ToString());
@@ -42,7 +42,7 @@ namespace Formele_methoden_tests
         public void RegExpPlus()
         {
             RegExp regExp = new RegExp("a").Plus();
-            Automata<string> automaat = ThompsonConstruction.ConvertRegExp(regExp);
+            Automaat<string> automaat = ThompsonConstruction.ConvertRegExp(regExp);
 
             Assert.AreEqual("(0, $)-->2", automaat.Transitions.ToList()[0].ToString());
             Assert.AreEqual("(2, a)-->3", automaat.Transitions.ToList()[1].ToString());
@@ -54,7 +54,7 @@ namespace Formele_methoden_tests
         public void RegExpStar()
         {
             RegExp regExp = new RegExp("a").Star();
-            Automata<string> automaat = ThompsonConstruction.ConvertRegExp(regExp);
+            Automaat<string> automaat = ThompsonConstruction.ConvertRegExp(regExp);
             Assert.AreEqual("(0, $)-->1", automaat.Transitions.ToList()[0].ToString());
             Assert.AreEqual("(0, $)-->2", automaat.Transitions.ToList()[1].ToString());
             Assert.AreEqual("(2, a)-->3", automaat.Transitions.ToList()[2].ToString());
@@ -66,7 +66,7 @@ namespace Formele_methoden_tests
         public void RegExpOneA()
         {
             RegExp regExp = new RegExp("a");
-            Automata<string> automaat = ThompsonConstruction.ConvertRegExp(regExp);
+            Automaat<string> automaat = ThompsonConstruction.ConvertRegExp(regExp);
             Assert.AreEqual("(0, a)-->1", automaat.Transitions.ToList()[0].ToString());
         }
 
@@ -74,7 +74,7 @@ namespace Formele_methoden_tests
         public void RegExpOneAa()
         {
             RegExp regExp = new RegExp("aa");
-            Automata<string> automaat = ThompsonConstruction.ConvertRegExp(regExp);
+            Automaat<string> automaat = ThompsonConstruction.ConvertRegExp(regExp);
             Assert.AreEqual("(0, a)-->2", automaat.Transitions.ToList()[0].ToString());
             Assert.AreEqual("(2, a)-->1", automaat.Transitions.ToList()[1].ToString());
         }
@@ -83,7 +83,7 @@ namespace Formele_methoden_tests
         public void RegExpOneAaa()
         {
             RegExp regExp = new RegExp("aaa");
-            Automata<string> automaat = ThompsonConstruction.ConvertRegExp(regExp);
+            Automaat<string> automaat = ThompsonConstruction.ConvertRegExp(regExp);
             Assert.AreEqual("(0, a)-->2", automaat.Transitions.ToList()[0].ToString());
             Assert.AreEqual("(2, a)-->3", automaat.Transitions.ToList()[1].ToString());
             Assert.AreEqual("(3, a)-->1", automaat.Transitions.ToList()[2].ToString());
@@ -93,7 +93,7 @@ namespace Formele_methoden_tests
         public void RegExpOr()
         {
             RegExp regExp = new RegExp("a").Or(new RegExp("b"));
-            Automata<string> automaat = ThompsonConstruction.ConvertRegExp(regExp);
+            Automaat<string> automaat = ThompsonConstruction.ConvertRegExp(regExp);
             Assert.AreEqual("(0, $)-->2", automaat.Transitions.ToList()[0].ToString());
             Assert.AreEqual("(0, $)-->4", automaat.Transitions.ToList()[1].ToString());
             Assert.AreEqual("(2, a)-->3", automaat.Transitions.ToList()[2].ToString());
@@ -106,7 +106,7 @@ namespace Formele_methoden_tests
         public void RegExpDot()
         {
             RegExp regExp = new RegExp("a").Dot(new RegExp("b"));
-            Automata<string> automaat = ThompsonConstruction.ConvertRegExp(regExp);
+            Automaat<string> automaat = ThompsonConstruction.ConvertRegExp(regExp);
             Assert.AreEqual("(0, a)-->2", automaat.Transitions.ToList()[0].ToString());
             Assert.AreEqual("(2, b)-->1", automaat.Transitions.ToList()[1].ToString());
         }
@@ -115,7 +115,7 @@ namespace Formele_methoden_tests
         public void RegExpAbDotCd()
         {
             RegExp regExp = new RegExp("ab").Dot(new RegExp("cd"));
-            Automata<string> automaat = ThompsonConstruction.ConvertRegExp(regExp);
+            Automaat<string> automaat = ThompsonConstruction.ConvertRegExp(regExp);
             Assert.AreEqual("(0, a)-->3", automaat.Transitions.ToList()[0].ToString());
             Assert.AreEqual("(2, c)-->4", automaat.Transitions.ToList()[1].ToString());
             Assert.AreEqual("(3, b)-->2", automaat.Transitions.ToList()[2].ToString());
@@ -126,7 +126,7 @@ namespace Formele_methoden_tests
         public void RegExpAbDotCdPlus()
         {
             RegExp regExp = new RegExp("ab").Dot(new RegExp("cd").Plus());
-            Automata<string> automaat = ThompsonConstruction.ConvertRegExp(regExp);
+            Automaat<string> automaat = ThompsonConstruction.ConvertRegExp(regExp);
             Assert.AreEqual("(0, a)-->3", automaat.Transitions.ToList()[0].ToString());
             Assert.AreEqual("(2, $)-->4", automaat.Transitions.ToList()[1].ToString());
             Assert.AreEqual("(3, b)-->2", automaat.Transitions.ToList()[2].ToString());
@@ -140,7 +140,7 @@ namespace Formele_methoden_tests
         public void RegExpAorBstar()
         {
             RegExp regExp = new RegExp("a").Or(new RegExp("b")).Star();
-            Automata<string> automaat = ThompsonConstruction.ConvertRegExp(regExp);
+            Automaat<string> automaat = ThompsonConstruction.ConvertRegExp(regExp);
             Assert.AreEqual("(0, $)-->1", automaat.Transitions.ToList()[0].ToString());
             Assert.AreEqual("(0, $)-->2", automaat.Transitions.ToList()[1].ToString());
             Assert.AreEqual("(2, $)-->4", automaat.Transitions.ToList()[2].ToString());

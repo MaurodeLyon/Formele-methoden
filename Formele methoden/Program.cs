@@ -8,11 +8,11 @@ namespace Week_1
         static void Main()
         {
             RegExp reg = new RegExp("a").Or(new RegExp("b")).Dot(new RegExp("c").Or(new RegExp("d")));
-            Automata<string> regExp = ThompsonConstruction.ConvertRegExp(reg);
+            Automaat<string> regExp = ThompsonConstruction.ConvertRegExp(reg);
             GraphVizParser.PrintGraph(regExp, "ThompsonNdfa");
 
             char[] alphabet = { 'a', 'b' };
-            Automata<string> dfa = new Automata<string>(alphabet);
+            Automaat<string> dfa = new Automaat<string>(alphabet);
             dfa.AddTransition(new Transition<string>("1", 'a', "2"));
             dfa.AddTransition(new Transition<string>("1", 'b', "2"));
             dfa.AddTransition(new Transition<string>("1", 'b', "3"));
@@ -27,7 +27,7 @@ namespace Week_1
             dfa.DefineAsFinalState("1");
             dfa.DefineAsFinalState("4");
 
-            Automata<string> answer = NdfaToDfaConverter.Convert(dfa);
+            Automaat<string> answer = NdfaToDfaConverter.Convert(dfa);
             GraphVizParser.PrintGraph(answer, "ndfa2dfa");
 
             bool looping = true;
