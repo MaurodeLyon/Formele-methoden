@@ -49,12 +49,6 @@ namespace Week_1
             FinalStates.Add(t);
         }
 
-        public void PrintTransitions()
-        {
-            foreach (var t in Transitions)
-                Console.WriteLine(t);
-        }
-
         public bool IsDfa()
         {
             bool isDfa = true;
@@ -68,7 +62,7 @@ namespace Week_1
                 if (c != null)
                 {
                     var symbol = (char) c;
-                    isDfa = isDfa && GetToStates(@from, symbol);
+                    isDfa = isDfa && GetToStates(from, symbol);
                 }
             return isDfa;
         }
