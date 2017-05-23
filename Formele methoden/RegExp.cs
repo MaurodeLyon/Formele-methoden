@@ -150,10 +150,6 @@ namespace Week_1
                         languageResult.Add("");
                     }
                     break;
-
-                default:
-                    Console.WriteLine("getLanguage does not support operator " + Operator);
-                    break;
             }
             return languageResult;
         }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace Week_1
@@ -38,8 +37,6 @@ namespace Week_1
                 case RegExp.OperatorEnum.One:
                     One(regExp, ref automaat, ref stateCounter, leftState, rightState);
                     break;
-                default:
-                    throw new ArgumentOutOfRangeException();
             }
         }
 

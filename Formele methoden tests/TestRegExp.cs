@@ -1,4 +1,6 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Week_1;
 
 namespace Formele_methoden_tests
@@ -351,6 +353,61 @@ namespace Formele_methoden_tests
             Assert.IsNull(regExpStar.Right);
             Assert.AreEqual(RegExp.OperatorEnum.Star, regExpStar.Operator);
             Assert.AreEqual("", regExpStar.Terminals);
+        }
+
+        [TestMethod]
+        public void GetLanguagePlusTest()
+        {
+            RegExp regExp = new RegExp("a").Plus();
+            SortedSet<string> language = regExp.GetLanguage(2);
+            Assert.AreEqual(2,language.Count);
+            Assert.AreEqual("a",language.ToList()[0]);
+            Assert.AreEqual("aa",language.ToList()[1]);
+        }
+
+        [TestMethod]
+        public void GetLanguageStarTest()
+        {
+            RegExp regExp = new RegExp("a").Star();
+            SortedSet<string> language = regExp.GetLanguage(2);
+            Assert.AreEqual(3,language.Count);
+            Assert.AreEqual("",language.ToList()[0]);
+            Assert.AreEqual("a",language.ToList()[1]);
+            Assert.AreEqual("aa",language.ToList()[2]);
+        }
+
+        [TestMethod]
+        public void GetLanguageOrTest()
+        {
+            RegExp regExp = new RegExp("a").Or(new RegExp("b"));
+            SortedSet<string> language = regExp.GetLanguage(2);
+            Assert.AreEqual(2,language.Count);
+            Assert.AreEqual("a",language.ToList()[0]);
+            Assert.AreEqual("b",language.ToList()[1]);
+        }
+
+        [TestMethod]
+        public void GetLanguageDotTest()
+        {
+            RegExp regExp = new RegExp("a").Dot(new RegExp("b"));
+            SortedSet<string> language = regExp.GetLanguage(2);
+            Assert.AreEqual(1,language.Count);
+            Assert.AreEqual("ab",language.ToList()[0]);
+        }
+
+        [TestMethod]
+        public void GetLanguageEmptyTest()
+        {
+            RegExp regExp = new RegExp("a");
+            SortedSet<string> language = regExp.GetLanguage(0);
+            Assert.AreEqual(0,language.Count);
+        }
+
+        [TestMethod]
+        public void ToStringTest()
+        {
+            RegExp regExp = new RegExp("d").Or(new RegExp("e")).Star().Dot(new RegExp("a").Plus().Dot(new RegExp("b").Or(new RegExp("c")).Plus()));
+            Assert.AreEqual("((d|e)*.(a+.(b|c)+))", regExp.ToString());
         }
     }
 }

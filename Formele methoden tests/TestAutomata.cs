@@ -162,16 +162,16 @@ namespace Formele_methoden_tests
         public void GeefTaalTotLengte()
         {
             Automata<string> automaat = new Automata<string>(new[] {'a', 'b'});
-            automaat.AddTransition(new Transition<string>("0",'a',"1"));
-            automaat.AddTransition(new Transition<string>("0",'b',"0"));
+            automaat.AddTransition(new Transition<string>("0", 'a', "1"));
+            automaat.AddTransition(new Transition<string>("0", 'b', "0"));
 
-            automaat.AddTransition(new Transition<string>("1",'a',"1"));
-            automaat.AddTransition(new Transition<string>("1",'b',"0"));
-            
+            automaat.AddTransition(new Transition<string>("1", 'a', "1"));
+            automaat.AddTransition(new Transition<string>("1", 'b', "0"));
+
             automaat.DefineAsStartState("0");
             automaat.DefineAsFinalState("1");
 
-            Assert.AreEqual(4,automaat.GeefTaalTotLengte(2).Count);
+            Assert.AreEqual(4, automaat.GeefTaalTotLengte(2).Count);
         }
     }
 }
