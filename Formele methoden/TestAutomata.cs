@@ -17,7 +17,7 @@
             // m.AddTransition(new Transition<string>("3", '$', "3"));
 
             m.AddTransition(new Transition<string>("4", 'b', "3"));
-            m.AddTransition(new Transition<string>("4", 'b', "4"));
+            m.AddTransition(new Transition<string>("4", 'b', "1"));
 
             m.DefineAsStartState("1");
             m.DefineAsFinalState("1");

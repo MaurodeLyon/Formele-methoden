@@ -21,7 +21,7 @@ namespace Week_1
 
             foreach (string t in finalStates)
             {
-                toPrint += " " + t + " ";
+                toPrint += " " + ("S"+t) + " ";
             }
             toPrint += "; ";
             toPrint += " ";
@@ -29,7 +29,7 @@ namespace Week_1
 
             foreach (Transition<string> t in transitions)
             {
-                toPrint += " " + t.FromState + " -> " + t.ToState + " " + "[ label = " + "\"" + t.Symbol + "\"" + " ];";
+                toPrint += " " + ("S"+t.FromState) + " -> " + ("S"+t.ToState) + " " + "[ label = " + "\"" + t.Symbol + "\"" + " ];";
             }
             toPrint += " }";
 

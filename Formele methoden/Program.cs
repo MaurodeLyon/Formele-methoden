@@ -16,10 +16,12 @@ namespace Week_1
             Automata<string> regExpex = ThompsonConstruction.ConvertRegExpToAutomata(reg3);
             GraphVizParser.PrintGraph(regExpex, "TEST");
 
-            ndfaToDfaConverter.convert(TestAutomata.NDFAToConvert());
+            Automata<string> answer = ndfaToDfaConverter.convert(TestAutomata.NDFAToConvert());
+
 
             //TestRegExp regExp = new TestRegExp();
             // regExp.testLanguage();
+            GraphVizParser.PrintGraph(answer, "NDFATODFACONV");
             TestAutomata.DfaTEST3().PrintTransitions();
             Console.WriteLine("Is DFA: " + TestAutomata.DfaTEST3().IsDfa());
             bool looping = true;
