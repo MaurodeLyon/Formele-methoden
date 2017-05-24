@@ -48,7 +48,7 @@
   <ItemGroup>
     <Compile Include="Automaat.cs" />
     <Compile Include="GraphVizParser.cs" />
-    <Compile Include="ndfaToDfaConverter.cs" />
+    <Compile Include="NdfaToDfaConverter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegExp.cs" />
