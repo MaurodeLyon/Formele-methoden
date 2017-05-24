@@ -34,20 +34,18 @@ namespace Week_1
             }
             string[] states = currentState.Split('_');
 
+
             foreach (char symbol in ndfa.Symbols)
             {
-                List<Transition<string>> currentTransitions = dfa.GetTransition(currentState);
-                foreach (Transition<string> currentTransition in currentTransitions)
+                List<Transition<string>> currentTrans = dfa.GetTransition(currentState);
+                foreach (Transition<string> t in currentTrans)
                 {
-                    if (currentTransition.Symbol == symbol)
+                    if (t.Symbol == symbol)
                     {
                         return;
                     }
                 }
-            }
 
-            foreach (char symbol in ndfa.Symbols)
-            {
                 int[] counts = new int[states.Length];
 
                 for (int i = 0; i < states.Length; i++)
@@ -136,6 +134,26 @@ namespace Week_1
                 }
             }
             return dfa;
+        }
+
+        public static Automaat<string> reverse(Automaat<string> automaat)
+        {
+            SortedSet<string> finalstates = automaat.FinalStates;
+            SortedSet<string> startStates = automaat.StartStates;
+
+            foreach (Transition<String> t in automaat.Transitions)
+            {
+                string fromState = t.FromState;
+                string toState = t.ToState;
+
+                t.FromState = toState;
+                t.ToState = fromState;
+            }
+
+            automaat.FinalStates = startStates;
+            automaat.StartStates = finalstates;
+
+            return automaat;
         }
     }
 }

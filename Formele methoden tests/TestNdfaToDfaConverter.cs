@@ -93,6 +93,18 @@ namespace Formele_methoden_tests
             ndfa.DefineAsFinalState("2");
             
             Automaat<string> dfa = NdfaToDfaConverter.Convert(ndfa);
+            Assert.AreEqual("(A_S, a)-->A_S", dfa.Transitions.ToList()[0].ToString());
+            Assert.AreEqual("(A_S, b)-->B", dfa.Transitions.ToList()[1].ToString());
+            Assert.AreEqual("(B, a)-->F", dfa.Transitions.ToList()[2].ToString());
+            Assert.AreEqual("(B, b)-->F", dfa.Transitions.ToList()[3].ToString());
+            Assert.AreEqual("(F, a)-->F", dfa.Transitions.ToList()[4].ToString());
+            Assert.AreEqual("(F, b)-->F", dfa.Transitions.ToList()[5].ToString());
+            Assert.AreEqual("(S, a)-->A_S", dfa.Transitions.ToList()[6].ToString());
+            Assert.AreEqual("(S, b)-->F", dfa.Transitions.ToList()[7].ToString());
+
+            Assert.AreEqual("B", dfa.FinalStates.ToList()[0]);
+
+            Assert.AreEqual("S", dfa.StartStates.ToList()[0]);
         }
     }
 }
