@@ -112,30 +112,6 @@ namespace Week_1
             }
         }
 
-        public static Automaat<string> ConvertAutomaat(Automaat<string> ndfa)
-        {
-            Automaat<string> dfa = new Automaat<string>(ndfa.Symbols);
-            foreach (string ndfaState in ndfa.States)
-            {
-                foreach (char ndfaSymbol in ndfa.Symbols)
-                {
-                    List<Transition<string>> transitions = ndfa.Transitions.Where(e => e.FromState == ndfaState)
-                        .ToList();
-                    List<string> resultStates = transitions.Where(e => e.Symbol == ndfaSymbol)
-                        .Select(e => e.ToState)
-                        .ToList();
-                    string resultState = "";
-                    foreach (string state in resultStates)
-                    {
-                        resultState += $"{state},";
-                    }
-                    resultState = resultState.Remove(resultState.Length - 1, 1);
-                    dfa.AddTransition(new Transition<string>(ndfaState, ndfaSymbol, resultState));
-                }
-            }
-            return dfa;
-        }
-
         public static Automaat<string> reverse(Automaat<string> automaat)
         {
             SortedSet<string> finalstates = automaat.FinalStates;
