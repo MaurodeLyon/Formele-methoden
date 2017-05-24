@@ -9,12 +9,18 @@ namespace Week_1
         public static Automaat<string> Convert(Automaat<string> ndfa)
         {
             Automaat<string> dfa = new Automaat<string>(ndfa.Symbols);
-            ConvertState(ndfa.States.ToList()[0], ref dfa, ref ndfa);
-            if (dfa.States.Contains("FFFF"))
+
+            foreach (string startState in ndfa.StartStates)
+            {
+                ConvertState(startState, ref dfa, ref ndfa);
+                dfa.DefineAsStartState(startState);
+            }
+
+            if (dfa.States.Contains("F"))
             {
                 foreach (char route in dfa.Symbols)
                 {
-                    dfa.AddTransition(new Transition<string>("FFFF", route, "FFFF"));
+                    dfa.AddTransition(new Transition<string>("F", route, "F"));
                 }
             }
             return dfa;
@@ -27,6 +33,18 @@ namespace Week_1
                 return;
             }
             string[] states = currentState.Split('_');
+
+            foreach (char symbol in ndfa.Symbols)
+            {
+                List<Transition<string>> currentTransitions = dfa.GetTransition(currentState);
+                foreach (Transition<string> currentTransition in currentTransitions)
+                {
+                    if (currentTransition.Symbol == symbol)
+                    {
+                        return;
+                    }
+                }
+            }
 
             foreach (char symbol in ndfa.Symbols)
             {
@@ -48,7 +66,7 @@ namespace Week_1
 
                 if (amountOfRoutes == 0)
                 {
-                    dfa.AddTransition(new Transition<string>(currentState, symbol, "FFFF"));
+                    dfa.AddTransition(new Transition<string>(currentState, symbol, "F"));
                 }
 
                 string toState = "";
@@ -103,15 +121,18 @@ namespace Week_1
             {
                 foreach (char ndfaSymbol in ndfa.Symbols)
                 {
-                    List<Transition<string>> transitions = ndfa.Transitions.Where(e => e.FromState == ndfaState).ToList();
-                    List<string> resultStates = transitions.Where(e => e.Symbol == ndfaSymbol).Select(e => e.ToState).ToList();
+                    List<Transition<string>> transitions = ndfa.Transitions.Where(e => e.FromState == ndfaState)
+                        .ToList();
+                    List<string> resultStates = transitions.Where(e => e.Symbol == ndfaSymbol)
+                        .Select(e => e.ToState)
+                        .ToList();
                     string resultState = "";
                     foreach (string state in resultStates)
                     {
-                        resultState += $"{state},";                                               
+                        resultState += $"{state},";
                     }
-                    resultState = resultState.Remove(resultState.Length-1, 1);
-                    dfa.AddTransition(new Transition<string>(ndfaState,ndfaSymbol,resultState));
+                    resultState = resultState.Remove(resultState.Length - 1, 1);
+                    dfa.AddTransition(new Transition<string>(ndfaState, ndfaSymbol, resultState));
                 }
             }
             return dfa;
