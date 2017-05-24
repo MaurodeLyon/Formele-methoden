@@ -7,9 +7,9 @@ namespace Week_1
     {
         public const char Epsilon = '$';
 
-        public T FromState { get; }
+        public T FromState { get; set; }
         public char Symbol { get; }
-        public T ToState { get; }
+        public T ToState { get; set; }
 
         public Transition(T fromOrTo, char symbol) : this(fromOrTo, symbol, fromOrTo)
         {

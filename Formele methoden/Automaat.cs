@@ -9,8 +9,8 @@ namespace Week_1
         public ISet<Transition<T>> Transitions { get; }
 
         public SortedSet<T> States { get; }
-        public SortedSet<T> StartStates { get; }
-        public SortedSet<T> FinalStates { get; }
+        public SortedSet<T> StartStates { get; set; }
+        public SortedSet<T> FinalStates { get; set; }
         public SortedSet<char> Symbols { get; set; }
 
         public Automaat() : this(new SortedSet<char>())
