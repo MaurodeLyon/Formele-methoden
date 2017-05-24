@@ -112,7 +112,7 @@ namespace Week_1
             }
         }
 
-        public static Automaat<string> reverse(Automaat<string> automaat)
+        public static Automaat<string> Reverse(Automaat<string> automaat)
         {
             SortedSet<string> finalstates = automaat.FinalStates;
             SortedSet<string> startStates = automaat.StartStates;
