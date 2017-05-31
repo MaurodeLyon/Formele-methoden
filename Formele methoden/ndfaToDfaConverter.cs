@@ -10,11 +10,21 @@ namespace Week_1
         {
             Automaat<string> dfa = new Automaat<string>(ndfa.Symbols);
 
+            string combinedStartState = "";
+
+            //New way of generating starting point for recursive method, needs test method before removing deprecated code
             foreach (string startState in ndfa.StartStates)
             {
-                ConvertState(startState, ref dfa, ref ndfa);
-                dfa.DefineAsStartState(startState);
+                //ConvertState(startState, ref dfa, ref ndfa);
+                //dfa.DefineAsStartState(startState);
+                combinedStartState += startState;
+                combinedStartState += "_";
+
             }
+
+            combinedStartState= combinedStartState.TrimEnd('_');
+            ConvertState(combinedStartState, ref dfa, ref ndfa);
+            dfa.DefineAsStartState(combinedStartState);
 
             if (dfa.States.Contains("F"))
             {
@@ -62,7 +72,7 @@ namespace Week_1
             return correctAmountOfRoutes;
         }
 
-        //Fills toState string with correct TOSTATE, returns true or false whether
+        //Fills toState string with correct TOSTATE, returns true or false whether or not this new TOSTATE should be a final state
         private static bool generateToState(ref string toState, string[] states, char symbol, Automaat<string> ndfa)
         {
             
