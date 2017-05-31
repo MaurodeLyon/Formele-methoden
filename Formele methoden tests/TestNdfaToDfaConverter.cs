@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Week_1;
 
@@ -59,7 +58,7 @@ namespace Formele_methoden_tests
 
             ndfa.DefineAsStartState("S");
             ndfa.DefineAsFinalState("B");
-            
+
             Automaat<string> dfa = NdfaToDfaConverter.Convert(ndfa);
             Assert.AreEqual("(A_S, a)-->A_S", dfa.Transitions.ToList()[0].ToString());
             Assert.AreEqual("(A_S, b)-->B", dfa.Transitions.ToList()[1].ToString());
@@ -82,7 +81,7 @@ namespace Formele_methoden_tests
             ndfa.AddTransition(new Transition<string>("0", 'a', "0"));
             ndfa.AddTransition(new Transition<string>("0", 'a', "1"));
             ndfa.AddTransition(new Transition<string>("0", 'b', "1"));
-            
+
             ndfa.AddTransition(new Transition<string>("1", 'a', "2"));
             ndfa.AddTransition(new Transition<string>("1", 'b', "2"));
 
@@ -91,7 +90,7 @@ namespace Formele_methoden_tests
 
             ndfa.DefineAsStartState("0");
             ndfa.DefineAsFinalState("2");
-            
+
             Automaat<string> dfa = NdfaToDfaConverter.Convert(ndfa);
             Assert.AreEqual("(0, a)-->0_1", dfa.Transitions.ToList()[0].ToString());
             Assert.AreEqual("(0, b)-->1", dfa.Transitions.ToList()[1].ToString());
@@ -116,6 +115,32 @@ namespace Formele_methoden_tests
             Assert.AreEqual("2", dfa.FinalStates.ToList()[3]);
 
             Assert.AreEqual("0", dfa.StartStates.ToList()[0]);
+        }
+
+        [TestMethod]
+        public void TestReverseTransition()
+        {
+            Automaat<string> automaat = new Automaat<string>();
+            automaat.AddTransition(new Transition<string>("0", 'a', "1"));
+            automaat.AddTransition(new Transition<string>("0", 'b', "1"));
+            automaat.AddTransition(new Transition<string>("1", 'b', "0"));
+            automaat.AddTransition(new Transition<string>("1", 'a', "1"));
+            Automaat<string> reverse = NdfaToDfaConverter.Reverse(automaat);
+            Assert.AreEqual("(0, b)-->1", reverse.Transitions.ToList()[0].ToString());
+            Assert.AreEqual("(1, a)-->0", reverse.Transitions.ToList()[1].ToString());
+            Assert.AreEqual("(1, a)-->1", reverse.Transitions.ToList()[2].ToString());
+            Assert.AreEqual("(1, b)-->0", reverse.Transitions.ToList()[3].ToString());
+        }
+
+        [TestMethod]
+        public void TestReverseStartStop()
+        {
+            Automaat<string> automaat = new Automaat<string>();
+            automaat.DefineAsStartState("0");
+            automaat.DefineAsFinalState("1");
+            Automaat<string> reverse = NdfaToDfaConverter.Reverse(automaat);
+            Assert.AreEqual(automaat.StartStates, reverse.FinalStates);
+            Assert.AreEqual(automaat.FinalStates, reverse.StartStates);
         }
     }
 }
