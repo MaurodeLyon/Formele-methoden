@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="Automaat.cs" />
     <Compile Include="GraphVizParser.cs" />
+    <Compile Include="HopcroftAlgorithm.cs" />
     <Compile Include="NdfaToDfaConverter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

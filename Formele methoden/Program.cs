@@ -64,7 +64,7 @@ namespace Week_1
             dfaToMinimize.DefineAsFinalState("6");
 
             //Automaat<string> minimizedDfa = NdfaToDfaConverter.Convert(NdfaToDfaConverter.reverse(NdfaToDfaConverter.Convert(NdfaToDfaConverter.reverse(dfaToMinimize))));
-            Automaat<string> minimizedDfa = NdfaToDfaConverter.Convert(NdfaToDfaConverter.reverse(dfaToMinimize));
+            Automaat<string> minimizedDfa = NdfaToDfaConverter.Convert(NdfaToDfaConverter.Reverse(dfaToMinimize));
             GraphVizParser.PrintGraph(minimizedDfa,"minimizedDFA");
 
             bool looping = true;
