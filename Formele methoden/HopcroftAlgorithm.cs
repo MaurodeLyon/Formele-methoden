@@ -8,5 +8,15 @@ namespace Week_1
 {
     class HopcroftAlgorithm
     {
+        struct routeDef
+        {
+            private char symbol { get; set; }
+            private char toState;
+        }
+        //public static Automaat<string> minimizeDFA(Automaat<string> automaat)
+        //{
+
+        //}
+
     }
 }
