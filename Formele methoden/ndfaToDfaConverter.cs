@@ -114,22 +114,14 @@ namespace Week_1
 
         public static Automaat<string> Reverse(Automaat<string> automaat)
         {
-            SortedSet<string> finalstates = automaat.FinalStates;
-            SortedSet<string> startStates = automaat.StartStates;
-
-            foreach (Transition<String> t in automaat.Transitions)
+            Automaat<string> reverseAutomaat = new Automaat<string>();
+            foreach (Transition<String> transition in automaat.Transitions)
             {
-                string fromState = t.FromState;
-                string toState = t.ToState;
-
-                t.FromState = toState;
-                t.ToState = fromState;
+                reverseAutomaat.AddTransition(new Transition<string>(transition.ToState, transition.Symbol, transition.FromState));
             }
-
-            automaat.FinalStates = startStates;
-            automaat.StartStates = finalstates;
-
-            return automaat;
+            reverseAutomaat.StartStates = automaat.FinalStates;
+            reverseAutomaat.FinalStates = automaat.StartStates;
+            return reverseAutomaat;
         }
     }
 }
