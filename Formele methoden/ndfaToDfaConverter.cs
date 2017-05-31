@@ -26,91 +26,157 @@ namespace Week_1
             return dfa;
         }
 
-        private static void ConvertState(string currentState, ref Automaat<string> dfa, ref Automaat<string> ndfa)
+
+
+
+
+        private static bool checkExistingRouteForChar(string currentState, char symbol, Automaat<string> dfa)
         {
-            if (dfa.GetTransition(currentState).Count == ndfa.Symbols.Count)
+            List<Transition<string>> currentTrans = dfa.GetTransition(currentState);
+            foreach (Transition<string> t in currentTrans)
             {
-                return;
+                if (t.Symbol == symbol)
+                {
+                    return true;
+                }
             }
-            string[] states = currentState.Split('_');
 
+            return false;
+        }
 
-            foreach (char symbol in ndfa.Symbols)
+        private static int checkAvailableRoutes(string[] states, char symbol, Automaat<string> ndfa)
+        {
+            //array which shows how many possible routes there are for each sub-state
+            int[] possibleRoutesPerState = new int[states.Length];
+
+            //// value that shows the amount of routes the ndfa has for all the substates combined.
+            int correctAmountOfRoutes = 0;
+            //reads ndfa for possible routes, saves maximum amount of accessible routes to correctAmountOfRoutes
+            for (int i = 0; i < states.Length; i++)
             {
-                List<Transition<string>> currentTrans = dfa.GetTransition(currentState);
-                foreach (Transition<string> t in currentTrans)
+                if(ndfa.GetTransition(states[i]).Count(transition => transition.Symbol == symbol) > correctAmountOfRoutes)
+                    correctAmountOfRoutes= ndfa.GetTransition(states[i]).Count(transition => transition.Symbol == symbol);
+
+            }
+
+            return correctAmountOfRoutes;
+        }
+
+        //Fills toState string with correct TOSTATE, returns true or false whether
+        private static bool generateToState(ref string toState, string[] states, char symbol, Automaat<string> ndfa)
+        {
+            
+            //boolean that will save whether this new TOSTATE needs to be a finalstate
+            bool isFinalState = false;
+            //Set of all the substates that need to be combined.
+            SortedSet<String> newState = new SortedSet<string>();
+
+            //if correctAmountOfRoutes is bigger or equal to 1 this means a correct route can be created for the DFA
+            
+
+                //Loop through all the substates 
+                foreach (string state in states)
                 {
-                    if (t.Symbol == symbol)
+                    //ndfa transitions for state
+                    List<Transition<string>> trans = ndfa.GetTransition(state);
+
+                    //This loop goes through all the aforementioned transitions
+                    //to see if there are routes with the correct symbol that need to be added to the new TOSTATE
+                    foreach (Transition<string> t in trans)
                     {
-                        return;
-                    }
-                }
-
-                int[] counts = new int[states.Length];
-
-                for (int i = 0; i < states.Length; i++)
-                {
-                    counts[i] = ndfa.GetTransition(states[i]).Count(transition => transition.Symbol == symbol);
-                }
-
-                int amountOfRoutes = 0;
-                foreach (int i in counts)
-                {
-                    if (i > amountOfRoutes)
-                    {
-                        amountOfRoutes = i;
-                    }
-                }
-
-                if (amountOfRoutes == 0)
-                {
-                    dfa.AddTransition(new Transition<string>(currentState, symbol, "F"));
-                }
-
-                string toState = "";
-                bool isFinalState = false;
-                SortedSet<String> newState = new SortedSet<string>();
-                if (amountOfRoutes >= 1)
-                {
-                    foreach (string state in states)
-                    {
-                        List<Transition<string>> trans = ndfa.GetTransition(state);
-                        foreach (Transition<string> t in trans)
+                        if (t.Symbol == symbol)
                         {
-                            if (t.Symbol == symbol)
+                            newState.Add(t.ToState);
+                            //Check if this state is final, if one of the substates for the new TOSTATE is final, TOSTATE becomes final as a whole.
+                            if (ndfa.FinalStates.Contains(t.ToState))
                             {
-                                newState.Add(t.ToState);
-                                if (ndfa.FinalStates.Contains(t.ToState))
-                                {
-                                    isFinalState = true;
-                                }
+                                isFinalState = true;
                             }
                         }
                     }
-
-                    foreach (string subState in newState)
-                    {
-                        toState += subState;
-                        toState += "_";
-                    }
-                    if (newState.Count >= 1)
-                    {
-                        toState = toState.TrimEnd('_');
-                    }
-
-                    dfa.AddTransition(new Transition<string>(currentState, symbol, toState));
-                    if (ndfa.FinalStates.Contains(currentState))
-                    {
-                        dfa.DefineAsFinalState(currentState);
-                    }
-                    if (isFinalState)
-                        dfa.DefineAsFinalState(toState);
-
-                    if (currentState != toState)
-                        ConvertState(toState, ref dfa, ref ndfa);
                 }
+
+                //combines substates into one string (TOSTATE)
+                foreach (string subState in newState)
+                {
+                    toState += subState;
+                    toState += "_";
+                }
+                toState = toState.TrimEnd('_');
+
+
+
+                return isFinalState;
+        }
+
+
+
+        private static void ConvertState(string currentState, ref Automaat<string> dfa, ref Automaat<string> ndfa)
+        {
+            //If this state is already completely processed, return to avoid stackoverflow exception
+            if (dfa.GetTransition(currentState).Count == ndfa.Symbols.Count)
+                return;
+            
+
+            //split given state for comparison
+            string[] states = currentState.Split('_');
+
+            //Loop through all symbols aka all the necessary routes
+            foreach (char symbol in ndfa.Symbols)
+            {
+                //checks if this symbol already has a route in the new DFA
+                if(checkExistingRouteForChar(currentState, symbol, dfa))
+                    return;
+
+                int correctAmountOfRoutes = checkAvailableRoutes(states, symbol, ndfa);
+                
+                
+                //the TOSTATE of the to be added implementation
+                string toState = "";
+
+
+                switch (correctAmountOfRoutes)
+                {
+                    case 0:
+                        dfa.AddTransition(new Transition<string>(currentState, symbol, "F"));
+                        break;
+                    default:
+                        bool isFinalState =generateToState(ref toState, states, symbol, ndfa);
+
+                        dfa.AddTransition(new Transition<string>(currentState, symbol, toState));
+
+                        //Checks if currentState is should be final aswell (could be done better)
+                        if (ndfa.FinalStates.Contains(currentState))
+                        {
+                            dfa.DefineAsFinalState(currentState);
+                        }
+
+                        if (isFinalState)
+                            dfa.DefineAsFinalState(toState);
+
+                        //checks if its not a loop to itself
+                        if (currentState != toState)
+                            ConvertState(toState, ref dfa, ref ndfa);
+                        break;
+                }
+
+               
             }
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         public static Automaat<string> Reverse(Automaat<string> automaat)
         {

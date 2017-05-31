@@ -27,8 +27,8 @@ namespace Week_1
             dfa.DefineAsFinalState("1");
             dfa.DefineAsFinalState("4");
 
-            //Automaat<string> answer = NdfaToDfaConverter.Convert(dfa);
-            //GraphVizParser.PrintGraph(answer, "ndfa2dfa");
+            Automaat<string> answer = NdfaToDfaConverter.Convert(dfa);
+            GraphVizParser.PrintGraph(answer, "ndfa2dfa");
 
             //Automaat<string> ndfa = NdfaToDfaConverter.reverse(answer);
 
