@@ -70,10 +70,7 @@ namespace Week_1
             bool isFinalState = false;
             //Set of all the substates that need to be combined.
             SortedSet<String> newState = new SortedSet<string>();
-
-            //if correctAmountOfRoutes is bigger or equal to 1 this means a correct route can be created for the DFA
-            
-
+        
                 //Loop through all the substates 
                 foreach (string state in states)
                 {
@@ -163,19 +160,6 @@ namespace Week_1
                
             }
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         public static Automaat<string> Reverse(Automaat<string> automaat)
