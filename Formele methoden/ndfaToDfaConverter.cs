@@ -12,7 +12,7 @@ namespace Week_1
 
             string combinedStartState = "";
 
-            //New way of generating starting point for recursive method, needs test method before removing deprecated code
+            //New way of generating starting point for recursive method, needs test method before removing commented deprecated code
             foreach (string startState in ndfa.StartStates)
             {
                 //ConvertState(startState, ref dfa, ref ndfa);
