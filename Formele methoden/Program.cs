@@ -95,8 +95,8 @@ namespace Week_1
             epsilonNDFA.DefineAsStartState("0");
             epsilonNDFA.DefineAsFinalState("10");
 
-            Automaat<string> epsilondfa = NdfaToDfaConverter.Convert(epsilonNDFA);
-            GraphVizParser.PrintGraph(epsilondfa, "epsilondfa");
+            Automaat<string> epsilonDFA = NdfaToDfaConverter.Convert(epsilonNDFA);
+            GraphVizParser.PrintGraph(epsilonDFA, "epsilondfa");
 
 
 

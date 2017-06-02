@@ -6,57 +6,6 @@ namespace Week_1
 {
     public class NdfaToDfaConverter
     {
-        private static void retrieveEpsilonIncludedState(string state, Automaat<string> auto, ref SortedSet<string> subStateList)
-        {
-            subStateList.Add(state);
-            //string completeState = state;
-            List<Transition<string>> trans = auto.GetTransition(state);
-            //SortedSet<String> subStateList = new SortedSet<string>();
-      
-            foreach (Transition<string> t in trans)
-            {
-                if (t.Symbol == '$' && !subStateList.Contains(t.ToState))
-                {
-
-                    //completeState += retrieveEpsilonIncludedState(t.ToState, auto,subStateList);
-                    //completeState += "_";
-                    retrieveEpsilonIncludedState(t.ToState, auto, ref subStateList);
-                }
-            }
-            /////Meant to clear duplicates (if Set can be used it is a better approach.
-            //string[] individualSubStates = (completeState.Split('_')).Distinct().ToArray();
-            //completeState = "";
-
-            //foreach (string s in individualSubStates)
-            //{
-            //    completeState += s;
-            //    completeState += "_";
-            //}
-            //completeState = completeState.TrimEnd('_');
-            //return completeState;
-
-        }
-        ///UNNECESSARY
-        private static string generateStartState(string state, Automaat<string> ndfa)
-        {
-            string combinedStartState = "";
-
-            //New way of generating starting point for recursive method, needs test method before removing commented deprecated code
-            foreach (string startState in ndfa.StartStates)
-            {
-
-                //ConvertState(startState, ref dfa, ref ndfa);
-                //dfa.DefineAsStartState(startState);
-                combinedStartState += startState;
-                combinedStartState += "_";
-
-
-
-            }
-
-            combinedStartState = combinedStartState.TrimEnd('_');
-            return "";
-        }
 
         public static Automaat<string> Convert(Automaat<string> ndfa)
         {
@@ -64,31 +13,28 @@ namespace Week_1
 
             string combinedStartState = "";
 
-            //New way of generating starting point for recursive method, needs test method before removing commented deprecated code
+            
             SortedSet<string> completeStartState = new SortedSet<string>();
+            // Loop through all the available start states from the ndfa and create a list with them + their epsilon-linked states
             foreach (string startState in ndfa.StartStates)
             {
                 retrieveEpsilonIncludedState(startState, ndfa, ref completeStartState);
 
-                ////ConvertState(startState, ref dfa, ref ndfa);
-                ////dfa.DefineAsStartState(startState);
-                //combinedStartState += startState;
-                //combinedStartState += "_";
-
             }
-
+            //Turn sortedset into a string with all its states
             foreach(string s in completeStartState)
             {
                 combinedStartState += s;
                 combinedStartState += "_";
             }
-
+            //trim last "_" off of string
             combinedStartState= combinedStartState.TrimEnd('_');
 
-
+            //Start conversion
             ConvertState(combinedStartState, ref dfa, ref ndfa);
+            // Define combinedStartState as one and only start state in dfa
             dfa.DefineAsStartState(combinedStartState);
-
+            // Add a symbol loop to the failstate if one is created during conversion.
             if (dfa.States.Contains("F"))
             {
                 foreach (char route in dfa.Symbols)
@@ -99,7 +45,28 @@ namespace Week_1
             return dfa;
         }
 
+        private static void retrieveEpsilonIncludedState(string state, Automaat<string> auto, ref SortedSet<string> subStateList)
+        {
+            //Add given state to the given substatelist
+            subStateList.Add(state);
 
+            //retrieve the list of transitions from the given state
+            List<Transition<string>> trans = auto.GetTransition(state);
+
+            //Loop through all the transitions in search of epsilon routes. If a epsilon route is found that is not yet included in the list the route and its subsequent epsilon routes-
+            //Will be added to substatelist through recursion.
+            foreach (Transition<string> t in trans)
+            {
+                if (t.Symbol == '$' && !subStateList.Contains(t.ToState))
+                {
+
+                    retrieveEpsilonIncludedState(t.ToState, auto, ref subStateList);
+                }
+            }
+            /////Handy should we ever need to remove duplicates from an array without the use of sortedset<>
+            //string[] individualSubStates = (completeState.Split('_')).Distinct().ToArray();
+
+        }
 
 
 
@@ -141,11 +108,9 @@ namespace Week_1
             
             //boolean that will save whether this new TOSTATE needs to be a finalstate
             bool isFinalState = false;
-            //Set of all the substates that need to be combined. this set does not include epsilon routed states, yet allows for the creation of a set with epsilon routed states
-            SortedSet<string> primeToStates = new SortedSet<string>();
-            //Same as primeToStates but this one also includes states which are reached through epsilons.
-            SortedSet<string> totalToStates = new SortedSet<string>();
-        
+            //Set of all the substates that need to be combined. this set does also include all states reached through epsilon routes
+            SortedSet<string> newStates = new SortedSet<string>();
+            
                 //Loop through all the substates 
                 foreach (string state in states)
                 {
@@ -158,7 +123,8 @@ namespace Week_1
                     {
                         if (t.Symbol == symbol)
                         {
-                            primeToStates.Add(t.ToState);
+                            retrieveEpsilonIncludedState(t.ToState, ndfa, ref newStates);
+                            
                             //Check if this state is final, if one of the substates for the new TOSTATE is final, TOSTATE becomes final as a whole.
                             if (ndfa.FinalStates.Contains(t.ToState))
                             {
@@ -168,15 +134,9 @@ namespace Week_1
                     }
 
                 }
-                ///new epsilon code
-                foreach(string state in primeToStates)
-                {
-                    retrieveEpsilonIncludedState(state, ndfa, ref totalToStates);
-                }
-
-
+               
                 //combines substates into one string (TOSTATE)
-                foreach (string subState in totalToStates)
+                foreach (string subState in newStates)
                 {
                     toState += subState;
                     toState += "_";
