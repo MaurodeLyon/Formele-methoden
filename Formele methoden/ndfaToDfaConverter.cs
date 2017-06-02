@@ -6,6 +6,58 @@ namespace Week_1
 {
     public class NdfaToDfaConverter
     {
+        private static void retrieveEpsilonIncludedState(string state, Automaat<string> auto, ref SortedSet<string> subStateList)
+        {
+            subStateList.Add(state);
+            //string completeState = state;
+            List<Transition<string>> trans = auto.GetTransition(state);
+            //SortedSet<String> subStateList = new SortedSet<string>();
+        /// METHOD DOESNT WORK YET, NO FAILSAFE FOR DUPLICATE STATES IN STRING(use Set ?)
+            foreach (Transition<string> t in trans)
+            {
+                if (t.Symbol == '$' && !subStateList.Contains(t.ToState))
+                {
+
+                    //completeState += retrieveEpsilonIncludedState(t.ToState, auto,subStateList);
+                    //completeState += "_";
+                    retrieveEpsilonIncludedState(t.ToState, auto, ref subStateList);
+                }
+            }
+            /////Meant to clear duplicates (if Set can be used it is a better approach.
+            //string[] individualSubStates = (completeState.Split('_')).Distinct().ToArray();
+            //completeState = "";
+
+            //foreach (string s in individualSubStates)
+            //{
+            //    completeState += s;
+            //    completeState += "_";
+            //}
+            //completeState = completeState.TrimEnd('_');
+            //return completeState;
+
+        }
+        ///UNNECESSARY
+        private static string generateStartState(string state, Automaat<string> ndfa)
+        {
+            string combinedStartState = "";
+
+            //New way of generating starting point for recursive method, needs test method before removing commented deprecated code
+            foreach (string startState in ndfa.StartStates)
+            {
+
+                //ConvertState(startState, ref dfa, ref ndfa);
+                //dfa.DefineAsStartState(startState);
+                combinedStartState += startState;
+                combinedStartState += "_";
+
+
+
+            }
+
+            combinedStartState = combinedStartState.TrimEnd('_');
+            return "";
+        }
+
         public static Automaat<string> Convert(Automaat<string> ndfa)
         {
             Automaat<string> dfa = new Automaat<string>(ndfa.Symbols);
@@ -13,16 +65,27 @@ namespace Week_1
             string combinedStartState = "";
 
             //New way of generating starting point for recursive method, needs test method before removing commented deprecated code
+            SortedSet<string> completeStartState = new SortedSet<string>();
             foreach (string startState in ndfa.StartStates)
             {
-                //ConvertState(startState, ref dfa, ref ndfa);
-                //dfa.DefineAsStartState(startState);
-                combinedStartState += startState;
-                combinedStartState += "_";
+                retrieveEpsilonIncludedState(startState, ndfa, ref completeStartState);
+
+                ////ConvertState(startState, ref dfa, ref ndfa);
+                ////dfa.DefineAsStartState(startState);
+                //combinedStartState += startState;
+                //combinedStartState += "_";
 
             }
 
+            foreach(string s in completeStartState)
+            {
+                combinedStartState += s;
+                combinedStartState += "_";
+            }
+
             combinedStartState= combinedStartState.TrimEnd('_');
+
+
             ConvertState(combinedStartState, ref dfa, ref ndfa);
             dfa.DefineAsStartState(combinedStartState);
 
