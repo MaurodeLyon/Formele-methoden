@@ -12,7 +12,7 @@ namespace Week_1
             //string completeState = state;
             List<Transition<string>> trans = auto.GetTransition(state);
             //SortedSet<String> subStateList = new SortedSet<string>();
-        /// METHOD DOESNT WORK YET, NO FAILSAFE FOR DUPLICATE STATES IN STRING(use Set ?)
+      
             foreach (Transition<string> t in trans)
             {
                 if (t.Symbol == '$' && !subStateList.Contains(t.ToState))
@@ -141,8 +141,10 @@ namespace Week_1
             
             //boolean that will save whether this new TOSTATE needs to be a finalstate
             bool isFinalState = false;
-            //Set of all the substates that need to be combined.
-            SortedSet<String> newState = new SortedSet<string>();
+            //Set of all the substates that need to be combined. this set does not include epsilon routed states, yet allows for the creation of a set with epsilon routed states
+            SortedSet<string> primeToStates = new SortedSet<string>();
+            //Same as primeToStates but this one also includes states which are reached through epsilons.
+            SortedSet<string> totalToStates = new SortedSet<string>();
         
                 //Loop through all the substates 
                 foreach (string state in states)
@@ -156,7 +158,7 @@ namespace Week_1
                     {
                         if (t.Symbol == symbol)
                         {
-                            newState.Add(t.ToState);
+                            primeToStates.Add(t.ToState);
                             //Check if this state is final, if one of the substates for the new TOSTATE is final, TOSTATE becomes final as a whole.
                             if (ndfa.FinalStates.Contains(t.ToState))
                             {
@@ -164,10 +166,17 @@ namespace Week_1
                             }
                         }
                     }
+
+                }
+                ///new epsilon code
+                foreach(string state in primeToStates)
+                {
+                    retrieveEpsilonIncludedState(state, ndfa, ref totalToStates);
                 }
 
+
                 //combines substates into one string (TOSTATE)
-                foreach (string subState in newState)
+                foreach (string subState in totalToStates)
                 {
                     toState += subState;
                     toState += "_";
