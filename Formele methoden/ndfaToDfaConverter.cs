@@ -20,8 +20,7 @@ namespace Week_1
             //Turn sortedset into a string with all its states
             foreach (string s in completeStartState)
             {
-                combinedStartState += s;
-                combinedStartState += "_";
+                combinedStartState += s + "_";
             }
 
             //trim last "_" off of string
