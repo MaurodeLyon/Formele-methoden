@@ -30,7 +30,7 @@ namespace Week_1
             //Automaat<string> answer = NdfaToDfaConverter.Convert(dfa);
             //GraphVizParser.PrintGraph(answer, "ndfa2dfa");
 
-            //Automaat<string> ndfa = NdfaToDfaConverter.reverse(answer);
+            ////Automaat<string> ndfa = NdfaToDfaConverter.reverse(answer);
 
 
             Automaat<string> dfaToMinimize = new Automaat<string>(alphabet);
@@ -64,8 +64,41 @@ namespace Week_1
             dfaToMinimize.DefineAsFinalState("6");
 
             //Automaat<string> minimizedDfa = NdfaToDfaConverter.Convert(NdfaToDfaConverter.reverse(NdfaToDfaConverter.Convert(NdfaToDfaConverter.reverse(dfaToMinimize))));
-            Automaat<string> minimizedDfa = NdfaToDfaConverter.Convert(NdfaToDfaConverter.Reverse(dfaToMinimize));
-            GraphVizParser.PrintGraph(minimizedDfa,"minimizedDFA");
+            //Automaat<string> minimizedDfa = NdfaToDfaConverter.Convert(NdfaToDfaConverter.Reverse(dfaToMinimize));
+            //GraphVizParser.PrintGraph(minimizedDfa,"minimizedDFA");
+
+            Automaat<string> epsilonNDFA = new Automaat<string>(alphabet);
+
+            epsilonNDFA.AddTransition(new Transition<string>("0", '$', "1"));
+            epsilonNDFA.AddTransition(new Transition<string>("0", '$', "7"));
+
+            epsilonNDFA.AddTransition(new Transition<string>("1", '$', "2"));
+            epsilonNDFA.AddTransition(new Transition<string>("1", '$', "4"));
+
+            epsilonNDFA.AddTransition(new Transition<string>("2", 'a', "3"));
+
+            epsilonNDFA.AddTransition(new Transition<string>("3", '$', "6"));
+
+            epsilonNDFA.AddTransition(new Transition<string>("4", 'b', "5"));
+
+            epsilonNDFA.AddTransition(new Transition<string>("5", '$', "6"));
+
+            epsilonNDFA.AddTransition(new Transition<string>("6", '$', "7"));
+            epsilonNDFA.AddTransition(new Transition<string>("6", '$', "1"));
+
+            epsilonNDFA.AddTransition(new Transition<string>("7", 'a', "8"));
+
+            epsilonNDFA.AddTransition(new Transition<string>("8", 'b', "9"));
+
+            epsilonNDFA.AddTransition(new Transition<string>("9", 'b', "10"));
+
+            epsilonNDFA.DefineAsStartState("0");
+            epsilonNDFA.DefineAsFinalState("10");
+
+            Automaat<string> epsilonDFA = NdfaToDfaConverter.Convert(epsilonNDFA);
+            GraphVizParser.PrintGraph(epsilonDFA, "epsilondfa");
+
+
 
             bool looping = true;
             while (looping)
