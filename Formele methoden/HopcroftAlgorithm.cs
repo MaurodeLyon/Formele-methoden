@@ -6,7 +6,16 @@ using System.Threading.Tasks;
 
 namespace Week_1
 {
+    //When I wrote this, only God and I understood what I was doing
+    //Now, God only knows
     
+    //You may think you know what the following code does.
+    //But you dont. Trust me.
+    //Fiddle with it, and youll spend many a sleepless
+    //night cursing the moment you thought youd be clever
+    //enough to "optimize" the code below.
+    //Now close this file and go play with something else.
+ 
     class HopcroftAlgorithm
     {
 
@@ -19,16 +28,12 @@ namespace Week_1
             SortedSet<string> states = automaat.States;
             foreach (string state in states)
             {
-
                 List<Transition<string>> trans = automaat.GetTransition(state);
                 Row row = new Row();
                 foreach (Transition<string> t in trans)
                 {
                     row.addRoute(t.Symbol, t.ToState);
                 }
-
-
-
 
                 if (automaat.FinalStates.Contains(state))
                 {
@@ -38,16 +43,97 @@ namespace Week_1
                 {
                     nonFinals.addRow(state, row);
                 }
-
-
             }
 
             partitions.Add(nonFinals);
             partitions.Add(finals);
 
+            partitions = minimizePartitions(partitions, automaat.Symbols);
             printPartitions(partitions);
+
+            ///Non-recursive way of handling minimizing
+            //int oldSize = partitions.Count;
+            //int newSize = 0;
+
+            //while (oldSize!=newSize)
+            //{
+            //    oldSize = partitions.Count;
+            //    partitions = minimizePartitions(partitions, automaat.Symbols);
+            //    newSize = partitions.Count;
+            //    printPartitions(partitions);
+            //    Console.WriteLine("------------------------------------------");
+            //}
+            //printPartitions(partitions);
+
             return null;
         }
+
+        private static SortedSet<Partition> minimizePartitions(SortedSet<Partition> partitions,SortedSet<char> symbols)
+        {
+            ///Just look at this clusterfuck
+            List<Dictionary<string, SortedSet<string>>> splittedPartitions = new List<Dictionary<string, SortedSet<string>>>();
+            SortedSet<Partition> newPartitions = new SortedSet<Partition>();
+
+            foreach (Partition p in partitions)
+            {
+                Dictionary<string, SortedSet<string>> newPartition = new Dictionary<string, SortedSet<string>>();
+                foreach (KeyValuePair<string, Row> row in p.rows)
+                {
+                    string phrase = "";
+                    foreach (KeyValuePair<char, string> innerRow in row.Value.innerRows)
+                    {
+                        foreach (Partition p2 in partitions)
+                        {
+                            if (p2.containsState(innerRow.Value))
+                            {
+                                phrase += p2.identifier + "-";
+                            }   
+                        }
+                    }
+                    phrase = phrase.TrimEnd('-');
+                    if (!newPartition.ContainsKey(phrase))
+                        newPartition.Add(phrase, new SortedSet<string>());
+
+                    newPartition[phrase].Add(row.Key);
+                }
+                splittedPartitions.Add(newPartition);
+            }
+
+
+            int index = 0;
+            foreach(Dictionary<string, SortedSet<string>> newPartition in splittedPartitions)
+            {
+                
+                foreach (KeyValuePair<string, SortedSet<string>> entry in newPartition)
+                {
+                    Partition partition = new Partition((char)(index + 65), symbols);
+                    foreach (string s in entry.Value)
+                    {
+                        foreach (Partition p2 in partitions)
+                        {
+                            if (p2.containsState(s))
+                            {
+                                partition.addRow(s,p2.getRow(s));
+                                break;
+                            }
+                            //break;
+                        }
+                    }
+                    newPartitions.Add(partition);
+                    index++;
+                }
+                
+            }
+
+            if(newPartitions.Count!=partitions.Count)
+            {
+               newPartitions = minimizePartitions(newPartitions, symbols);
+            }
+            return newPartitions;
+
+        }
+
+        
 
         public static void printPartitions(SortedSet<Partition> partitions)
         {
@@ -57,7 +143,7 @@ namespace Week_1
 
                 foreach (KeyValuePair<string, Row> row in p.rows)
                 {
-                    Console.Write(row.Key+":");
+                    Console.Write("     "+row.Key+":");
 
                     foreach (KeyValuePair<char,string> innerRow in row.Value.innerRows)
                     {
@@ -75,6 +161,8 @@ namespace Week_1
     
     class Partition : IComparable<Partition>
     {
+        //State and row
+        //Example 1: a-2 b-3
         public Dictionary<string, Row> rows { get; }
         public char identifier { get; }
         private SortedSet<char> symbols;
@@ -91,6 +179,24 @@ namespace Week_1
             rows[state] = row;
         }
 
+        public Row getRow(string state)
+        {
+            return rows[state];
+        }
+
+        public bool containsState(string state)
+        {
+            foreach (KeyValuePair<string,Row> row in rows)
+            {
+                if(row.Key==state)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public int CompareTo(Partition other)
         {
             if (other == null) return 1;
@@ -102,6 +208,8 @@ namespace Week_1
 
     class Row
     {
+        //innerRow means a char of the alphabet + its corresponding state
+        //Example char:a string:2
         public Dictionary<char, string> innerRows { get; }
 
         public Row()
@@ -115,12 +223,5 @@ namespace Week_1
 
     }
 
-        
-
-    struct routeDef
-    {
-        private char symbol { get; set; }
-        private char toState;
-    }
 
 }
