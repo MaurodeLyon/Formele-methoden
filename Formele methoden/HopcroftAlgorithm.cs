@@ -74,6 +74,13 @@ namespace Week_1
                         p.isFinal = true;
                     }
                 }
+                foreach(string startState in automaat.StartStates)
+                {
+                    if(p.containsState(startState))
+                    {
+                        p.isStart = true;
+                    }
+                }
             }
 
             return retrieveDFAFromPartitions(partitions,automaat.Symbols);
@@ -154,6 +161,8 @@ namespace Week_1
             {
                 if (p.isFinal)
                     automaat.DefineAsFinalState(p.identifier.ToString());
+                if (p.isStart)
+                    automaat.DefineAsStartState(p.identifier.ToString());
                 foreach (KeyValuePair<string, Row> row in p.rows)
                 {
 
@@ -208,12 +217,14 @@ namespace Week_1
         public Dictionary<string, Row> rows { get; }
         public char identifier { get; }
         public bool isFinal { get; set; }
-       // private SortedSet<char> symbols;
+        public bool isStart { get; set; }
+        // private SortedSet<char> symbols;
 
         public Partition(char ID)
         {
             this.identifier = ID;
             this.isFinal = false;
+            this.isStart = false;
             //this.symbols = symbols;
             this.rows = new Dictionary<string, Row>();
         }
