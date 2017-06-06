@@ -8,7 +8,7 @@ namespace Formele_methoden_tests
     public class TestAutomata
     {
         [TestMethod]
-        public void DfaTest()
+        public void DfaTest1()
         {
             char[] alphabet = {'a', 'b'};
             Automaat<string> dfa = new Automaat<string>(alphabet);
@@ -35,7 +35,57 @@ namespace Formele_methoden_tests
         }
 
         [TestMethod]
-        public void NdfaTest()
+        public void DfaTest2()
+        {
+            char[] alphabet = {'a', 'b'};
+            Automaat<string> dfa = new Automaat<string>(alphabet);
+            dfa.AddTransition(new Transition<string>("0", 'a', "0"));
+            dfa.AddTransition(new Transition<string>("0", 'b', "1"));
+
+            dfa.AddTransition(new Transition<string>("1", 'a', "2"));
+            dfa.AddTransition(new Transition<string>("1", 'b', "3"));
+
+            dfa.AddTransition(new Transition<string>("2", 'a', "2"));
+            dfa.AddTransition(new Transition<string>("2", 'b', "1"));
+
+            dfa.AddTransition(new Transition<string>("3", 'a', "0"));
+            dfa.AddTransition(new Transition<string>("3", 'b', "3"));
+
+            dfa.DefineAsStartState("0");
+            dfa.DefineAsFinalState("2");
+            dfa.DefineAsFinalState("3");
+
+            Assert.IsTrue(dfa.IsDfa());
+        }
+
+        [TestMethod]
+        public void DfaTest3()
+        {
+            char[] alphabet = {'a', 'b'};
+            Automaat<string> dfa = new Automaat<string>(alphabet);
+            dfa.AddTransition(new Transition<string>("0", 'a', "1"));
+            dfa.AddTransition(new Transition<string>("0", 'b', "4"));
+
+            dfa.AddTransition(new Transition<string>("1", 'b', "4"));
+            dfa.AddTransition(new Transition<string>("1", 'a', "2"));
+
+            dfa.AddTransition(new Transition<string>("2", 'a', "0"));
+            dfa.AddTransition(new Transition<string>("2", 'b', "3"));
+
+            dfa.AddTransition(new Transition<string>("3", 'a', "1"));
+            dfa.AddTransition(new Transition<string>("3", 'b', "4"));
+
+            dfa.AddTransition(new Transition<string>("4", 'a', "4"));
+            dfa.AddTransition(new Transition<string>("4", 'b', "4"));
+
+            dfa.DefineAsStartState("0");
+            dfa.DefineAsFinalState("3");
+
+            Assert.IsTrue(dfa.IsDfa());
+        }
+
+        [TestMethod]
+        public void NdfaTest1()
         {
             char[] alphabet = {'a', 'b'};
             Automaat<string> dfa = new Automaat<string>(alphabet);
@@ -51,6 +101,54 @@ namespace Formele_methoden_tests
             dfa.AddTransition(new Transition<string>("3", 'a', "4"));
 
             dfa.AddTransition(new Transition<string>("4", 'a', "4"));
+            dfa.AddTransition(new Transition<string>("4", 'b', "4"));
+
+            dfa.DefineAsStartState("0");
+            dfa.DefineAsFinalState("4");
+
+            Assert.IsFalse(dfa.IsDfa());
+        }
+
+        [TestMethod]
+        public void NdfaTest2()
+        {
+            char[] alphabet = {'a', 'b'};
+            Automaat<string> dfa = new Automaat<string>(alphabet);
+            dfa.AddTransition(new Transition<string>("1", 'b', "0"));
+            dfa.AddTransition(new Transition<string>("0", 'a', "0"));
+
+            dfa.AddTransition(new Transition<string>("0", 'a', "1"));
+            dfa.AddTransition(new Transition<string>("2", 'b', "1"));
+
+            dfa.AddTransition(new Transition<string>("0", 'a', "2"));
+            dfa.AddTransition(new Transition<string>("2", 'b', "2"));
+
+            dfa.DefineAsStartState("2");
+            dfa.DefineAsFinalState("0");
+
+            Assert.IsFalse(dfa.IsDfa());
+        }
+
+        [TestMethod]
+        public void NdfaTest3()
+        {
+            char[] alphabet = {'a', 'b'};
+            Automaat<string> dfa = new Automaat<string>(alphabet);
+            dfa.AddTransition(new Transition<string>("0", 'a', "2"));
+            dfa.AddTransition(new Transition<string>("0", 'b', "2"));
+            dfa.AddTransition(new Transition<string>("0", 'b', "1"));
+
+            dfa.AddTransition(new Transition<string>("1", 'b', "2"));
+            dfa.AddTransition(new Transition<string>("1", '$', "2"));
+
+            dfa.AddTransition(new Transition<string>("2", 'a', "3"));
+            dfa.AddTransition(new Transition<string>("2", 'b', "3"));
+            dfa.AddTransition(new Transition<string>("2", 'b', "4"));
+
+            dfa.AddTransition(new Transition<string>("3", 'a', "1"));
+            dfa.AddTransition(new Transition<string>("3", 'a', "2"));
+
+            dfa.AddTransition(new Transition<string>("4", '$', "3"));
             dfa.AddTransition(new Transition<string>("4", 'b', "4"));
 
             dfa.DefineAsStartState("0");
