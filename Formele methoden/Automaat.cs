@@ -150,12 +150,12 @@ namespace Week_1
     
             }
 
-            foreach (string startState in dfaA.StartStates)
+            foreach (string startState in dfaB.StartStates)
             {
                 if (!completeMergedState.ContainsKey('B'))
                     completeMergedState.Add('B', startState + "_");
                 else
-                    completeMergedState['B'] = completeMergedState['A'] + startState + "_";
+                    completeMergedState['B'] = completeMergedState['B'] + startState + "_";
 
             }
 
@@ -190,10 +190,6 @@ namespace Week_1
             if (merged.GetTransition(completePrevMergedState).Count == merged.Symbols.Count)
                 return;
 
-
-
-           
-
             foreach ( char symbol in merged.Symbols)
             {
                 Dictionary<char, string> newMergedState = new Dictionary<char, string>();
@@ -203,52 +199,16 @@ namespace Week_1
 
                 foreach(KeyValuePair<char,string> entry in prevMergedState)
                 {
-                    string[] states = entry.Value.Split('_');
-                    if(entry.Key=='A')
-                    {
-                        foreach(string state in states)
-                        {
-                            List<Transition<string>> trans = dfaA.GetTransition(state);
-
-                            foreach(Transition<string> t in trans)
-                            {
-                                if(t.Symbol == symbol)
-                                {
-                                    if (!newMergedState.ContainsKey('A'))
-                                        newMergedState.Add('A', t.ToState + "_");
-                                    else
-                                        newMergedState['A'] = newMergedState['A'] + t.ToState + "_";
-                                }
-                            }
-                            newMergedState['A'] = newMergedState['A'].TrimEnd('_');
-                        }
-                        
-                    }
-                    if(entry.Key=='B')
-                    {
-                        foreach (string state in states)
-                        {
-                            List<Transition<string>> trans = dfaB.GetTransition(state);
-
-                            foreach (Transition<string> t in trans)
-                            {
-                                if (t.Symbol == symbol)
-                                {
-                                    if (!newMergedState.ContainsKey('B'))
-                                        newMergedState.Add('B', t.ToState + "_");
-                                    else
-                                        newMergedState['B'] = newMergedState['B'] + t.ToState + "_";
-                                }
-                            }
-                            newMergedState['B'] = newMergedState['B'].TrimEnd('_');
-                        }
-                    }
+                    if (entry.Key == 'A')
+                        collectRoutesFromDFA(entry, symbol, dfaA, ref newMergedState);
+                    else if(entry.Key =='B')
+                        collectRoutesFromDFA(entry, symbol, dfaB, ref newMergedState);
+                    
                 }
 
                 string completeNewMergedState = "";
                 foreach (KeyValuePair<char, string> entry in newMergedState)
-                {
-                    
+                {                    
                     completeNewMergedState += entry.Value + "_";
                 }
                 completeNewMergedState = completeNewMergedState.TrimEnd('_');
@@ -259,6 +219,26 @@ namespace Week_1
 
 
             return;
+        }
+        private static void collectRoutesFromDFA(KeyValuePair<char,string> entry, char symbol, Automaat<string> source, ref Dictionary<char, string> newMergedState)
+        {
+            string[] states = entry.Value.Split('_');
+            foreach (string state in states)
+            {
+                List<Transition<string>> trans = source.GetTransition(state);
+
+                foreach (Transition<string> t in trans)
+                {
+                    if (t.Symbol == symbol)
+                    {
+                        if (!newMergedState.ContainsKey(entry.Key))
+                            newMergedState.Add(entry.Key, t.ToState + "_");
+                        else
+                            newMergedState[entry.Key] = newMergedState[entry.Key] + t.ToState + "_";
+                    }
+                }
+                newMergedState[entry.Key] = newMergedState[entry.Key].TrimEnd('_');
+            }
         }
 
         private static bool CheckExistingRouteForChar(string currentState, char symbol, Automaat<string> dfa)
