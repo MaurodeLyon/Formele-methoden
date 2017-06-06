@@ -28,9 +28,7 @@ namespace Week_1
             public int Compare(string s1, string s2)
             {
                 if (s1.Length == s2.Length)
-                {
                     return s1.CompareTo(s2);
-                }
                 return s1.Length - s2.Length;
             }
         }
@@ -104,50 +102,34 @@ namespace Week_1
                     languageLeft = Left == null ? emptyLanguage : Left.GetLanguage(maxSteps - 1);
                     languageRight = Right == null ? emptyLanguage : Right.GetLanguage(maxSteps - 1);
                     foreach (string s in languageLeft)
-                    {
                         languageResult.Add(s);
-                    }
                     foreach (string s in languageRight)
-                    {
                         languageResult.Add(s);
-                    }
                     break;
 
                 case OperatorEnum.Dot:
                     languageLeft = Left == null ? emptyLanguage : Left.GetLanguage(maxSteps - 1);
                     languageRight = Right == null ? emptyLanguage : Right.GetLanguage(maxSteps - 1);
                     foreach (string s1 in languageLeft)
-                    {
-                        foreach (string s2 in languageRight)
-                        {
-                            languageResult.Add(s1 + s2);
-                        }
-                    }
+                    foreach (string s2 in languageRight)
+                        languageResult.Add(s1 + s2);
                     break;
 
                 case OperatorEnum.Star:
                 case OperatorEnum.Plus:
                     languageLeft = Left == null ? emptyLanguage : Left.GetLanguage(maxSteps - 1);
                     foreach (string s in languageLeft)
-                    {
                         languageResult.Add(s);
-                    }
 
                     for (int i = 1; i < maxSteps; i++)
                     {
                         HashSet<string> languageTemp = new HashSet<string>(languageResult);
                         foreach (string s1 in languageLeft)
-                        {
-                            foreach (string s2 in languageTemp)
-                            {
-                                languageResult.Add(s1 + s2);
-                            }
-                        }
+                        foreach (string s2 in languageTemp)
+                            languageResult.Add(s1 + s2);
                     }
                     if (Operator == OperatorEnum.Star)
-                    {
                         languageResult.Add("");
-                    }
                     break;
             }
             return languageResult;
@@ -163,9 +145,7 @@ namespace Week_1
             else
             {
                 if (Right != null)
-                {
                     text += "(";
-                }
                 text += Left.ToString();
                 switch (Operator)
                 {
