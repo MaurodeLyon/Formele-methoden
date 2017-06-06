@@ -22,8 +22,8 @@ namespace Week_1
         public static Automaat<string> minimizeDFA(Automaat<string> automaat)
         {
             SortedSet<Partition> partitions = new SortedSet<Partition>();
-            Partition nonFinals = new Partition('A', automaat.Symbols);
-            Partition finals = new Partition('B', automaat.Symbols);
+            Partition nonFinals = new Partition('A');
+            Partition finals = new Partition('B');
 
             SortedSet<string> states = automaat.States;
             foreach (string state in states)
@@ -64,13 +64,25 @@ namespace Week_1
             //    Console.WriteLine("------------------------------------------");
             //}
             //printPartitions(partitions);
+            
+            foreach(Partition p in partitions)
+            {
+                foreach(string finalState in automaat.FinalStates)
+                {
+                    if(p.containsState(finalState))
+                    {
+                        p.isFinal = true;
+                    }
+                }
+            }
 
-            return null;
+            return retrieveDFAFromPartitions(partitions,automaat.Symbols);
         }
+
 
         private static SortedSet<Partition> minimizePartitions(SortedSet<Partition> partitions,SortedSet<char> symbols)
         {
-            ///Just look at this clusterfuck
+            //Clusterfuck
             List<Dictionary<string, SortedSet<string>>> splittedPartitions = new List<Dictionary<string, SortedSet<string>>>();
             SortedSet<Partition> newPartitions = new SortedSet<Partition>();
 
@@ -106,7 +118,7 @@ namespace Week_1
                 
                 foreach (KeyValuePair<string, SortedSet<string>> entry in newPartition)
                 {
-                    Partition partition = new Partition((char)(index + 65), symbols);
+                    Partition partition = new Partition((char)(index + 65));
                     foreach (string s in entry.Value)
                     {
                         foreach (Partition p2 in partitions)
@@ -127,16 +139,46 @@ namespace Week_1
 
             if(newPartitions.Count!=partitions.Count)
             {
+               printPartitions(newPartitions);
                newPartitions = minimizePartitions(newPartitions, symbols);
             }
             return newPartitions;
 
         }
 
-        
+
+        private static Automaat<string> retrieveDFAFromPartitions(SortedSet<Partition> partitions, SortedSet<char> symbols)
+        {
+            Automaat<string> automaat = new Automaat<string>(symbols);
+            foreach (Partition p in partitions)
+            {
+                if (p.isFinal)
+                    automaat.DefineAsFinalState(p.identifier.ToString());
+                foreach (KeyValuePair<string, Row> row in p.rows)
+                {
+
+                    foreach(KeyValuePair<char,string> innerRow in row.Value.innerRows)
+                    {
+                        string toState = ""; ; 
+                        foreach (Partition p2 in partitions)
+                        {
+                            if (p2.containsState(innerRow.Value))
+                            {
+                                toState = p2.identifier.ToString();
+                                break;
+                            }
+                        }
+                        automaat.AddTransition(new Transition<string>(p.identifier.ToString(), innerRow.Key, toState));
+                    }
+                }
+            }
+
+            return automaat;
+        }
 
         public static void printPartitions(SortedSet<Partition> partitions)
         {
+            Console.WriteLine("-----------------------------------------------------------");
             foreach (Partition p in partitions)
             {
                 Console.WriteLine(p.identifier+":");
@@ -165,12 +207,14 @@ namespace Week_1
         //Example 1: a-2 b-3
         public Dictionary<string, Row> rows { get; }
         public char identifier { get; }
-        private SortedSet<char> symbols;
+        public bool isFinal { get; set; }
+       // private SortedSet<char> symbols;
 
-        public Partition(char ID, SortedSet<char> symbols)
+        public Partition(char ID)
         {
             this.identifier = ID;
-            this.symbols = symbols;
+            this.isFinal = false;
+            //this.symbols = symbols;
             this.rows = new Dictionary<string, Row>();
         }
 
