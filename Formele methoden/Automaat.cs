@@ -123,5 +123,158 @@ namespace Week_1
             }
             return words;
         }
+
+
+
+        public static Automaat<string> Union(Automaat<string> dfaA, Automaat<string> dfaB)
+        {
+            //string completeStartState = "";
+            SortedSet<char> mergedAlphabet = dfaA.Symbols;
+            mergedAlphabet.UnionWith(dfaB.Symbols);
+            Automaat<string> merged = new Automaat<string>(mergedAlphabet);
+
+            //foreach(string startState in dfaA.StartStates)
+            //    completeStartState += startState + "_";
+
+            //foreach (string startState in dfaB.StartStates)
+            //    completeStartState += startState + "_";
+
+            //completeStartState = completeStartState.TrimEnd('_');
+            Dictionary<char, string> completeMergedState = new Dictionary<char, string>();
+            foreach(string startState in dfaA.StartStates)
+            {
+                if (!completeMergedState.ContainsKey('A'))
+                    completeMergedState.Add('A', startState + "_");
+                else
+                    completeMergedState['A'] = completeMergedState['A'] + startState + "_";
+    
+            }
+
+            foreach (string startState in dfaA.StartStates)
+            {
+                if (!completeMergedState.ContainsKey('B'))
+                    completeMergedState.Add('B', startState + "_");
+                else
+                    completeMergedState['B'] = completeMergedState['A'] + startState + "_";
+
+            }
+
+            completeMergedState['A'] = completeMergedState['A'].TrimEnd('_');
+            completeMergedState['B'] = completeMergedState['B'].TrimEnd('_');
+
+            AddMergedState(completeMergedState, ref merged, dfaA, dfaB);
+            //Add new state to merged, work recursively from there 
+
+            return merged;
+
+            return null;
+        }
+
+        public Automaat<string> Concatenation(Automaat<string> other)
+        {
+
+            return null;
+        }
+
+        private static void AddMergedState(Dictionary<char,string> prevMergedState, ref Automaat<string> merged, Automaat<string> dfaA, Automaat<string> dfaB)
+        {
+            //string[] states = prevMergedState.Split('_');
+            //Add prev
+            string completePrevMergedState = "";
+            foreach(KeyValuePair<char,string> entry in prevMergedState)
+            {
+                completePrevMergedState += entry.Value + "_";
+            }
+            completePrevMergedState= completePrevMergedState.TrimEnd('_');
+
+            if (merged.GetTransition(completePrevMergedState).Count == merged.Symbols.Count)
+                return;
+
+
+
+           
+
+            foreach ( char symbol in merged.Symbols)
+            {
+                Dictionary<char, string> newMergedState = new Dictionary<char, string>();
+                ///This could break though
+                if (CheckExistingRouteForChar(completePrevMergedState, symbol, merged))
+                    return;
+
+                foreach(KeyValuePair<char,string> entry in prevMergedState)
+                {
+                    string[] states = entry.Value.Split('_');
+                    if(entry.Key=='A')
+                    {
+                        foreach(string state in states)
+                        {
+                            List<Transition<string>> trans = dfaA.GetTransition(state);
+
+                            foreach(Transition<string> t in trans)
+                            {
+                                if(t.Symbol == symbol)
+                                {
+                                    if (!newMergedState.ContainsKey('A'))
+                                        newMergedState.Add('A', t.ToState + "_");
+                                    else
+                                        newMergedState['A'] = newMergedState['A'] + t.ToState + "_";
+                                }
+                            }
+                            newMergedState['A'] = newMergedState['A'].TrimEnd('_');
+                        }
+                        
+                    }
+                    if(entry.Key=='B')
+                    {
+                        foreach (string state in states)
+                        {
+                            List<Transition<string>> trans = dfaB.GetTransition(state);
+
+                            foreach (Transition<string> t in trans)
+                            {
+                                if (t.Symbol == symbol)
+                                {
+                                    if (!newMergedState.ContainsKey('B'))
+                                        newMergedState.Add('B', t.ToState + "_");
+                                    else
+                                        newMergedState['B'] = newMergedState['B'] + t.ToState + "_";
+                                }
+                            }
+                            newMergedState['B'] = newMergedState['B'].TrimEnd('_');
+                        }
+                    }
+                }
+
+                string completeNewMergedState = "";
+                foreach (KeyValuePair<char, string> entry in newMergedState)
+                {
+                    
+                    completeNewMergedState += entry.Value + "_";
+                }
+                completeNewMergedState = completeNewMergedState.TrimEnd('_');
+                merged.AddTransition(new Transition<string>(completePrevMergedState, symbol, completeNewMergedState));
+
+                AddMergedState(newMergedState, ref merged, dfaA, dfaB);
+            }
+
+
+            return;
+        }
+
+        private static bool CheckExistingRouteForChar(string currentState, char symbol, Automaat<string> dfa)
+        {
+            List<Transition<string>> currentTrans = dfa.GetTransition(currentState);
+            foreach (Transition<string> t in currentTrans)
+            {
+                if (t.Symbol == symbol)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
     }
+
+
 }
