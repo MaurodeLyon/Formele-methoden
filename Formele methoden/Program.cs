@@ -180,6 +180,7 @@ namespace Week_1
 
 
             Automaat<string> L3 = Automaat<string>.Union(L1, L2);
+            GraphVizParser.PrintGraph(L3, "L3");
             bool looping = true;
             while (looping)
             {

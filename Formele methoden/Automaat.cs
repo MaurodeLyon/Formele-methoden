@@ -39,13 +39,17 @@ namespace Week_1
 
         public void DefineAsStartState(T t)
         {
-            States.Add(t);
+            if(!States.Contains(t))
+                States.Add(t);
+
             StartStates.Add(t);
         }
 
         public void DefineAsFinalState(T t)
         {
-            States.Add(t);
+            if (!States.Contains(t))
+                States.Add(t);
+
             FinalStates.Add(t);
         }
 
@@ -126,66 +130,73 @@ namespace Week_1
 
 
 
+        ///Merge methods
+        enum mergeType { UNION, CONCATENATION };
+
         public static Automaat<string> Union(Automaat<string> dfaA, Automaat<string> dfaB)
         {
-            //string completeStartState = "";
+           
             SortedSet<char> mergedAlphabet = dfaA.Symbols;
             mergedAlphabet.UnionWith(dfaB.Symbols);
             Automaat<string> merged = new Automaat<string>(mergedAlphabet);
 
-            //foreach(string startState in dfaA.StartStates)
-            //    completeStartState += startState + "_";
+            Dictionary<char, string> completeMergedState = setupMerge(dfaA, dfaB);
+            
 
-            //foreach (string startState in dfaB.StartStates)
-            //    completeStartState += startState + "_";
-
-            //completeStartState = completeStartState.TrimEnd('_');
-            Dictionary<char, string> completeMergedState = new Dictionary<char, string>();
-            foreach(string startState in dfaA.StartStates)
-            {
-                if (!completeMergedState.ContainsKey('A'))
-                    completeMergedState.Add('A', startState + "_");
-                else
-                    completeMergedState['A'] = completeMergedState['A'] + startState + "_";
-    
-            }
-
-            foreach (string startState in dfaB.StartStates)
-            {
-                if (!completeMergedState.ContainsKey('B'))
-                    completeMergedState.Add('B', startState + "_");
-                else
-                    completeMergedState['B'] = completeMergedState['B'] + startState + "_";
-
-            }
-
-            completeMergedState['A'] = completeMergedState['A'].TrimEnd('_');
-            completeMergedState['B'] = completeMergedState['B'].TrimEnd('_');
-
-            AddMergedState(completeMergedState, ref merged, dfaA, dfaB);
+            AddMergedState(completeMergedState, ref merged, dfaA, dfaB, mergeType.UNION);
             //Add new state to merged, work recursively from there 
 
             return merged;
 
-            return null;
+           
         }
 
-        public Automaat<string> Concatenation(Automaat<string> other)
+        public Automaat<string> Concatenation(Automaat<string> dfaA, Automaat<string> dfaB)
         {
+            SortedSet<char> mergedAlphabet = dfaA.Symbols;
+            mergedAlphabet.UnionWith(dfaB.Symbols);
+            Automaat<string> merged = new Automaat<string>(mergedAlphabet);
 
-            return null;
+            Dictionary<char, string> completeMergedState = setupMerge(dfaA, dfaB);
+
+
+            AddMergedState(completeMergedState, ref merged, dfaA, dfaB, mergeType.CONCATENATION);
+            //Add new state to merged, work recursively from there 
+
+            return merged;
         }
 
-        private static void AddMergedState(Dictionary<char,string> prevMergedState, ref Automaat<string> merged, Automaat<string> dfaA, Automaat<string> dfaB)
+        private static void AddMergedState(Dictionary<char,string> prevMergedState, ref Automaat<string> merged, Automaat<string> dfaA, Automaat<string> dfaB, mergeType type)
         {
             //string[] states = prevMergedState.Split('_');
-            //Add prev
+            //Add prev      
+            int count = 0;
             string completePrevMergedState = "";
             foreach(KeyValuePair<char,string> entry in prevMergedState)
             {
                 completePrevMergedState += entry.Value + "_";
+
+                if (entry.Key == 'A')
+                {
+                    if (dfaA.FinalStates.Contains(entry.Value))
+                        count++;
+                }
+
+                else if (entry.Key == 'B')
+                {
+                    if (dfaB.FinalStates.Contains(entry.Value))
+                        count++;
+                }
+
             }
-            completePrevMergedState= completePrevMergedState.TrimEnd('_');
+
+            completePrevMergedState = completePrevMergedState.TrimEnd('_');
+
+            if (type == mergeType.UNION && count == prevMergedState.Count)
+                merged.DefineAsFinalState(completePrevMergedState);
+            else if (type == mergeType.CONCATENATION && count >= 1)
+                merged.DefineAsFinalState(completePrevMergedState);
+
 
             if (merged.GetTransition(completePrevMergedState).Count == merged.Symbols.Count)
                 return;
@@ -214,7 +225,10 @@ namespace Week_1
                 completeNewMergedState = completeNewMergedState.TrimEnd('_');
                 merged.AddTransition(new Transition<string>(completePrevMergedState, symbol, completeNewMergedState));
 
-                AddMergedState(newMergedState, ref merged, dfaA, dfaB);
+                
+
+
+                AddMergedState(newMergedState, ref merged, dfaA, dfaB, type);
             }
 
 
@@ -252,6 +266,54 @@ namespace Week_1
                 }
             }
             return false;
+        }
+
+        private static Dictionary<char,string> setupMerge(Automaat<string> dfaA, Automaat<string> dfaB)
+        {
+            Dictionary<char, string> completeMergedState = new Dictionary<char, string>();
+            foreach (string startState in dfaA.StartStates)
+            {
+                if (!completeMergedState.ContainsKey('A'))
+                    completeMergedState.Add('A', startState + "_");
+                else
+                    completeMergedState['A'] = completeMergedState['A'] + startState + "_";
+
+            }
+
+            foreach (string startState in dfaB.StartStates)
+            {
+                if (!completeMergedState.ContainsKey('B'))
+                    completeMergedState.Add('B', startState + "_");
+                else
+                    completeMergedState['B'] = completeMergedState['B'] + startState + "_";
+
+            }
+
+            completeMergedState['A'] = completeMergedState['A'].TrimEnd('_');
+            completeMergedState['B'] = completeMergedState['B'].TrimEnd('_');
+
+
+            return completeMergedState;
+        }
+
+        public static Automaat<string> Not(Automaat<string> automaat)
+        {
+            Automaat<string> notAutomaat = new Automaat<string>(automaat.Symbols);
+            //save way of copying transitions
+            notAutomaat.StartStates = automaat.StartStates;
+            foreach(Transition<string> t in automaat.Transitions)
+            {
+                notAutomaat.AddTransition(t);
+            }
+
+            foreach(string state in notAutomaat.States)
+            {
+                if(!automaat.FinalStates.Contains(state))
+                {
+                    notAutomaat.DefineAsFinalState(state);
+                }
+            }
+            return notAutomaat;
         }
 
     }

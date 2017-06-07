@@ -25,6 +25,7 @@ namespace Week_1
             Partition nonFinals = new Partition('A');
             Partition finals = new Partition('B');
 
+            ///Setup first step of minimalisation (ready given Automaat for the recursion method
             SortedSet<string> states = automaat.States;
             foreach (string state in states)
             {
@@ -48,23 +49,12 @@ namespace Week_1
             partitions.Add(nonFinals);
             partitions.Add(finals);
 
+            //Enter minimizing recursion
             partitions = minimizePartitions(partitions, automaat.Symbols);
             printPartitions(partitions);
-
-            ///Non-recursive way of handling minimizing
-            //int oldSize = partitions.Count;
-            //int newSize = 0;
-
-            //while (oldSize!=newSize)
-            //{
-            //    oldSize = partitions.Count;
-            //    partitions = minimizePartitions(partitions, automaat.Symbols);
-            //    newSize = partitions.Count;
-            //    printPartitions(partitions);
-            //    Console.WriteLine("------------------------------------------");
-            //}
-            //printPartitions(partitions);
             
+
+            ///Define start and final states
             foreach(Partition p in partitions)
             {
                 foreach(string finalState in automaat.FinalStates)
@@ -135,7 +125,7 @@ namespace Week_1
                                 partition.addRow(s,p2.getRow(s));
                                 break;
                             }
-                            //break;
+                            
                         }
                     }
                     newPartitions.Add(partition);
