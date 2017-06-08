@@ -138,7 +138,7 @@ namespace Week_1
             dfaToHopcroft.DefineAsFinalState("9");
             dfaToHopcroft.DefineAsFinalState("10");
 
-            Automaat<string> hopcroftedDfa = HopcroftAlgorithm.minimizeDFA(dfaToHopcroft);
+            Automaat<string> hopcroftedDfa = HopcroftAlgorithm.MinimizeDfa(dfaToHopcroft);
             GraphVizParser.PrintGraph(hopcroftedDfa, "hopcroftedDfa");
 
 
