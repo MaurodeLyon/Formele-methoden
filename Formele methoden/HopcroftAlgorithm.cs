@@ -3,17 +3,7 @@ using System.Collections.Generic;
 
 namespace Week_1
 {
-    //When I wrote this, only God and I understood what I was doing
-    //Now, God only knows
-
-    //You may think you know what the following code does.
-    //But you dont. Trust me.
-    //Fiddle with it, and youll spend many a sleepless
-    //night cursing the moment you thought youd be clever
-    //enough to "optimize" the code below.
-    //Now close this file and go play with something else.
-
-    class HopcroftAlgorithm
+    public class HopcroftAlgorithm
     {
         public static Automaat<string> MinimizeDfa(Automaat<string> automaat)
         {
@@ -190,7 +180,7 @@ namespace Week_1
     }
 
 
-    class Partition : IComparable<Partition>
+    public class Partition : IComparable<Partition>
     {
         //State and row
         //Example 1: a-2 b-3
@@ -241,7 +231,7 @@ namespace Week_1
         }
     }
 
-    class Row
+    public class Row
     {
         //innerRow means a char of the alphabet + its corresponding state
         //Example char:a string:2
