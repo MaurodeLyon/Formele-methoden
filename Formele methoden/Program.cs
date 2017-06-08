@@ -11,7 +11,7 @@ namespace Week_1
             Automaat<string> regExp = ThompsonConstruction.ConvertRegExp(reg);
             GraphVizParser.PrintGraph(regExp, "ThompsonNdfa");
 
-            char[] alphabet = { 'a', 'b' };
+            char[] alphabet = {'a', 'b'};
             Automaat<string> dfa = new Automaat<string>(alphabet);
             dfa.AddTransition(new Transition<string>("1", 'a', "2"));
             dfa.AddTransition(new Transition<string>("1", 'b', "2"));
@@ -97,7 +97,7 @@ namespace Week_1
 
             Automaat<string> epsilonDFA = NdfaToDfaConverter.Convert(epsilonNDFA);
             GraphVizParser.PrintGraph(epsilonDFA, "epsilondfa");
-            
+
             Automaat<string> L1 = new Automaat<string>(alphabet);
 
             L1.AddTransition(new Transition<string>("1", 'a', "2"));
