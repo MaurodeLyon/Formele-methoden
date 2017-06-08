@@ -316,6 +316,73 @@ namespace Week_1
             return notAutomaat;
         }
 
+        public static Automaat<string> generateDfa(dfaGenerateValue param, char[] symbols)
+        {
+            Automaat<string> dfa = new Automaat<string>(symbols);
+
+
+            switch (param.type)
+            {
+                case generatorType.beginsWith:
+                    char[] chars = param.parameter.ToCharArray();
+                    foreach (char c in chars)
+                    {
+                        dfa.AddTransition(new Transition<string>(dfa.States.Count.ToString(), c, (dfa.States.Count + 1).ToString()));
+
+                        
+                    }
+                    //Hardcopy states
+                    SortedSet<string> OGStates = new SortedSet<string>();
+                    foreach (string state in dfa.States)
+                    {
+                        OGStates.Add(state);
+                    }
+                    
+                    foreach(string state in OGStates)
+                    {
+                        List<Transition<string>> trans = dfa.GetTransition(state);
+
+                        foreach(Transition<string> t in trans)
+                        {
+                            foreach (char letter in dfa.Symbols)
+                            {
+                                if (t.Symbol != letter)
+                                {
+                                    dfa.AddTransition(new Transition<string>(t.FromState, letter, "F"));
+                                }
+                            }
+                        }
+                    }
+                    break;
+                case generatorType.contains:
+
+                    break;
+                case generatorType.endsWith:
+
+                    break;
+
+            }
+
+            return dfa;
+            //if(beginsWith.parameter!="")
+            //{
+            //    char[] chars = beginsWith.parameter.ToCharArray();
+            //    foreach(char c in chars)
+            //    {
+            //        dfa.AddTransition(new Transition<string>(dfa.States.Count.ToString(), c, (dfa.States.Count +1).ToString()));
+            //    }
+                
+            //}
+            return null;
+        }
+        public enum generatorType{ beginsWith,contains,endsWith}
+        public struct dfaGenerateValue
+        {
+            public bool isNot;
+            public string parameter;
+            public generatorType type;
+        }
+
     }
 
 

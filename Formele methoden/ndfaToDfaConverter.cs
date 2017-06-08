@@ -116,11 +116,12 @@ namespace Week_1
                     {
                         RetrieveEpsilonIncludedState(t.ToState, ndfa, ref newStates);
 
+                        //DEPRECATED, does not work if finalstate is reached through epsilon routes
                         //Check if this state is final, if one of the substates for the new TOSTATE is final, TOSTATE becomes final as a whole.
-                        if (ndfa.FinalStates.Contains(t.ToState))
-                        {
-                            isFinalState = true;
-                        }
+                        //if (ndfa.FinalStates.Contains(t.ToState))
+                        //{
+                        //    isFinalState = true;
+                        //}
                     }
                 }
             }
@@ -129,6 +130,8 @@ namespace Week_1
             foreach (string subState in newStates)
             {
                 toState += subState + "_";
+                if (ndfa.FinalStates.Contains(subState))
+                    isFinalState = true;
             }
             toState = toState.TrimEnd('_');
             return isFinalState;
