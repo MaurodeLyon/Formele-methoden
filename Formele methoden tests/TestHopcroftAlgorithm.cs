@@ -8,7 +8,7 @@ namespace Formele_methoden_tests
     public class TestHopcroftAlgorithm
     {
         [TestMethod]
-        public void DfaTest()
+        public void HopcroftTest1()
         {
             char[] alphabet = {'a', 'b'};
             Automaat<string> dfaToHopcroft = new Automaat<string>(alphabet);
