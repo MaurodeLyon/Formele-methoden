@@ -127,9 +127,8 @@ namespace Week_1
             }
             return words;
         }
-
-
-        ///Merge methods
+        
+        // Merge methods
         enum MergeType
         {
             Union,
@@ -146,7 +145,7 @@ namespace Week_1
 
 
             AddMergedState(completeMergedState, ref merged, dfaA, dfaB, MergeType.Union);
-            //Add new state to merged, work recursively from there 
+            // Add new state to merged, work recursively from there 
 
             return merged;
         }
@@ -161,7 +160,7 @@ namespace Week_1
 
 
             AddMergedState(completeMergedState, ref merged, dfaA, dfaB, MergeType.Concatenation);
-            //Add new state to merged, work recursively from there 
+            // Add new state to merged, work recursively from there 
 
             return merged;
         }
@@ -169,8 +168,8 @@ namespace Week_1
         private static void AddMergedState(Dictionary<char, string> prevMergedState, ref Automaat<string> merged,
             Automaat<string> dfaA, Automaat<string> dfaB, MergeType type)
         {
-            //string[] states = prevMergedState.Split('_');
-            //Add prev      
+            // string[] states = prevMergedState.Split('_');
+            // Add prev      
             int count = 0;
             string completePrevMergedState = "";
             foreach (KeyValuePair<char, string> entry in prevMergedState)
