@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Week_1;
 
 namespace Formele_methoden_tests
@@ -9,7 +10,7 @@ namespace Formele_methoden_tests
         [TestMethod]
         public void DfaTest()
         {
-            char[] alphabet = { 'a', 'b' };
+            char[] alphabet = {'a', 'b'};
             Automaat<string> dfaToHopcroft = new Automaat<string>(alphabet);
 
             dfaToHopcroft.AddTransition(new Transition<string>("1", 'a', "2"));
@@ -51,7 +52,21 @@ namespace Formele_methoden_tests
             dfaToHopcroft.DefineAsFinalState("10");
 
             Automaat<string> hopcroftedDfa = HopcroftAlgorithm.MinimizeDfa(dfaToHopcroft);
-        }
+            Assert.AreEqual("(A, a)-->B", hopcroftedDfa.Transitions.ToList()[0].ToString());
+            Assert.AreEqual("(A, b)-->D", hopcroftedDfa.Transitions.ToList()[1].ToString());
+            Assert.AreEqual("(B, a)-->C", hopcroftedDfa.Transitions.ToList()[2].ToString());
+            Assert.AreEqual("(B, b)-->E", hopcroftedDfa.Transitions.ToList()[3].ToString());
+            Assert.AreEqual("(C, a)-->C", hopcroftedDfa.Transitions.ToList()[4].ToString());
+            Assert.AreEqual("(C, b)-->C", hopcroftedDfa.Transitions.ToList()[5].ToString());
+            Assert.AreEqual("(D, a)-->B", hopcroftedDfa.Transitions.ToList()[6].ToString());
+            Assert.AreEqual("(D, b)-->D", hopcroftedDfa.Transitions.ToList()[7].ToString());
+            Assert.AreEqual("(E, a)-->B", hopcroftedDfa.Transitions.ToList()[8].ToString());
+            Assert.AreEqual("(E, b)-->A", hopcroftedDfa.Transitions.ToList()[9].ToString());
 
+            Assert.AreEqual("D",hopcroftedDfa.FinalStates.ToList()[0]);
+            Assert.AreEqual("E",hopcroftedDfa.FinalStates.ToList()[1]);
+
+            Assert.AreEqual("A",hopcroftedDfa.StartStates.ToList()[0]);
+        }
     }
 }

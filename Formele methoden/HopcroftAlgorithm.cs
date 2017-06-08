@@ -37,7 +37,6 @@ namespace Week_1
 
             // Enter minimizing recursion
             partitions = MinimizePartitions(partitions);
-            PrintPartitions(partitions);
 
             // Define start and final states
             foreach (Partition p in partitions)
@@ -119,7 +118,6 @@ namespace Week_1
 
             if (newPartitions.Count != partitions.Count)
             {
-                PrintPartitions(newPartitions);
                 newPartitions = MinimizePartitions(newPartitions);
             }
             return newPartitions;
