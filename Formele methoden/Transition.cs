@@ -28,7 +28,7 @@ namespace Week_1
 
         public override bool Equals(object other)
         {
-            var transition = other as Transition<T>;
+            Transition<T> transition = other as Transition<T>;
             if (transition != null)
             {
                 return FromState.Equals(transition.FromState) &&
