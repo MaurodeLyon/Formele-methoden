@@ -214,7 +214,7 @@ namespace Week_1
 
         public static Automaat<string> Reverse(Automaat<string> automaat)
         {
-            Automaat<string> reverseAutomaat = new Automaat<string>();
+            Automaat<string> reverseAutomaat = new Automaat<string>(automaat.Symbols);
             foreach (Transition<string> transition in automaat.Transitions)
             {
                 reverseAutomaat.AddTransition(
