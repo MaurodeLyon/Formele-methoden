@@ -28,21 +28,21 @@ namespace Formele_methoden_tests
 
             Automaat<string> dfa = NdfaToDfaConverter.Convert(ndfa);
             Assert.AreEqual("(1, a)-->2", dfa.Transitions.ToList()[0].ToString());
-            Assert.AreEqual("(1, b)-->2_3", dfa.Transitions.ToList()[1].ToString());
-            Assert.AreEqual("(1_3, a)-->2", dfa.Transitions.ToList()[2].ToString());
-            Assert.AreEqual("(1_3, b)-->2_3", dfa.Transitions.ToList()[3].ToString());
-            Assert.AreEqual("(2, a)-->2_4", dfa.Transitions.ToList()[4].ToString());
+            Assert.AreEqual("(1, b)-->23", dfa.Transitions.ToList()[1].ToString());
+            Assert.AreEqual("(13, a)-->2", dfa.Transitions.ToList()[2].ToString());
+            Assert.AreEqual("(13, b)-->23", dfa.Transitions.ToList()[3].ToString());
+            Assert.AreEqual("(2, a)-->24", dfa.Transitions.ToList()[4].ToString());
             Assert.AreEqual("(2, b)-->F", dfa.Transitions.ToList()[5].ToString());
-            Assert.AreEqual("(2_3, a)-->2_4", dfa.Transitions.ToList()[6].ToString());
-            Assert.AreEqual("(2_3, b)-->F", dfa.Transitions.ToList()[7].ToString());
-            Assert.AreEqual("(2_4, a)-->2_4", dfa.Transitions.ToList()[8].ToString());
-            Assert.AreEqual("(2_4, b)-->1_3", dfa.Transitions.ToList()[9].ToString());
+            Assert.AreEqual("(23, a)-->24", dfa.Transitions.ToList()[6].ToString());
+            Assert.AreEqual("(23, b)-->F", dfa.Transitions.ToList()[7].ToString());
+            Assert.AreEqual("(24, a)-->24", dfa.Transitions.ToList()[8].ToString());
+            Assert.AreEqual("(24, b)-->13", dfa.Transitions.ToList()[9].ToString());
             Assert.AreEqual("(F, a)-->F", dfa.Transitions.ToList()[10].ToString());
             Assert.AreEqual("(F, b)-->F", dfa.Transitions.ToList()[11].ToString());
 
             Assert.AreEqual("1", dfa.FinalStates.ToList()[0]);
-            Assert.AreEqual("1_3", dfa.FinalStates.ToList()[1]);
-            Assert.AreEqual("2_4", dfa.FinalStates.ToList()[2]);
+            Assert.AreEqual("13", dfa.FinalStates.ToList()[1]);
+            Assert.AreEqual("24", dfa.FinalStates.ToList()[2]);
 
             Assert.AreEqual("1", dfa.StartStates.ToList()[0]);
         }
@@ -60,13 +60,13 @@ namespace Formele_methoden_tests
             ndfa.DefineAsFinalState("B");
 
             Automaat<string> dfa = NdfaToDfaConverter.Convert(ndfa);
-            Assert.AreEqual("(A_S, a)-->A_S", dfa.Transitions.ToList()[0].ToString());
-            Assert.AreEqual("(A_S, b)-->B", dfa.Transitions.ToList()[1].ToString());
+            Assert.AreEqual("(AS, a)-->AS", dfa.Transitions.ToList()[0].ToString());
+            Assert.AreEqual("(AS, b)-->B", dfa.Transitions.ToList()[1].ToString());
             Assert.AreEqual("(B, a)-->F", dfa.Transitions.ToList()[2].ToString());
             Assert.AreEqual("(B, b)-->F", dfa.Transitions.ToList()[3].ToString());
             Assert.AreEqual("(F, a)-->F", dfa.Transitions.ToList()[4].ToString());
             Assert.AreEqual("(F, b)-->F", dfa.Transitions.ToList()[5].ToString());
-            Assert.AreEqual("(S, a)-->A_S", dfa.Transitions.ToList()[6].ToString());
+            Assert.AreEqual("(S, a)-->AS", dfa.Transitions.ToList()[6].ToString());
             Assert.AreEqual("(S, b)-->F", dfa.Transitions.ToList()[7].ToString());
 
             Assert.AreEqual("B", dfa.FinalStates.ToList()[0]);
@@ -92,26 +92,26 @@ namespace Formele_methoden_tests
             ndfa.DefineAsFinalState("2");
 
             Automaat<string> dfa = NdfaToDfaConverter.Convert(ndfa);
-            Assert.AreEqual("(0, a)-->0_1", dfa.Transitions.ToList()[0].ToString());
+            Assert.AreEqual("(0, a)-->01", dfa.Transitions.ToList()[0].ToString());
             Assert.AreEqual("(0, b)-->1", dfa.Transitions.ToList()[1].ToString());
-            Assert.AreEqual("(0_1, a)-->0_1_2", dfa.Transitions.ToList()[2].ToString());
-            Assert.AreEqual("(0_1, b)-->1_2", dfa.Transitions.ToList()[3].ToString());
-            Assert.AreEqual("(0_1_2, a)-->0_1_2", dfa.Transitions.ToList()[4].ToString());
-            Assert.AreEqual("(0_1_2, b)-->1_2", dfa.Transitions.ToList()[5].ToString());
-            Assert.AreEqual("(0_2, a)-->0_1_2", dfa.Transitions.ToList()[6].ToString());
-            Assert.AreEqual("(0_2, b)-->1", dfa.Transitions.ToList()[7].ToString());
+            Assert.AreEqual("(01, a)-->012", dfa.Transitions.ToList()[2].ToString());
+            Assert.AreEqual("(01, b)-->12", dfa.Transitions.ToList()[3].ToString());
+            Assert.AreEqual("(012, a)-->012", dfa.Transitions.ToList()[4].ToString());
+            Assert.AreEqual("(012, b)-->12", dfa.Transitions.ToList()[5].ToString());
+            Assert.AreEqual("(02, a)-->012", dfa.Transitions.ToList()[6].ToString());
+            Assert.AreEqual("(02, b)-->1", dfa.Transitions.ToList()[7].ToString());
             Assert.AreEqual("(1, a)-->2", dfa.Transitions.ToList()[8].ToString());
             Assert.AreEqual("(1, b)-->2", dfa.Transitions.ToList()[9].ToString());
-            Assert.AreEqual("(1_2, a)-->0_2", dfa.Transitions.ToList()[10].ToString());
-            Assert.AreEqual("(1_2, b)-->2", dfa.Transitions.ToList()[11].ToString());
-            Assert.AreEqual("(2, a)-->0_2", dfa.Transitions.ToList()[12].ToString());
+            Assert.AreEqual("(12, a)-->02", dfa.Transitions.ToList()[10].ToString());
+            Assert.AreEqual("(12, b)-->2", dfa.Transitions.ToList()[11].ToString());
+            Assert.AreEqual("(2, a)-->02", dfa.Transitions.ToList()[12].ToString());
             Assert.AreEqual("(2, b)-->F", dfa.Transitions.ToList()[13].ToString());
             Assert.AreEqual("(F, a)-->F", dfa.Transitions.ToList()[14].ToString());
             Assert.AreEqual("(F, b)-->F", dfa.Transitions.ToList()[15].ToString());
 
-            Assert.AreEqual("0_1_2", dfa.FinalStates.ToList()[0]);
-            Assert.AreEqual("0_2", dfa.FinalStates.ToList()[1]);
-            Assert.AreEqual("1_2", dfa.FinalStates.ToList()[2]);
+            Assert.AreEqual("012", dfa.FinalStates.ToList()[0]);
+            Assert.AreEqual("02", dfa.FinalStates.ToList()[1]);
+            Assert.AreEqual("12", dfa.FinalStates.ToList()[2]);
             Assert.AreEqual("2", dfa.FinalStates.ToList()[3]);
 
             Assert.AreEqual("0", dfa.StartStates.ToList()[0]);
