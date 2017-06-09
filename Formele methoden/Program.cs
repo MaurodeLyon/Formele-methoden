@@ -137,6 +137,18 @@ namespace Week_1
 
             Automaat<string> L3 = Automaat<string>.Union(L1, L2);
             GraphVizParser.PrintGraph(L3, "L3");
+
+            RegExp regExpLeft = new RegExp("baa");
+            RegExp regExpRight = new RegExp("bb");
+            RegExp regExpOr = regExpLeft.Or(regExpRight);
+            Automaat<string> ndfaOr = ThompsonConstruction.ConvertRegExp(regExpOr);
+            GraphVizParser.PrintGraph(ndfaOr, "ndfaOr");
+            Automaat<string> dfaOr = NdfaToDfaConverter.Convert(ndfaOr);
+            GraphVizParser.PrintGraph(dfaOr, "dfaOr");
+
+
+            Automaat<string>.DfaGenerateValue test = new Automaat<string>.DfaGenerateValue { Parameter = "aab", IsNot = false, Type = Automaat<string>.GeneratorType.BeginsWith };
+            Automaat<string> gendfa = Automaat<string>.GenerateDfa(test,alphabet);
             bool looping = true;
             while (looping)
             {

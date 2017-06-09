@@ -15,6 +15,8 @@ namespace Week_1
 
             Convert(regExp, ref automaat, ref stateCounter, 0, 1);
             automaat.Symbols =new SortedSet<char>(automaat.Transitions.Distinct().Select(e => e.Symbol).ToList());
+            //Epsilon should not be in alphabet
+            automaat.Symbols.Remove('$');
             return automaat;
         }
 

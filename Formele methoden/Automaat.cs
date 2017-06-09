@@ -127,7 +127,7 @@ namespace Week_1
             }
             return words;
         }
-        
+
         // Merge methods
         enum MergeType
         {
@@ -165,8 +165,7 @@ namespace Week_1
             return merged;
         }
 
-        private static void AddMergedState(Dictionary<char, string> prevMergedState, ref Automaat<string> merged,
-            Automaat<string> dfaA, Automaat<string> dfaB, MergeType type)
+        private static void AddMergedState(Dictionary<char, string> prevMergedState, ref Automaat<string> merged, Automaat<string> dfaA, Automaat<string> dfaB, MergeType type)
         {
             // string[] states = prevMergedState.Split('_');
             // Add prev      
@@ -307,6 +306,66 @@ namespace Week_1
                 }
             }
             return notAutomaat;
+        }
+
+        public static Automaat<string> GenerateDfa(DfaGenerateValue param, char[] symbols)
+        {
+            Automaat<string> dfa = new Automaat<string>(symbols);
+            
+            switch (param.Type)
+            {
+                case GeneratorType.BeginsWith:
+                    char[] chars = param.Parameter.ToCharArray();
+                    foreach (char c in chars)
+                    {
+                        dfa.AddTransition(new Transition<string>(dfa.States.Count.ToString(), c,
+                            (dfa.States.Count + 1).ToString()));
+                    }
+                    //Hardcopy states
+                    SortedSet<string> ogStates = new SortedSet<string>();
+                    foreach (string state in dfa.States)
+                    {
+                        ogStates.Add(state);
+                    }
+
+                    foreach (string state in ogStates)
+                    {
+                        List<Transition<string>> trans = dfa.GetTransition(state);
+
+                        foreach (Transition<string> t in trans)
+                        {
+                            foreach (char letter in dfa.Symbols)
+                            {
+                                if (t.Symbol != letter)
+                                {
+                                    dfa.AddTransition(new Transition<string>(t.FromState, letter, "F"));
+                                }
+                            }
+                        }
+                    }
+                    break;
+                case GeneratorType.Contains:
+
+                    break;
+                case GeneratorType.EndsWith:
+
+                    break;
+            }
+            return dfa;
+        }
+
+        public enum GeneratorType
+        {
+            BeginsWith,
+            Contains,
+            EndsWith
+        }
+
+        public struct DfaGenerateValue
+        {
+            public bool IsNot;
+            public string Parameter;
+            public GeneratorType Type;
         }
     }
 }
