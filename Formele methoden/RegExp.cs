@@ -41,12 +41,87 @@ namespace Week_1
             Right = null;
         }
 
-        public RegExp(string p)
+        public RegExp(string regex)
         {
-            Operator = OperatorEnum.One;
-            Terminals = p;
-            Left = null;
-            Right = null;
+            RegExp regExp = String2Regex(new RegExp(), regex);
+            Operator = regExp.Operator;
+            Terminals = regExp.Terminals;
+            Left = regExp.Left;
+            Right = regExp.Right;
+        }
+
+        public RegExp String2Regex(RegExp regex, string stringToRegex)
+        {
+            for (int index = 0; index < stringToRegex.Length; index++)
+            {
+                char currentChar = stringToRegex[index];
+                if (currentChar == '(')
+                {
+                    int closingBracketPosition = -1;
+                    int bracketCount = 0;
+                    for (int i = index + 1; i < stringToRegex.Length; i++)
+                    {
+                        if (stringToRegex[i] == '(') bracketCount++;
+                        if (stringToRegex[i] == ')' && bracketCount == 0)
+                        {
+                            closingBracketPosition = i;
+                            break;
+                        }
+                        if (stringToRegex[i] == ')' && bracketCount != 0)
+                        {
+                            bracketCount--;
+                        }
+                    }
+                    string between = stringToRegex.Substring(index + 1, closingBracketPosition - 1 - index);
+                    RegExp regExp = String2Regex(new RegExp(), between);
+                    if (closingBracketPosition + 1 < stringToRegex.Length)
+                    {
+                        index = closingBracketPosition + 1;
+                        currentChar = stringToRegex[index];
+                        if (currentChar == '+')
+                        {
+                            regExp = regExp.Plus();
+                        }
+                        else if (currentChar == '*')
+                        {
+                            regExp = regExp.Star();
+                        }
+                    }
+                    if (regex.Terminals == "" && regex.Operator == RegExp.OperatorEnum.One)
+                    {
+                        regex = regExp;
+                    }
+                    else
+                    {
+                        regex = regex.Dot(regExp);
+                    }
+                }
+                else if (currentChar == '+')
+                {
+                    regex = regex.Plus();
+                }
+                else if (currentChar == '*')
+                {
+                    regex = regex.Star();
+                }
+                else if (currentChar == '|')
+                {
+                    regex = regex.Or(new RegExp(stringToRegex[index + 1].ToString()));
+                    index++;
+                }
+                else
+                {
+                    if (regex.Terminals == "" && regex.Operator == RegExp.OperatorEnum.One)
+                    {
+                        regex.Terminals = currentChar.ToString();
+                    }
+                    else
+                    {
+                        regex = regex.Dot(new RegExp(currentChar.ToString()));
+                    }
+                }
+            }
+            return regex;
         }
 
         public RegExp Plus()

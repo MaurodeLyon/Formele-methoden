@@ -17,6 +17,7 @@ namespace Week_1
                 Console.WriteLine("1: a+");
                 Console.WriteLine("2: (a|b)*");
                 Console.WriteLine("3: (d|e)*.(a+.(b|c)+");
+                Console.WriteLine("4: Enter own regular expression");
                 ConsoleKeyInfo keyInfo = Console.ReadKey();
                 Console.WriteLine();
                 switch (keyInfo.KeyChar)
@@ -32,6 +33,10 @@ namespace Week_1
                     case '3':
                         Console.WriteLine("Option 3 selected : (d|e)*.(a+.(b|c)+");
                         Execute(new RegExp("d").Or(new RegExp("e")).Star().Dot(new RegExp("a").Plus().Dot(new RegExp("b").Or(new RegExp("c")).Plus())));
+                        break;
+                    case '4':
+                        Console.WriteLine("Please enter your own regular expression");
+                        Execute(new RegExp(Console.ReadLine()));
                         break;
                     default:
                         Console.WriteLine("incorrect key entered.");

@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Week_1;
 
@@ -250,7 +252,7 @@ namespace Formele_methoden_tests
             Assert.IsNull(regExpLeft.Left);
             Assert.IsNull(regExpLeft.Right);
             Assert.AreEqual(RegExp.OperatorEnum.One, regExpLeft.Operator);
-            Assert.AreEqual("aa", regExpLeft.Terminals);
+            Assert.AreEqual("a.a", regExpLeft.Terminals);
 
             RegExp regExpRight = new RegExp("bb");
             Assert.IsNull(regExpRight.Left);
@@ -403,7 +405,7 @@ namespace Formele_methoden_tests
             Assert.AreEqual(0, language.Count);
         }
 
-        [TestMethod]
+       /* [TestMethod]
         public void GetLanguageAssessment()
         {
             RegExp a = new RegExp("a").Star().Dot(new RegExp("b").Star()).Plus();
@@ -413,7 +415,7 @@ namespace Formele_methoden_tests
             SortedSet<string> taal = regExp.GetLanguage(7);
             //SortedSet<string> language = regExp.GetLanguage(0);
             //Assert.AreEqual(0,language.Count);
-        }
+        }*/
 
         [TestMethod]
         public void CompareLanguage()
@@ -438,6 +440,96 @@ namespace Formele_methoden_tests
                 .Star()
                 .Dot(new RegExp("a").Plus().Dot(new RegExp("b").Or(new RegExp("c")).Plus()));
             Assert.AreEqual("((d|e)*.(a+.(b|c)+))", regExp.ToString());
+        }
+
+        [TestMethod]
+        public void String2Regex1()
+        {
+            string test = "a+";
+            RegExp regex = new RegExp(test);
+            RegExp expectedRegex = new RegExp("a").Plus();
+            Assert.AreEqual(expectedRegex.ToString(), regex.ToString());
+        }
+
+        [TestMethod]
+        public void String2Regex2()
+        {
+            string test = "a*";
+            RegExp regex = new RegExp(test);
+            RegExp expectedRegex = new RegExp("a").Star();
+            Assert.AreEqual(expectedRegex.ToString(), regex.ToString());
+        }
+
+        [TestMethod]
+        public void String2Regex3()
+        {
+            string test = "aa";
+            RegExp regex = new RegExp(test);
+            RegExp expectedRegex = new RegExp("a").Dot(new RegExp("a"));
+            Assert.AreEqual(expectedRegex.ToString(), regex.ToString());
+        }
+
+        [TestMethod]
+        public void String2Regex4()
+        {
+            string test = "aa+";
+            RegExp regex = new RegExp(test);
+            RegExp expectedRegex = new RegExp("a").Dot(new RegExp("a")).Plus();
+            Assert.AreEqual(expectedRegex.ToString(), regex.ToString());
+        }
+
+        [TestMethod]
+        public void String2Regex5()
+        {
+            string test = "a|a";
+            RegExp regex = new RegExp(test);
+            RegExp expectedRegex = new RegExp("a").Or(new RegExp("a"));
+            Assert.AreEqual(expectedRegex.ToString(), regex.ToString());
+        }
+
+        [TestMethod]
+        public void String2Regex6()
+        {
+            string test = "(aa)+";
+            RegExp regex = new RegExp(test);
+            RegExp expectedRegex = new RegExp("a").Dot(new RegExp("a")).Plus();
+            Assert.AreEqual(expectedRegex.ToString(), regex.ToString());
+        }
+
+        [TestMethod]
+        public void String2Regex7()
+        {
+            string test = "(aa)*";
+            RegExp regex = new RegExp(test);
+            RegExp expectedRegex = new RegExp("a").Dot(new RegExp("a")).Star();
+            Assert.AreEqual(expectedRegex.ToString(), regex.ToString());
+        }
+
+        [TestMethod]
+        public void String2Regex8()
+        {
+            string test = "(a|a)*";
+            RegExp regex = new RegExp(test);
+            RegExp expectedRegex = new RegExp("a").Or(new RegExp("a")).Star();
+            Assert.AreEqual(expectedRegex.ToString(), regex.ToString());
+        }
+
+        [TestMethod]
+        public void String2Regex9()
+        {
+            string test = "(a|a)*a";
+            RegExp regex = new RegExp(test);
+            RegExp expectedRegex = new RegExp("a").Or(new RegExp("a")).Star().Dot(new RegExp("a"));
+            Assert.AreEqual(expectedRegex.ToString(), regex.ToString());
+        }
+
+        [TestMethod]
+        public void String2Regex10()
+        {
+            string test = "(aa)*(aa)+";
+            RegExp regex = new RegExp(test);
+            RegExp expectedRegex = new RegExp("a").Dot(new RegExp("a")).Star().Dot(new RegExp("a").Dot(new RegExp("a")).Plus());
+            Assert.AreEqual(expectedRegex.ToString(), regex.ToString());
         }
     }
 }
