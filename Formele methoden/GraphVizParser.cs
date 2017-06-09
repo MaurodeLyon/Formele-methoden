@@ -40,12 +40,12 @@ namespace Week_1
 
         static void GenerateGraphFile(string data, string filename)
         {
-            var getStartProcessQuery = new GetStartProcessQuery();
-            var getProcessStartInfoQuery = new GetProcessStartInfoQuery();
-            var registerLayoutPluginCommand =
+            GetStartProcessQuery getStartProcessQuery = new GetStartProcessQuery();
+            GetProcessStartInfoQuery getProcessStartInfoQuery = new GetProcessStartInfoQuery();
+            RegisterLayoutPluginCommand registerLayoutPluginCommand =
                 new RegisterLayoutPluginCommand(getProcessStartInfoQuery, getStartProcessQuery);
 
-            var wrapper = new GraphGeneration(getStartProcessQuery,
+            GraphGeneration wrapper = new GraphGeneration(getStartProcessQuery,
                 getProcessStartInfoQuery,
                 registerLayoutPluginCommand);
 

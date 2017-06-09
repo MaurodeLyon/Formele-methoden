@@ -179,7 +179,7 @@ namespace Week_1
                 }
             }
         }
-        
+
         public static Automaat<string> Reverse(Automaat<string> automaat)
         {
             Automaat<string> reverseAutomaat = new Automaat<string>();
@@ -191,6 +191,11 @@ namespace Week_1
             reverseAutomaat.StartStates = automaat.FinalStates;
             reverseAutomaat.FinalStates = automaat.StartStates;
             return reverseAutomaat;
+        }
+
+        public static Automaat<string> OptimizeDfa(Automaat<string> dfa)
+        {
+            return Convert(Reverse(Convert(Reverse(dfa))));
         }
     }
 }
