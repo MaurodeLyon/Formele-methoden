@@ -44,7 +44,30 @@ namespace Week_1
                     dfa.AddTransition(new Transition<string>("F", route, "F"));
                 }
             }
-            return dfa;
+            return finaliseConversion(dfa);
+        }
+
+        private static Automaat<string> finaliseConversion(Automaat<string> merged)
+        {
+            Automaat<string> finalisedMerge = new Automaat<string>(merged.Symbols);
+
+            foreach (Transition<string> t in merged.Transitions)
+            {
+                finalisedMerge.AddTransition(new Transition<string>(t.FromState.Replace("_", string.Empty), t.Symbol, t.ToState.Replace("_", string.Empty)));
+            }
+
+            foreach (string startState in merged.StartStates)
+            {
+                finalisedMerge.DefineAsStartState(startState.Replace("_", string.Empty));
+            }
+
+            foreach (string finalState in merged.FinalStates)
+            {
+                finalisedMerge.DefineAsFinalState(finalState.Replace("_", string.Empty));
+            }
+
+
+            return finalisedMerge;
         }
 
         private static void RetrieveEpsilonIncludedState(string state, Automaat<string> auto,
@@ -204,6 +227,12 @@ namespace Week_1
 
         public static Automaat<string> OptimizeDfa(Automaat<string> dfa)
         {
+            //Automaat<string> one = Reverse(dfa);
+            //Automaat<string> two = Convert(one);
+            //Automaat<string> three = Reverse(two);
+            //Automaat<string> four = Convert(three);
+
+            //return four;
             return Convert(Reverse(Convert(Reverse(dfa))));
         }
     }

@@ -147,7 +147,9 @@ namespace Week_1
             AddMergedState(completeMergedState, ref merged, dfaA, dfaB, MergeType.Union);
             // Add new state to merged, work recursively from there 
 
-            return merged;
+
+
+            return finaliseMerge(merged);
         }
 
         public Automaat<string> Concatenation(Automaat<string> dfaA, Automaat<string> dfaB)
@@ -162,14 +164,15 @@ namespace Week_1
             AddMergedState(completeMergedState, ref merged, dfaA, dfaB, MergeType.Concatenation);
             // Add new state to merged, work recursively from there 
 
-            return merged;
+            return finaliseMerge(merged);
         }
 
         private static void AddMergedState(Dictionary<char, string> prevMergedState, ref Automaat<string> merged, Automaat<string> dfaA, Automaat<string> dfaB, MergeType type)
         {
             // string[] states = prevMergedState.Split('_');
             // Add prev      
-            int count = 0;
+            int countFinal = 0;
+            int countStart = 0;
             string completePrevMergedState = "";
             foreach (KeyValuePair<char, string> entry in prevMergedState)
             {
@@ -178,22 +181,31 @@ namespace Week_1
                 if (entry.Key == 'A')
                 {
                     if (dfaA.FinalStates.Contains(entry.Value))
-                        count++;
+                        countFinal++;
+                    if (dfaA.StartStates.Contains(entry.Value))
+                        countStart++;
                 }
 
                 else if (entry.Key == 'B')
                 {
                     if (dfaB.FinalStates.Contains(entry.Value))
-                        count++;
+                        countFinal++;
+                    if (dfaA.StartStates.Contains(entry.Value))
+                        countStart++;
                 }
             }
 
             completePrevMergedState = completePrevMergedState.TrimEnd('_');
 
-            if (type == MergeType.Union && count == prevMergedState.Count)
+            if (type == MergeType.Union && countFinal == prevMergedState.Count)
                 merged.DefineAsFinalState(completePrevMergedState);
-            else if (type == MergeType.Concatenation && count >= 1)
+            else if (type == MergeType.Concatenation && countFinal >= 1)
                 merged.DefineAsFinalState(completePrevMergedState);
+
+            if (type == MergeType.Union && countStart == prevMergedState.Count)
+                merged.DefineAsStartState(completePrevMergedState);
+            else if (type == MergeType.Concatenation && countStart >= 1)
+                merged.DefineAsStartState(completePrevMergedState);
 
 
             if (merged.GetTransition(completePrevMergedState).Count == merged.Symbols.Count)
@@ -245,6 +257,8 @@ namespace Week_1
                             newMergedState[entry.Key] = newMergedState[entry.Key] + t.ToState + "_";
                     }
                 }
+                ///TEST THIS
+                if(newMergedState.ContainsKey(entry.Key))
                 newMergedState[entry.Key] = newMergedState[entry.Key].TrimEnd('_');
             }
         }
@@ -288,6 +302,29 @@ namespace Week_1
             return completeMergedState;
         }
 
+        private static Automaat<string> finaliseMerge(Automaat<string> merged)
+        {
+            Automaat<string> finalisedMerge = new Automaat<string>(merged.Symbols);
+            
+            foreach(Transition<string> t in merged.Transitions)
+            {
+                finalisedMerge.AddTransition(new Transition<string>(t.FromState.Replace("_", String.Empty),t.Symbol,t.ToState.Replace("_",String.Empty)));
+            }
+
+            foreach(string startState in merged.StartStates)
+            {
+                finalisedMerge.DefineAsStartState(startState.Replace("_", String.Empty));
+            }
+
+            foreach(string finalState in merged.FinalStates)
+            {
+                finalisedMerge.DefineAsFinalState(finalState.Replace("_", String.Empty));
+            }
+
+
+            return finalisedMerge;
+        }
+
         public static Automaat<string> Not(Automaat<string> automaat)
         {
             Automaat<string> notAutomaat = new Automaat<string>(automaat.Symbols);
@@ -308,6 +345,7 @@ namespace Week_1
             return notAutomaat;
         }
 
+
         public static Automaat<string> GenerateDfa(DfaGenerateValue param, char[] symbols)
         {
             Automaat<string> dfa = new Automaat<string>(symbols);
@@ -315,45 +353,205 @@ namespace Week_1
             switch (param.Type)
             {
                 case GeneratorType.BeginsWith:
-                    char[] chars = param.Parameter.ToCharArray();
-                    foreach (char c in chars)
-                    {
-                        dfa.AddTransition(new Transition<string>(dfa.States.Count.ToString(), c,
-                            (dfa.States.Count + 1).ToString()));
-                    }
-                    //Hardcopy states
-                    SortedSet<string> ogStates = new SortedSet<string>();
-                    foreach (string state in dfa.States)
-                    {
-                        ogStates.Add(state);
-                    }
-
-                    foreach (string state in ogStates)
-                    {
-                        List<Transition<string>> trans = dfa.GetTransition(state);
-
-                        foreach (Transition<string> t in trans)
-                        {
-                            foreach (char letter in dfa.Symbols)
-                            {
-                                if (t.Symbol != letter)
-                                {
-                                    dfa.AddTransition(new Transition<string>(t.FromState, letter, "F"));
-                                }
-                            }
-                        }
-                    }
+                    beginsWith(param, ref dfa);       
                     break;
                 case GeneratorType.Contains:
-
+                    contains(param, ref dfa);
                     break;
                 case GeneratorType.EndsWith:
-
+                    endsWith(param, ref dfa);
                     break;
             }
             return dfa;
         }
 
+        private static void beginsWith(DfaGenerateValue param, ref Automaat<string> dfa)
+        {
+            char[] chars = param.Parameter.ToCharArray();
+            int stateCounter = 0;
+            dfa.DefineAsStartState(stateCounter.ToString());
+            foreach (char c in chars)
+            {
+                dfa.AddTransition(new Transition<string>(stateCounter.ToString(), c,
+                    (stateCounter + 1).ToString()));
+
+                stateCounter = dfa.States.Count - 1;
+            }
+
+            dfa.DefineAsFinalState(stateCounter.ToString());
+            foreach (char c in dfa.Symbols)
+            {
+                dfa.AddTransition(new Transition<string>(stateCounter.ToString(), c, stateCounter.ToString()));
+            }
+
+            //Hardcopy states
+            SortedSet<string> ogStates = new SortedSet<string>();
+            foreach (string state in dfa.States)
+            {
+                ogStates.Add(state);
+            }
+
+            foreach (string state in ogStates)
+            {
+                List<Transition<string>> trans = dfa.GetTransition(state);
+
+                SortedSet<char> routesPresent = new SortedSet<char>();
+                foreach (Transition<string> t in trans)
+                {
+                    routesPresent.Add(t.Symbol);
+                }
+
+                foreach (char letter in dfa.Symbols)
+                {
+                    if (!routesPresent.Contains(letter))
+                    {
+                        dfa.AddTransition(new Transition<string>(state, letter, "F"));
+                    }
+                }
+
+            }
+
+            if(dfa.States.Contains("F"))
+            {
+                foreach(char letter in dfa.Symbols)
+                {
+                    dfa.AddTransition(new Transition<string>("F", letter, "F"));
+                }
+            }
+        }
+
+        private static void contains(DfaGenerateValue param, ref Automaat<string> dfa)
+        {
+            char[] chars = param.Parameter.ToCharArray();
+            int stateCounter = 0;
+            dfa.DefineAsStartState(stateCounter.ToString());
+            foreach (char c in chars)
+            {
+                dfa.AddTransition(new Transition<string>(stateCounter.ToString(), c,
+                    (stateCounter + 1).ToString()));
+
+                stateCounter = dfa.States.Count - 1;
+            }
+
+            dfa.DefineAsFinalState(stateCounter.ToString());
+
+            //Hardcopy states
+            List<string> ogStates = new List<string>();
+            foreach (string state in dfa.States)
+            {
+                ogStates.Add(state);
+            }
+
+            for (int i = 0; i < ogStates.Count; i++)
+            {
+                string state = ogStates[i];
+
+                List<Transition<string>> trans = dfa.GetTransition(state);
+
+                SortedSet<char> routesPresent = new SortedSet<char>();
+                foreach (Transition<string> t in trans)
+                {
+                    routesPresent.Add(t.Symbol);
+                }
+
+                foreach (char letter in dfa.Symbols)
+                {
+                    if (!routesPresent.Contains(letter)&&!dfa.FinalStates.Contains(state))
+                    {
+                        int stateToReturnTo = backTrackForWorkingRoute(chars, letter);
+
+                        dfa.AddTransition(new Transition<string>(state, letter, ogStates[stateToReturnTo]));
+
+                    }
+                }
+
+
+            }
+
+            foreach (char c in dfa.Symbols)
+            {
+                foreach(string finalstate in dfa.FinalStates)
+                    dfa.AddTransition(new Transition<string>(stateCounter.ToString(), c, stateCounter.ToString()));
+            }
+
+
+        }
+
+        private static void endsWith(DfaGenerateValue param, ref Automaat<string> dfa)
+        {
+            char[] chars = param.Parameter.ToCharArray();
+            int stateCounter = 0;
+            dfa.DefineAsStartState(stateCounter.ToString());
+            foreach (char c in chars)
+            {
+                dfa.AddTransition(new Transition<string>(stateCounter.ToString(), c,
+                    (stateCounter + 1).ToString()));
+
+                stateCounter = dfa.States.Count - 1;
+            }
+
+            dfa.DefineAsFinalState(stateCounter.ToString());
+
+            //Hardcopy states
+            List<string> ogStates = new List<string>();
+            foreach (string state in dfa.States)
+            {
+                ogStates.Add(state);
+            }
+
+            for(int i=0; i < ogStates.Count; i++)
+            {
+                string state = ogStates[i];
+
+                List<Transition<string>> trans = dfa.GetTransition(state);
+
+                SortedSet<char> routesPresent = new SortedSet<char>();
+                foreach (Transition<string> t in trans)
+                {
+                    routesPresent.Add(t.Symbol);
+                }
+
+                foreach (char letter in dfa.Symbols)
+                {
+                    if (!routesPresent.Contains(letter))
+                    {
+                        int stateToReturnTo =backTrackForWorkingRoute(chars, letter);
+
+                        dfa.AddTransition(new Transition<string>(state, letter, ogStates[stateToReturnTo]));
+
+                    }
+                }
+
+
+            }
+            
+
+
+        }
+
+        private static int backTrackForWorkingRoute(char[] route, char toUse)
+        {
+            string completeRoute = new string(route);
+
+            for (int i = route.Length - 1; i >= 0; i--)
+            {
+                string tobeAdded = "";
+
+                for(int j=i; j< route.Length; j++)
+                {
+                    tobeAdded += route[j];
+                }
+
+                string routeTocheck = (toUse.ToString() + tobeAdded);
+                if (routeTocheck.Contains(completeRoute))
+                {
+                    return i;
+                }
+
+            }
+
+            return -1;
+        }
         public enum GeneratorType
         {
             BeginsWith,
