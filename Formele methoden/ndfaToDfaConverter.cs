@@ -11,6 +11,7 @@ namespace Week_1
             string combinedStartState = "";
             SortedSet<string> completeStartState = new SortedSet<string>();
 
+            bool isFinalState = false;
             // Loop through all the available start states from the ndfa and create a list with them + their epsilon-linked states
             foreach (string startState in ndfa.StartStates)
             {
@@ -21,7 +22,10 @@ namespace Week_1
             foreach (string s in completeStartState)
             {
                 combinedStartState += s + "_";
+                if (ndfa.FinalStates.Contains(s))
+                    isFinalState = true;
             }
+
 
             //trim last "_" off of string
             combinedStartState = combinedStartState.TrimEnd('_');
@@ -29,6 +33,8 @@ namespace Week_1
             ConvertState(combinedStartState, ref dfa, ref ndfa);
             // Define combinedStartState as one and only start state in dfa
             dfa.DefineAsStartState(combinedStartState);
+            if (isFinalState)
+                dfa.DefineAsFinalState(combinedStartState);
 
             // Add a symbol loop to the failstate if one is created during conversion.
             if (dfa.States.Contains("F"))
