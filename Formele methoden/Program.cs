@@ -11,7 +11,7 @@ namespace Week_1
             Automaat<string> regExp = ThompsonConstruction.ConvertRegExp(reg);
             GraphVizParser.PrintGraph(regExp, "ThompsonNdfa");
 
-            char[] alphabet = { 'a', 'b' };
+            char[] alphabet = {'a', 'b'};
             Automaat<string> dfa = new Automaat<string>(alphabet);
             dfa.AddTransition(new Transition<string>("1", 'a', "2"));
             dfa.AddTransition(new Transition<string>("1", 'b', "2"));
@@ -98,8 +98,45 @@ namespace Week_1
             Automaat<string> epsilonDFA = NdfaToDfaConverter.Convert(epsilonNDFA);
             GraphVizParser.PrintGraph(epsilonDFA, "epsilondfa");
 
+            Automaat<string> L1 = new Automaat<string>(alphabet);
+
+            L1.AddTransition(new Transition<string>("1", 'a', "2"));
+            L1.AddTransition(new Transition<string>("1", 'b', "1"));
+
+            L1.AddTransition(new Transition<string>("2", 'a', "2"));
+            L1.AddTransition(new Transition<string>("2", 'b', "3"));
+
+            L1.AddTransition(new Transition<string>("3", 'a', "4"));
+            L1.AddTransition(new Transition<string>("3", 'b', "1"));
+
+            L1.AddTransition(new Transition<string>("4", 'a', "4"));
+            L1.AddTransition(new Transition<string>("4", 'b', "4"));
+
+            L1.DefineAsStartState("1");
+            L1.DefineAsFinalState("4");
+
+            Automaat<string> L2 = new Automaat<string>(alphabet);
+
+            L2.AddTransition(new Transition<string>("1", 'a', "1"));
+            L2.AddTransition(new Transition<string>("1", 'b', "2"));
+
+            L2.AddTransition(new Transition<string>("2", 'a', "3"));
+            L2.AddTransition(new Transition<string>("2", 'b', "2"));
+
+            L2.AddTransition(new Transition<string>("3", 'a', "1"));
+            L2.AddTransition(new Transition<string>("3", 'b', "4"));
+
+            L2.AddTransition(new Transition<string>("4", 'a', "3"));
+            L2.AddTransition(new Transition<string>("4", 'b', "2"));
+
+            L2.DefineAsStartState("1");
+            L2.DefineAsFinalState("1");
+            L2.DefineAsFinalState("2");
+            L2.DefineAsFinalState("3");
 
 
+            Automaat<string> L3 = Automaat<string>.Union(L1, L2);
+            GraphVizParser.PrintGraph(L3, "L3");
             bool looping = true;
             while (looping)
             {
