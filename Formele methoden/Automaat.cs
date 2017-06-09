@@ -315,45 +315,216 @@ namespace Week_1
             switch (param.Type)
             {
                 case GeneratorType.BeginsWith:
-                    char[] chars = param.Parameter.ToCharArray();
-                    foreach (char c in chars)
-                    {
-                        dfa.AddTransition(new Transition<string>(dfa.States.Count.ToString(), c,
-                            (dfa.States.Count + 1).ToString()));
-                    }
-                    //Hardcopy states
-                    SortedSet<string> ogStates = new SortedSet<string>();
-                    foreach (string state in dfa.States)
-                    {
-                        ogStates.Add(state);
-                    }
-
-                    foreach (string state in ogStates)
-                    {
-                        List<Transition<string>> trans = dfa.GetTransition(state);
-
-                        foreach (Transition<string> t in trans)
-                        {
-                            foreach (char letter in dfa.Symbols)
-                            {
-                                if (t.Symbol != letter)
-                                {
-                                    dfa.AddTransition(new Transition<string>(t.FromState, letter, "F"));
-                                }
-                            }
-                        }
-                    }
+                    beginsWith(param, ref dfa);       
                     break;
                 case GeneratorType.Contains:
-
+                    contains(param, ref dfa);
                     break;
                 case GeneratorType.EndsWith:
-
+                    endsWith(param, ref dfa);
                     break;
             }
             return dfa;
         }
 
+        private static void beginsWith(DfaGenerateValue param, ref Automaat<string> dfa)
+        {
+            char[] chars = param.Parameter.ToCharArray();
+            int stateCounter = 0;
+            dfa.DefineAsStartState(stateCounter.ToString());
+            foreach (char c in chars)
+            {
+                dfa.AddTransition(new Transition<string>(stateCounter.ToString(), c,
+                    (stateCounter + 1).ToString()));
+
+                stateCounter = dfa.States.Count - 1;
+            }
+
+            dfa.DefineAsFinalState(stateCounter.ToString());
+            foreach (char c in dfa.Symbols)
+            {
+                dfa.AddTransition(new Transition<string>(stateCounter.ToString(), c, stateCounter.ToString()));
+            }
+
+            //Hardcopy states
+            SortedSet<string> ogStates = new SortedSet<string>();
+            foreach (string state in dfa.States)
+            {
+                ogStates.Add(state);
+            }
+
+            foreach (string state in ogStates)
+            {
+                List<Transition<string>> trans = dfa.GetTransition(state);
+
+                //foreach (Transition<string> t in trans)
+                //{
+                //    foreach (char letter in dfa.Symbols)
+                //    {
+                //        if (t.Symbol != letter)
+                //        {
+                //            dfa.AddTransition(new Transition<string>(t.FromState, letter, "F"));
+                //        }
+                //    }
+                //}
+
+                SortedSet<char> routesPresent = new SortedSet<char>();
+                foreach (Transition<string> t in trans)
+                {
+                    routesPresent.Add(t.Symbol);
+                }
+
+                foreach (char letter in dfa.Symbols)
+                {
+                    if (!routesPresent.Contains(letter))
+                    {
+                        dfa.AddTransition(new Transition<string>(state, letter, "F"));
+                    }
+                }
+                //foreach (char letter in dfa.Symbols)
+                //{
+                //    foreach (Transition<string> t in trans)
+                //    {
+                //        if()
+                //    }
+
+
+                //}
+            }
+        }
+
+        private static void contains(DfaGenerateValue param, ref Automaat<string> dfa)
+        {
+            char[] chars = param.Parameter.ToCharArray();
+            int stateCounter = 0;
+            dfa.DefineAsStartState(stateCounter.ToString());
+            foreach (char c in chars)
+            {
+                dfa.AddTransition(new Transition<string>(stateCounter.ToString(), c,
+                    (stateCounter + 1).ToString()));
+
+                stateCounter = dfa.States.Count - 1;
+            }
+
+            dfa.DefineAsFinalState(stateCounter.ToString());
+
+            //Hardcopy states
+            List<string> ogStates = new List<string>();
+            foreach (string state in dfa.States)
+            {
+                ogStates.Add(state);
+            }
+
+            for (int i = 0; i < ogStates.Count; i++)
+            {
+                string state = ogStates[i];
+
+                List<Transition<string>> trans = dfa.GetTransition(state);
+
+                SortedSet<char> routesPresent = new SortedSet<char>();
+                foreach (Transition<string> t in trans)
+                {
+                    routesPresent.Add(t.Symbol);
+                }
+
+                foreach (char letter in dfa.Symbols)
+                {
+                    if (!routesPresent.Contains(letter)&&!dfa.FinalStates.Contains(state))
+                    {
+                        int stateToReturnTo = backTrackForWorkingRoute(chars, letter);
+
+                        dfa.AddTransition(new Transition<string>(state, letter, ogStates[stateToReturnTo]));
+
+                    }
+                }
+
+
+            }
+
+            foreach (char c in dfa.Symbols)
+            {
+                foreach(string finalstate in dfa.FinalStates)
+                    dfa.AddTransition(new Transition<string>(stateCounter.ToString(), c, stateCounter.ToString()));
+            }
+
+
+        }
+
+        private static void endsWith(DfaGenerateValue param, ref Automaat<string> dfa)
+        {
+            char[] chars = param.Parameter.ToCharArray();
+            int stateCounter = 0;
+            dfa.DefineAsStartState(stateCounter.ToString());
+            foreach (char c in chars)
+            {
+                dfa.AddTransition(new Transition<string>(stateCounter.ToString(), c,
+                    (stateCounter + 1).ToString()));
+
+                stateCounter = dfa.States.Count - 1;
+            }
+
+            dfa.DefineAsFinalState(stateCounter.ToString());
+
+            //Hardcopy states
+            List<string> ogStates = new List<string>();
+            foreach (string state in dfa.States)
+            {
+                ogStates.Add(state);
+            }
+
+            for(int i=0; i < ogStates.Count; i++)
+            {
+                string state = ogStates[i];
+
+                List<Transition<string>> trans = dfa.GetTransition(state);
+
+                SortedSet<char> routesPresent = new SortedSet<char>();
+                foreach (Transition<string> t in trans)
+                {
+                    routesPresent.Add(t.Symbol);
+                }
+
+                foreach (char letter in dfa.Symbols)
+                {
+                    if (!routesPresent.Contains(letter))
+                    {
+                        int stateToReturnTo =backTrackForWorkingRoute(chars, letter);
+
+                        dfa.AddTransition(new Transition<string>(state, letter, ogStates[stateToReturnTo]));
+
+                    }
+                }
+
+
+            }
+            
+
+
+        }
+
+        private static int backTrackForWorkingRoute(char[] route, char toUse)
+        {
+            string completeRoute = new string(route);
+
+            for (int i = route.Length - 1; i >= 0; i--)
+            {
+                string tobeAdded = "";
+
+                for(int j=i; j< route.Length; j++)
+                {
+                    tobeAdded += route[j];
+                }
+
+                string routeTocheck = (toUse.ToString() + tobeAdded);
+                if (routeTocheck.Contains(completeRoute))
+                {
+                    return i;
+                }
+
+            }
+
+            return -1;
+        }
         public enum GeneratorType
         {
             BeginsWith,

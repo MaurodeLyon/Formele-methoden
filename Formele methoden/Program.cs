@@ -147,7 +147,7 @@ namespace Week_1
             GraphVizParser.PrintGraph(dfaOr, "dfaOr");
 
 
-            Automaat<string>.DfaGenerateValue test = new Automaat<string>.DfaGenerateValue { Parameter = "aab", IsNot = false, Type = Automaat<string>.GeneratorType.BeginsWith };
+            Automaat<string>.DfaGenerateValue test = new Automaat<string>.DfaGenerateValue { Parameter = "aaabb", IsNot = false, Type = Automaat<string>.GeneratorType.Contains };
             Automaat<string> gendfa = Automaat<string>.GenerateDfa(test,alphabet);
             bool looping = true;
             while (looping)
