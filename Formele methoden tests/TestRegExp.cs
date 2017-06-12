@@ -246,53 +246,17 @@ namespace Formele_methoden_tests
         }
 
         [TestMethod]
-        public void RegExpAaDotBb()
+        public void RegExpAaBb()
         {
-            RegExp regExpLeft = new RegExp("aa");
-            Assert.IsNull(regExpLeft.Left);
-            Assert.IsNull(regExpLeft.Right);
-            Assert.AreEqual(RegExp.OperatorEnum.One, regExpLeft.Operator);
-            Assert.AreEqual("a.a", regExpLeft.Terminals);
-
-            RegExp regExpRight = new RegExp("bb");
-            Assert.IsNull(regExpRight.Left);
-            Assert.IsNull(regExpRight.Right);
-            Assert.AreEqual(RegExp.OperatorEnum.One, regExpRight.Operator);
-            Assert.AreEqual("bb", regExpRight.Terminals);
-
-            RegExp regExpDot = regExpLeft.Dot(regExpRight);
-            Assert.AreEqual(regExpLeft, regExpDot.Left);
-            Assert.AreEqual(regExpRight, regExpDot.Right);
-            Assert.AreEqual(RegExp.OperatorEnum.Dot, regExpDot.Operator);
-            Assert.AreEqual("", regExpDot.Terminals);
+            RegExp regex = new RegExp("aabb");
+            Assert.AreEqual("(((a.a).b).b)", regex.ToString());
         }
 
         [TestMethod]
         public void RegExpAaOrBbDotAa()
         {
-            RegExp regExpLeft = new RegExp("aa");
-            Assert.IsNull(regExpLeft.Left);
-            Assert.IsNull(regExpLeft.Right);
-            Assert.AreEqual(RegExp.OperatorEnum.One, regExpLeft.Operator);
-            Assert.AreEqual("aa", regExpLeft.Terminals);
-
-            RegExp regExpRight = new RegExp("bb");
-            Assert.IsNull(regExpRight.Left);
-            Assert.IsNull(regExpRight.Right);
-            Assert.AreEqual(RegExp.OperatorEnum.One, regExpRight.Operator);
-            Assert.AreEqual("bb", regExpRight.Terminals);
-
-            RegExp regExpOr = regExpLeft.Or(regExpRight);
-            Assert.AreSame(regExpLeft, regExpOr.Left);
-            Assert.AreSame(regExpRight, regExpOr.Right);
-            Assert.AreEqual(RegExp.OperatorEnum.Or, regExpOr.Operator);
-            Assert.AreEqual("", regExpOr.Terminals);
-
-            RegExp regExpDot = regExpOr.Dot(regExpLeft);
-            Assert.AreSame(regExpOr, regExpDot.Left);
-            Assert.AreSame(regExpLeft, regExpDot.Right);
-            Assert.AreEqual(RegExp.OperatorEnum.Dot, regExpDot.Operator);
-            Assert.AreEqual("", regExpDot.Terminals);
+            RegExp regex = new RegExp("((aa)|(bb))aa");
+            Assert.AreEqual("((((a.a)|b).b).a)", regex.Terminals);
         }
 
         [TestMethod]
