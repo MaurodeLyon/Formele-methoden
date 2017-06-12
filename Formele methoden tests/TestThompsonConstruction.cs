@@ -84,9 +84,9 @@ namespace Formele_methoden_tests
         {
             RegExp regExp = new RegExp("aaa");
             Automaat<string> automaat = ThompsonConstruction.ConvertRegExp(regExp);
-            Assert.AreEqual("(0, a)-->3", automaat.Transitions.ToList()[0].ToString());
-            Assert.AreEqual("(2, a)-->1", automaat.Transitions.ToList()[1].ToString());
-            Assert.AreEqual("(3, a)-->2", automaat.Transitions.ToList()[2].ToString());
+            Assert.AreEqual("(0, a)-->2", automaat.Transitions.ToList()[0].ToString());
+            Assert.AreEqual("(2, a)-->3", automaat.Transitions.ToList()[1].ToString());
+            Assert.AreEqual("(3, a)-->1", automaat.Transitions.ToList()[2].ToString());
         }
 
         [TestMethod]
