@@ -163,7 +163,7 @@ namespace Week_1
 
             AddMergedState(completeMergedState, ref merged, dfaA, dfaB, MergeType.Concatenation);
             // Add new state to merged, work recursively from there 
-
+            
             return finaliseMerge(merged);
         }
 
@@ -190,7 +190,7 @@ namespace Week_1
                 {
                     if (dfaB.FinalStates.Contains(entry.Value))
                         countFinal++;
-                    if (dfaA.StartStates.Contains(entry.Value))
+                    if (dfaB.StartStates.Contains(entry.Value))
                         countStart++;
                 }
             }
@@ -349,7 +349,18 @@ namespace Week_1
         public static Automaat<string> GenerateDfa(DfaGenerateValue param, char[] symbols)
         {
             Automaat<string> dfa = new Automaat<string>(symbols);
+
+            if (param.Parameter == "")
+                return null;
+
+            ///Check alphabet and parameter
             
+            foreach(char c in param.Parameter.ToCharArray())
+            {
+                if (!dfa.Symbols.Contains(c))
+                    return null;
+            }
+
             switch (param.Type)
             {
                 case GeneratorType.BeginsWith:
@@ -362,7 +373,10 @@ namespace Week_1
                     endsWith(param, ref dfa);
                     break;
             }
-            return dfa;
+            if (param.IsNot)
+                return Not(dfa);
+            else
+                return dfa;
         }
 
         private static void beginsWith(DfaGenerateValue param, ref Automaat<string> dfa)
