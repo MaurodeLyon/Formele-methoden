@@ -11,6 +11,15 @@ namespace Week_1
             Console.WriteLine("-------------------------------------------------------------");
             Console.WriteLine("Formele methoden test applicatie Mauro de Lyon & Arthur Brink");
             Console.WriteLine("-------------------------------------------------------------");
+            Console.WriteLine("-A RegExp will be converted to a ndfa through the thompson construction, after which it will be converted to a dfa");
+            Console.WriteLine(" This dfa will be minimised through brezowsky and hopcroft.");
+            Console.WriteLine(" All conversion steps will be printed to an image with Graphviz");
+            Console.WriteLine(" ");
+            Console.WriteLine("-If you generate your own dfa with the dfa generator it will be printed to an image along with its minimized counterpart (through brezowsky and hopcroft)");
+            
+
+            Console.WriteLine(" ");
+
             while (true)
             {
                 Console.WriteLine();
@@ -124,6 +133,11 @@ namespace Week_1
                                 param1 = new Automaat<string>.DfaGenerateValue { Parameter = beginWith, IsNot = true, Type = Automaat<string>.GeneratorType.BeginsWith };
                                 part1 = Automaat<string>.GenerateDfa(param1, alphabet.ToCharArray());
                             }
+                            if(part1==null)
+                            {
+                                Console.WriteLine("Invalid/Incorrect parameters entered, try again");
+                                break;
+                            }
                             setupParts.Add(part1);
                         }
 
@@ -139,6 +153,11 @@ namespace Week_1
                                 param2 = new Automaat<string>.DfaGenerateValue { Parameter = contain, IsNot = true, Type = Automaat<string>.GeneratorType.Contains };
                                 part2 = Automaat<string>.GenerateDfa(param2, alphabet.ToCharArray());
                             }
+                            if (part2 == null)
+                            {
+                                Console.WriteLine("Invalid/Incorrect parameters entered, try again");
+                                break;
+                            }
                             setupParts.Add(part2);
                         }
 
@@ -153,6 +172,11 @@ namespace Week_1
                             {
                                 param3 = new Automaat<string>.DfaGenerateValue { Parameter = endWith, IsNot = true, Type = Automaat<string>.GeneratorType.EndsWith };
                                 part3 = Automaat<string>.GenerateDfa(param3, alphabet.ToCharArray());
+                            }
+                            if (part3 == null)
+                            {
+                                Console.WriteLine("Invalid/Incorrect parameters entered, try again");
+                                break;
                             }
                             setupParts.Add(part3);
 
@@ -215,6 +239,7 @@ namespace Week_1
                             {
                                 Console.WriteLine("[Warning] This hopcroft dfa has more than 25 states.");
                                 Console.WriteLine("Due to char(ASCII) limitations, parsing issues could arise with printing this dfa correctly to an image");
+                                Console.WriteLine("This is a third-party library (Graphviz) related issue");
                                 Console.WriteLine("The above shown list of transitions from this hopcroft dfa ARE STILL CORRECT however");
                             }
                         }

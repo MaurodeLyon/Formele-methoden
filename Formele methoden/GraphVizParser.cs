@@ -13,11 +13,16 @@ namespace Week_1
             string toPrint = "";
             toPrint += "digraph{";
             toPrint += " ";
+
+            toPrint+= "{ node[style = invis, shape = none, label = \" \", width = 0, height = 0] SSS }";
+
+            toPrint += " ";
             toPrint += "node [shape = doublecircle];";
 
             ISet<Transition<string>> transitions = data.Transitions;
 
             SortedSet<string> finalStates = data.FinalStates;
+            SortedSet<string> startStates = data.StartStates;
 
             foreach (string t in finalStates)
             {
@@ -26,6 +31,11 @@ namespace Week_1
             toPrint += "; ";
             toPrint += " ";
             toPrint += "node [shape = circle];";
+
+            foreach(string state in startStates)
+            {
+                toPrint += " " + ("SSS") + "-> " + ("S" + state);
+            }
 
             foreach (Transition<string> t in transitions)
             {
