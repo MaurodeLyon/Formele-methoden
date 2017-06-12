@@ -81,6 +81,7 @@ namespace Week_1
                 return;
             }
 
+
             Console.WriteLine("Enter line");
             string beginWith = Console.ReadLine();
             Console.WriteLine("Select option");
@@ -112,9 +113,9 @@ namespace Week_1
                 return;
             }
             
+
             Console.WriteLine("Enter line");
             string endWith = Console.ReadLine();
-
             Automaat<string>.DfaGenerateValue param1;
             Automaat<string>.DfaGenerateValue param2;
             Automaat<string>.DfaGenerateValue param3;
