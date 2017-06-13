@@ -14,7 +14,7 @@ namespace Week_1
             toPrint += "digraph{";
             toPrint += " ";
 
-            toPrint+= "{ node[style = invis, shape = none, label = \" \", width = 0, height = 0] SSS }";
+            toPrint += "{ node[style = invis, shape = none, label = \" \", width = 0, height = 0] SSS }";
 
             toPrint += " ";
             toPrint += "node [shape = doublecircle];";
@@ -26,20 +26,21 @@ namespace Week_1
 
             foreach (string t in finalStates)
             {
-                toPrint += " " + ("S"+t) + " ";
+                toPrint += " " + ("S" + t) + " ";
             }
             toPrint += "; ";
             toPrint += " ";
             toPrint += "node [shape = circle];";
 
-            foreach(string state in startStates)
+            foreach (string state in startStates)
             {
                 toPrint += " " + ("SSS") + "-> " + ("S" + state);
             }
 
             foreach (Transition<string> t in transitions)
             {
-                toPrint += " " + ("S"+t.FromState) + " -> " + ("S"+t.ToState) + " " + "[ label = " + "\"" + t.Symbol + "\"" + " ];";
+                toPrint += " " + ("S" + t.FromState) + " -> " + ("S" + t.ToState) + " " + "[ label = " + "\"" +
+                           t.Symbol + "\"" + " ];";
             }
             toPrint += " }";
 
@@ -60,7 +61,7 @@ namespace Week_1
                 registerLayoutPluginCommand);
 
             byte[] output = wrapper.GenerateGraph(data, Enums.GraphReturnType.Jpg);
-            System.IO.File.WriteAllBytes(filename + ".jpg", output);
+            System.IO.File.WriteAllBytes("Images/" + filename + ".jpg", output);
         }
     }
 }

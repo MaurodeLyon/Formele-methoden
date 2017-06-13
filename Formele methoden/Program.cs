@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 
 namespace Week_1
@@ -16,7 +17,8 @@ namespace Week_1
             Console.WriteLine(" All conversion steps will be printed to an image with Graphviz\n");
             Console.WriteLine("-If you generate your own dfa with the dfa generator it will be printed to an image along with its minimized counterpart (through brezowsky and hopcroft)\n");
             Console.WriteLine("-The Dfa generator makes multiple small dfa's and then merges them through the Union or concatenation (en/of) operation. ");
-
+            System.IO.Directory.CreateDirectory(@"C:\GitHub\Formele-methoden\Formele methoden\bin\Debug\Images");
+            Process.Start(@"C:\GitHub\Formele-methoden\Formele methoden\bin\Debug\Images");
             while (true)
             {
                 Console.WriteLine("\nPlease select a regular expression:");
