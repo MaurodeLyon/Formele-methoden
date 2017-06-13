@@ -243,8 +243,8 @@ namespace Week_1
                 }
 
                 Console.WriteLine("Printing image");
-                GraphVizParser.PrintGraph(toUse, "customDFA");
-                Console.WriteLine("Image saved as customDFA.jpg");
+                GraphVizParser.PrintGraph(toUse, "DFA");
+                Console.WriteLine("Image saved as DFA.jpg");
 
                 Console.WriteLine();
                 Console.WriteLine("----- Optimizing custom DFA: Brzozowski's algorithm -----");
@@ -254,8 +254,8 @@ namespace Week_1
                     Console.WriteLine(transition.ToString());
                 }
                 Console.WriteLine("Printing image");
-                GraphVizParser.PrintGraph(brzozowskiDfa, "CustomBrzozowskiDFA");
-                Console.WriteLine("Image saved as CustomBrzozowskiDFA.jpg");
+                GraphVizParser.PrintGraph(brzozowskiDfa, "BrzozowskiDFA");
+                Console.WriteLine("Image saved as BrzozowskiDFA.jpg");
 
                 // Optimize dfa Hopcroft
                 Console.WriteLine();
@@ -268,8 +268,8 @@ namespace Week_1
                 Console.Write("Amount of states in hopcroft DFA: ");
                 Console.WriteLine(hopcroftDfa.States.Count);
                 Console.WriteLine("Printing image");
-                GraphVizParser.PrintGraph(hopcroftDfa, "CustomHopcroftDFA");
-                Console.WriteLine("Image saved as CustomHopcroftDFA.jpg");
+                GraphVizParser.PrintGraph(hopcroftDfa, "HopcroftDFA");
+                Console.WriteLine("Image saved as HopcroftDFA.jpg");
                 if (hopcroftDfa.States.Count > 25)
                 {
                     Console.WriteLine("[Warning] This hopcroft dfa has more than 25 states.");
