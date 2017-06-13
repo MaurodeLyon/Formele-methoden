@@ -15,6 +15,7 @@ namespace Week_1
             Console.WriteLine(" This dfa will be minimised through brezowsky and hopcroft.");
             Console.WriteLine(" All conversion steps will be printed to an image with Graphviz\n");
             Console.WriteLine("-If you generate your own dfa with the dfa generator it will be printed to an image along with its minimized counterpart (through brezowsky and hopcroft)\n");
+            Console.WriteLine("-The Dfa generator makes multiple small dfa's and then merges them through the Union or concatenation (en/of) operation. ");
 
             while (true)
             {

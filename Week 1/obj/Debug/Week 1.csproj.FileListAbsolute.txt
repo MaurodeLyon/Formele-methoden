@@ -1,7 +1,0 @@
-C:\Users\Arthur\Documents\SourceTree\school34\Formele-methoden\Week 1\bin\Debug\Week 1.exe.config
-C:\Users\Arthur\Documents\SourceTree\school34\Formele-methoden\Week 1\obj\Debug\Week 1.exe
-C:\Users\Arthur\Documents\SourceTree\school34\Formele-methoden\Week 1\obj\Debug\Week 1.pdb
-C:\Users\Arthur\Documents\SourceTree\school34\Formele-methoden\Week 1\bin\Debug\Week 1.exe
-C:\Users\Arthur\Documents\SourceTree\school34\Formele-methoden\Week 1\bin\Debug\Week 1.pdb
-C:\Users\Arthur\Documents\SourceTree\school34\Formele-methoden\Week 1\bin\Debug\GraphVizWrapper.dll
-C:\Users\Arthur\Documents\SourceTree\school34\Formele-methoden\Week 1\obj\Debug\Week 1.csprojResolveAssemblyReference.cache
